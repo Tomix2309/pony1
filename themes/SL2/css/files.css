@@ -1,0 +1,163 @@
+/************* UPLOAD PROGRESS ************/
+#form_upload form #Select_file {
+   position: relative;
+}
+#form_upload form #Select_file #New_file {
+   position: absolute;
+   height: 53px;
+   width: 100%;
+   left: 0;
+   top: 0;
+   opacity: 0;
+}
+#form_upload form #Select_file .list_text {
+   width: auto;
+   margin: 0;
+   margin-bottom: 5px;
+   display: block;
+}
+#form_upload form #Select_file .result_text {
+   display: none;
+   color: #0a213a;
+   padding: 8px;
+}
+#form_upload form input[type="submit"] {
+   width: 100%;
+   display: block;
+   margin: 0;
+   margin-bottom: 7px;
+}
+
+#form_upload #message.upload_ok,
+#form_upload #message.upload_error {
+   padding: 5px;
+   margin-bottom: 10px;
+   font-size: 11px;
+}
+#form_upload #message.upload_ok {
+   border: solid 1px #92D38C;
+   color: green;
+   background: #E8FFE7;
+}
+#form_upload #message.upload_error {
+   border: solid 1px #D38C8C;
+   color: #CC2C2C;
+   background: #FFE7E7;
+}
+#form_upload #progress {
+   display: none;
+   width: 100%;
+   margin-bottom: 10px;
+   position: relative;
+   background: #ebebeb;
+}
+#form_upload #progress #bar {
+   width: 100%;
+   height: 100%;
+   position: absolute;
+   left: 0;
+   top: 0;
+   background: linear-gradient(to right, #22a8c8, #187f98, #113d48);
+   transition: all 0.3s ease-in-out;
+   z-index: 2;
+}
+#form_upload #progress #percent {
+   position: relative;
+   z-index: 3;
+   padding: 4px;
+   color: white;
+   font-weight: bold;
+}
+.list_file {
+   display: grid;
+   grid-template-columns: 50px 1fr;
+   grid-gap: 10px;
+   margin: 4px 0 16px 0;
+   padding-bottom: 14px;
+   border-bottom: 1px solid #CCC;
+}
+.list_file:last-child {
+   border-bottom: none;
+}
+.list_file .File_format {
+   position: relative;
+   display: block;
+   width: 50px;
+   height: 50px;
+   text-align: center;
+}
+.descargas {
+   min-width: 50px;
+   max-width: 75px;
+   height: 20px;
+   text-align: left;
+   margin-left: 2px;
+   padding: 3px;
+}
+.descargas span {
+   padding: 0px 6px;
+   text-align: center;
+}
+.descargas .featherIcons {
+   display: block;
+   width: 20px;
+   height: 20px;
+}
+.carpetas .lista_carpeta {
+   margin: 6px 0;
+   display: grid;
+   grid-template-columns: 50px 1fr;
+   grid-gap: 5px;
+   height: 55px;
+} 
+.carpetas .lista_carpeta > a .featherIcons {
+   width: 40px;
+   height: 40px;
+   stroke: #444;
+}
+.carpetas .lista_carpeta .F_info a {
+   color: var(--bs-dark);
+   font-weight: 700;
+   font-size: 16px;
+}
+.carpetas .lista_carpeta .F_info span.small {
+   font-size: 11px;
+   color: #888;
+   display: block;
+   margin-top: -4px;
+}
+.list_file  .F_info .opciones,
+.carpetas .lista_carpeta .F_info .opciones {
+   width: 40px;
+   height: 100%;
+   position: absolute;
+   right: 0;
+   top: 0;
+   text-align: center;
+   padding-top: 16px;
+   cursor: pointer;
+   display: none;
+}
+.list_file:hover  .F_info .opciones,
+.list_file  .F_info .opciones:hover .opcf,
+.carpetas .lista_carpeta:hover .F_info .opciones,
+.carpetas .lista_carpeta .F_info .opciones:hover .opcf  {
+   display: block;
+}
+.list_file  .F_info .opciones .opcf,
+.carpetas .lista_carpeta .F_info .opciones .opcf {
+   width: 170px;
+   text-align: left;
+   position: absolute;
+   right: 100%;
+   top: 0%;
+   z-index: 99;
+   background-color: #FFFC;
+   backdrop-filter: blur(3px);
+   display: none;
+}
+.carpetas .lista_carpeta .F_info .opciones .opcf a {
+   padding: 2px 4px;
+   color: #222!important;
+   text-shadow: 0 0 4px #0004;
+}

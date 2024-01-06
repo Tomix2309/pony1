@@ -1,0 +1,1 @@
+<div class="box-ads-300">{$tsConfig.ads_300}</div>

@@ -1,0 +1,20 @@
+cache/
+!settings/backup.json
+!settings/conf.json
+!settings/create_new.json
+!settings/settings.json
+
+# Los avatares
+files/avatar/*.webp
+files/uploads/*.*
+files/downloads/*.*
+
+# Archivos
+config.inc.php
+
+# Archivo generado desde el install
+.lock
+
+# Solo el theme SyntaxisLite2
+themes/*
+!themes/SL2

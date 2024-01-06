@@ -1,0 +1,22 @@
+{
+	"portada":{
+		"position":"",
+		"repeat":"",
+		"type":"pexels",
+		"id":"2786709",
+		"width": "1200",
+		"height": "300"
+	},
+	"unplash":{
+		"url":"https:\/\/source.unsplash.com\/#ID#"
+	},
+	"pexels":{
+		"url":"https:\/\/images.pexels.com\/photos\/#ID#\/pexels-photo-#ID#.jpeg"
+	},
+	"params":{
+		"auto":"compress",
+		"cs":"tinysrgb",
+		"dpr":1,
+		"fit":"crop"
+	}
+}

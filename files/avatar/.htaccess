@@ -1,0 +1,7 @@
+RewriteEngine on
+RewriteRule ^(.*).webp$ $1.webp [L]
+# DEFAULTS
+RewriteCond %{REQUEST_FILENAME} !-f  
+RewriteRule ^(.*).webp$ $1.webp [L]
+RewriteCond %{REQUEST_FILENAME} !-f  
+RewriteRule ^(.*).webp$ avatar.webp [L]

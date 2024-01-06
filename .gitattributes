@@ -1,0 +1,14 @@
+LICENSE -crlf
+*.css -crlf
+*.htaccess -crlf
+*.html -crlf
+*.jsons -crlf
+*.js -crlf
+*.less -crlf
+*.md -crlf
+*.php -crlf
+*.svg -crlf
+*.tpl -crlf
+*.txt -crlf
+*.xml -crlf
+*.mod -crlf

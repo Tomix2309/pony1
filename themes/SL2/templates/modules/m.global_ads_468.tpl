@@ -1,0 +1,1 @@
+<div class="box-ads-468">{$tsConfig.ads_468}</div>
