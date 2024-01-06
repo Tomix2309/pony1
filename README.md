@@ -1,7 +1,5 @@
 # Syntaxis Lite 2024
 
-Esta es una actualización del risus 1.2 a risus 1.3, en cuanto se lance la seguna versión de New Risus se realizará otra actualización con las funciones de new risus para que sea mucho más compatibles y de esta forma se eliminará la sección de administración y moderación que trae este theme.
-
 ## Core:
  * Mejor soporte a [http/https](https://github.com/isidromlc/PHPost/issues/10#issue-568723224).
  * Arreglo del redireccionamiento en la [función setLevel()](https://github.com/isidromlc/PHPost/issues/15#issue-568745572).
@@ -36,7 +34,9 @@ Luego de instalar deben agregar las consultas que estan en el archivo **install_
 ---
 
 # Syntaxis Lite v2
+ * Un tour en el perfil
  * Subir avatar mejorado y actualizado
+ * Cambiar avatar rápidamente
  * Registro/Login separados
  * Crear tickets para reportar error u otro problema
  * Plugin Hook para simplificar acciones
@@ -76,7 +76,6 @@ Luego de instalar deben agregar las consultas que estan en el archivo **install_
 > Esto se guardará en un archivo .json, y no se guardará en la base de datos. Por defecto habrá info como ejemplo
 
 ### BETA:
- * Un tour en el perfil
  * Se puede cambiar el avatar desde el perfil sin acceder a "**Editar cuenta**"
  * Inicio de sesión dependiendo del dispositivo
 
