@@ -43,7 +43,6 @@ class tsCore {
       $this->settings['news'] 		= $this->getNews();
       $this->settings['oauth'] 		= $this->OAuth();
 		# Mensaje del instalador y pendientes de moderación #
-		$this->settings['install'] 		= $this->existinstall();
 		$this->settings['novemods']		= $this->getNovemods();
 		$this->settings['cambiodenicks'] = $this->getNicks();
 	}
@@ -92,11 +91,22 @@ class tsCore {
 		return db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM w_ads'));
 	}
 	
-	function getNovemods() {
-      $datos = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT (SELECT count(post_id) FROM p_posts WHERE post_status = \'3\') as revposts, (SELECT count(cid) FROM p_comentarios WHERE c_status = \'1\' ) as revcomentarios, (SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = \'1\') as repposts, (SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = \'2\') as repmps, (SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = \'3\') as repusers, (SELECT count(DISTINCT obj_id) FROM w_denuncias  WHERE d_type = \'4\') as repfotos, (SELECT count(susp_id) FROM u_suspension) as suspusers, (SELECT count(post_id) FROM p_posts WHERE post_status = \'2\') as pospelera, (SELECT count(foto_id) FROM f_fotos WHERE f_status = \'2\') as fospelera'));
+	public function getNovemods() {
+      $datos = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', 'SELECT 
+        	(SELECT count(post_id) FROM p_posts WHERE post_status = 3) as revposts, 
+        	(SELECT count(cid) FROM p_comentarios WHERE c_status = 1) as revcomentarios, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = 1) as repposts, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = 2) as repmps, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias WHERE d_type = 3) as repusers, 
+        	(SELECT count(DISTINCT obj_id) FROM w_denuncias  WHERE d_type = 4) as repfotos,  
+        	(SELECT count(susp_id) FROM u_suspension) as suspusers, 
+        	(SELECT count(post_id) FROM p_posts WHERE post_status = 2) as pospelera, 
+        	(SELECT count(foto_id) FROM f_fotos WHERE f_status = 2) as fospelera')
+   	);
 		$datos['total'] = $datos['repposts'] + $datos['repfotos'] + $datos['repmps'] + $datos['repusers'] + $datos['revposts'] + $datos['revcomentarios'];
 		return $datos;  
 	}
+
 	/* CHANGE NICKS */
 	function getNicks() {
       $datos = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT (SELECT count(id) FROM u_nicks WHERE estado = \'0\') as nicks'));
@@ -106,17 +116,18 @@ class tsCore {
 	/*
 		getCategorias()
 	*/
-	function getCategorias() {
-		return result_array(db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM p_categorias ORDER BY c_orden'));
+	public function getCategorias() {
+		// CONSULTA
+		$categorias = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT cid, c_orden, c_nombre, c_seo, c_img FROM p_categorias ORDER BY c_orden'));
+      //
+      return $categorias;
 	}
 	/*
 		getTema()
 	*/
-	function getTema() {
-		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM w_temas WHERE tid = '.$this->settings['tema_id'].' LIMIT 1');
-		//
-		$data = db_exec('fetch_assoc', $query);
+	public function getTema() {
+		$id = $this->settings['tema_id'];
+		$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT tid, t_name, t_url, t_path, t_copy FROM w_temas WHERE tid = $id LIMIT 1"));
       $data['t_url'] = $this->settings['url'] . '/themes/' . $data['t_path'];
 		//
 		return $data;
@@ -134,24 +145,14 @@ class tsCore {
       //
       return $data;
    }
-	//COMPROBACIONES DE LA EXISTENCIA DEL INSTALADOR O ACTUALIZADOR
-	function existinstall() {
-		$install_dir = TS_ROOT . '/install/';
-		$upgrade_dir = TS_ROOT . '/upgrade/';
-		if(is_dir($install_dir)) return '<div id="msg_install">Por favor, elimine la carpeta <b>install</b></div>';		
-		if(is_dir($upgrade_dir)) return '<div id="msg_install">Por favor, elimine la carpeta <b>upgrade</b></div>';
-	}
    # Función para censurar
 	function parseBadWords($c, $s = FALSE) {
-      $w = ($s == true) ? '' : " WHERE type = 0";
-		$q = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT word, swop, method, type FROM w_badwords {$w}"));
+      $q = result_array(db_exec([__FILE__, __LINE__], 'query', 'SELECT word, swop, method, type FROM w_badwords '.($s == true ? '' : ' WHERE type = \'0\'')));
       foreach($q AS $badword) {
-      	$from = (empty($badword['method']) ? $badword['word'] : $badword['word'].' ');
-      	$to = ($badword['type'] == 1) ? '<img title="'.$badword['word'].'" alt="'.$badword['word'].'" src="'.$badword['swop'].'"/>' : ($badword['type'] == 2 ? '<smile title="'.$badword['word'].'" alt="'.$badword['word'].'">'.$this->parseSmiles($badword['swop']).'</smile>' : $badword['swop'].' ');
-      	$c = str_replace($from, $to, $c);
+        	$c = str_ireplace((empty($badword['method']) ? $badword['word'] : $badword['word'].' '),($badword['type'] == 1 ? '<img class="qtip" title="'.$badword['word'].'" src="'.$badword['swop'].'" align="absmiddle"/>' : $badword['swop'].' '),$c);
       }
       return $c;
-	}        
+	}          
 	
 	/*
 		setLevel($tsLevel) :: ESTABLECE EL NIVEL DE LA PAGINA | MIEMBROS o VISITANTES
@@ -199,28 +200,28 @@ class tsCore {
 	}
 	# Redireccionamos
 	function redirectTo($tsDir){
-		$tsDir = urldecode($tsDir);
-		header("Location: $tsDir");
+		header("Location: " . urldecode($tsDir));
 		exit();
 	}
+	# Redireccionar
+	public function redireccionar(string $page = '', string $subpage = '', string $param = '') {
+		$param = empty($param) ? '' : "?$param";
+		$this->redirectTo("{$this->settings['url']}/$page/$subpage$param");		
+	}
    # Obtenemos el dominio
-   function getDomain(){
+   public function getDomain() {
       $domain = explode('/', str_replace($this->getSSL(), '', $this->settings['url']));
-      $domain = (is_array($domain)) ? explode('.',$domain[0]) : explode('.',$domain);
+      $domain = (is_array($domain)) ? explode('.', $domain[0]) : explode('.', $domain);
       //
       $t = safe_count($domain);
-      $domain = $domain[$t - 2].'.'.$domain[$t - 1];
+      $domain = $domain[$t - 2] . '.' . $domain[$t - 1];
       //
       return $domain;
    }
 	# Obtenemos url codificada
-	function currentUrl(){
-		$current_url_domain = $_SERVER['HTTP_HOST'];
-		$current_url_path = $_SERVER['REQUEST_URI'];
-		$current_url_querystring = $_SERVER['QUERY_STRING'];
-		$current_url = $this->getSSL() . $current_url_domain . $current_url_path;
-		$current_url = urlencode($current_url);
-		return $current_url;
+	public function currentUrl(){
+		$current_url = $this->getSSL() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+		return urlencode($current_url);
 	}
 	# Función json
 	function setJSON($data = NULL, $type = 'encode', $t = false){
@@ -230,13 +231,12 @@ class tsCore {
 		setPagesLimit($tsPages, $start = false)
 	*/
 	function setPageLimit($tsLimit, $start = false, $tsMax = 0){
-		if($start == false)
-		$tsStart = empty($_GET['page']) ? 0 : (int) (($_GET['page'] - 1) * $tsLimit);
+		if($start == false) $tsStart = empty($_GET['page']) ? 0 : (int)(($_GET['page'] - 1) * $tsLimit);
 		else {
     		$tsStart = (int) $_GET['s'];
-            $continue = $this->setMaximos($tsLimit, $tsMax);
-            if($continue == true) $tsStart = 0;
-        }
+         $continue = $this->setMaximos($tsLimit, $tsMax);
+         if($continue == true) $tsStart = 0;
+      }
 		//
 		return $tsStart.','.$tsLimit;
 	}
@@ -258,7 +258,7 @@ class tsCore {
 		getPages($tsTotal, $tsLimit)
 		: PAGINACION
 	*/
-	function getPages($tsTotal, $tsLimit){
+	public function getPages(int $tsTotal = 0, int $tsLimit = 0){
 		//
 		$tsPages = ceil($tsTotal / $tsLimit);
 		// PAGINA
@@ -269,109 +269,89 @@ class tsCore {
 		$pages['section'] = $tsPages + 1;
 		$pages['prev'] = $tsPage - 1;
 		$pages['next'] = $tsPage + 1;
-        $pages['max'] = $this->setMaximos($tsLimit, $tsTotal);
+      $pages['max'] = $this->setMaximos($tsLimit, $tsTotal);
 		// RETORNAMOS HTML
 		return $pages;
 	}
     /*
         getPagination($total, $per_page)
     */
-    function getPagination($total, $per_page = 10){
-        // PAGINA ACTUAL
-        $page = empty($_GET['page']) ? 1 : (int) $_GET['page'];
-        // NUMERO DE PAGINAS
-        $num_pages = ceil($total / $per_page);
-        // ANTERIOR
-        $prev = $page - 1;
-        $pages['prev'] = ($page > 0) ? $prev : 0;
-        // SIGUIENTE 
-        $next = $page + 1;
-        $pages['next'] = ($next <= $num_pages) ? $next : 0;
-        // LIMITE DB
-        $pages['limit'] = (($page - 1) * $per_page).','.$per_page; 
-        // TOTAL
-        $pages['total'] = $total;
-        //
-        return $pages;
-    }
-    /**/
-	// Constructs a page list.
-	// $pageindex = constructPageIndex($scripturl . '?board=' . $board, $_REQUEST['start'], $num_messages, $maxindex, true);
-	function pageIndex($base_url, &$start, $max_value, $num_per_page, $flexible_start = false){
-        // QUITAR EL S de la base_url
-        $base_url = explode('&s=',$base_url);
-        $base_url = $base_url[0];
-		// Save whether $start was less than 0 or not.
-		$start_invalid = $start < 0;
-	
-		// Make sure $start is a proper variable - not less than 0.
-		if ($start_invalid)
-			$start = 0;
-		// Not greater than the upper bound.
-		elseif ($start >= $max_value)
-			$start = max(0, (int) $max_value - (((int) $max_value % (int) $num_per_page) == 0 ? $num_per_page : ((int) $max_value % (int) $num_per_page)));
-		// And it has to be a multiple of $num_per_page!
-		else
-			$start = max(0, (int) $start - ((int) $start % (int) $num_per_page));
-	
-		$base_link = '<a class="navPages" href="' . ($flexible_start ? $base_url : strtr($base_url, array('%' => '%%')) . '&s=%d') . '">%s</a> ';
-	
-			// If they didn't enter an odd value, pretend they did.
-			$PageContiguous = (int) (5 - (5 % 2)) / 2;
-	
-			// Show the first page. (>1< ... 6 7 [8] 9 10 ... 15)
-			if ($start > $num_per_page * $PageContiguous)
-				$pageindex = sprintf($base_link, 0, '1');
-			else
-				$pageindex = '';
-	
-			// Show the ... after the first page.  (1 >...< 6 7 [8] 9 10 ... 15)
-			if ($start > $num_per_page * ($PageContiguous + 1))
-				$pageindex .= '<b> ... </b>';
-	
-			// Show the pages before the current one. (1 ... >6 7< [8] 9 10 ... 15)
-			for ($nCont = $PageContiguous; $nCont >= 1; $nCont--)
-				if ($start >= $num_per_page * $nCont)
-				{
-					$tmpStart = $start - $num_per_page * $nCont;
-					$pageindex.= sprintf($base_link, $tmpStart, $tmpStart / $num_per_page + 1);
-				}
-	
-			// Show the current page. (1 ... 6 7 >[8]< 9 10 ... 15)
-			if (!$start_invalid)
-				$pageindex .= '[<b>' . ($start / $num_per_page + 1) . '</b>] ';
-			else
-				$pageindex .= sprintf($base_link, $start, $start / $num_per_page + 1);
-	
-			// Show the pages after the current one... (1 ... 6 7 [8] >9 10< ... 15)
-			$tmpMaxPages = (int) (($max_value - 1) / $num_per_page) * $num_per_page;
-			for ($nCont = 1; $nCont <= $PageContiguous; $nCont++)
-				if ($start + $num_per_page * $nCont <= $tmpMaxPages)
-				{
-					$tmpStart = $start + $num_per_page * $nCont;
-					$pageindex .= sprintf($base_link, $tmpStart, $tmpStart / $num_per_page + 1);
-				}
-	
-			// Show the '...' part near the end. (1 ... 6 7 [8] 9 10 >...< 15)
-			if ($start + $num_per_page * ($PageContiguous + 1) < $tmpMaxPages)
-				$pageindex .= '<b> ... </b>';
-	
-			// Show the last number in the list. (1 ... 6 7 [8] 9 10 ... >15<)
-			if ($start + $num_per_page * $PageContiguous < $tmpMaxPages)
-				$pageindex .= sprintf($base_link, $tmpMaxPages, $tmpMaxPages / $num_per_page + 1);
-	
-		return $pageindex;
-	}
-	/*
-		setSecure()
-	*/
-	public function setSecure($var, $xss = FALSE) {
-      $var = db_exec('real_escape_string', function_exists('magic_quotes_gpc') ? stripslashes($var) : $var);
-      if($xss):
-      	$var = htmlspecialchars($var, ENT_NOQUOTES, 'UTF-8');
-      endif;
-    	return $var;
+    public function getPagination($total, $per_page = 10){
+      // PAGINA ACTUAL
+      $page = empty($_GET['page']) ? 1 : (int) $_GET['page'];
+      // NUMERO DE PAGINAS
+      $num_pages = ceil($total / $per_page);
+      // ANTERIOR
+      $prev = $page - 1;
+      $pages['prev'] = ($page > 0) ? $prev : 0;
+      // SIGUIENTE 
+      $next = $page + 1;
+      $pages['next'] = ($next <= $num_pages) ? $next : 0;
+      // LIMITE DB
+      $pages['limit'] = (($page - 1) * $per_page).','.$per_page; 
+      // TOTAL
+      $pages['total'] = $total;
+      //
+      return $pages;
    }
+    /**/
+	public function pageIndex($base_url, &$start, $max_value, $num_per_page, $flexible_start = false) {
+	   // Remove the 's' parameter from the base URL
+	   $base_url = preg_replace('/[?&]s=\d*/', '', $base_url);
+	   // Ensure $start is a non-negative integer and a multiple of $num_per_page
+	   $start = max(0, (int) $start);
+	   $start = $start - ($start % $num_per_page);
+	   // Generate the link format based on whether flexible_start is enabled or not
+	   $base_link = '<a class="navPages" href="' . ($flexible_start ? $base_url : $base_url . '&s=%d') . '">%s</a> ';
+	   // Calculate the number of contiguous page links to show
+	   $PageContiguous = 2;
+	   // Initialize the page index string
+	   $pageindex = '';
+	   // Helper function to generate page links
+	   $generatePageLink = function ($pageNumber) use ($base_link, $num_per_page) {
+	      return sprintf($base_link, $pageNumber * $num_per_page, $pageNumber + 1);
+	   };
+	   // Add the link to the first page if necessary
+	   if ($start > $num_per_page * $PageContiguous) $pageindex .= $generatePageLink(0) . ' ';
+	   // Add '...' before the first page link if necessary
+	   if ($start > $num_per_page * ($PageContiguous + 1)) $pageindex .= '<b> ... </b>';
+	   // Add page links before the current page
+	   for ($i = $PageContiguous; $i >= 1; $i--) {
+	      $pageNumber = $start / $num_per_page - $i;
+	      if ($pageNumber >= 0) $pageindex .= $generatePageLink($pageNumber);
+	   }
+	   // Add the link to the current page
+	   $pageindex .= '[<b>' . ($start / $num_per_page + 1) . '</b>] ';
+	   // Add page links after the current page
+	   for ($i = 1; $i <= $PageContiguous; $i++) {
+	      $pageNumber = $start / $num_per_page + $i;
+	      if ($pageNumber * $num_per_page < $max_value) $pageindex .= $generatePageLink($pageNumber);
+	   }
+	   // Add '...' near the end if necessary
+	   if ($start + $num_per_page * ($PageContiguous + 1) < $max_value) $pageindex .= '<b> ... </b>';
+	   // Add the link to the last page if necessary
+	   if ($start + $num_per_page * $PageContiguous < $max_value) {
+	      $pageNumber = (int) (($max_value - 1) / $num_per_page);
+	      $pageindex .= $generatePageLink($pageNumber);
+	   }
+	   return $pageindex;
+	}
+	/**
+	 * Realizó una comprobación de versión de PHP ya que magic_quotes_gpc 
+	 * es obsoleta desde 7.4.0 y removida de PHP 8
+	 * @link https://www.php.net/manual/en/function.get-magic-quotes-gpc.php
+	*/
+   # Seguridad
+	public function setSecure($string, $xss = false) {
+    	// Verificar si magic_quotes_gpc está activado
+    	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) $string = stripslashes($string);
+    	// Escapar el valor
+    	$string = db_exec('real_escape_string', $string);
+    	// Aplicar filtrado XSS si es necesario
+    	if ($xss) $string = htmlspecialchars($string, ENT_COMPAT | ENT_QUOTES, 'UTF-8');
+    	// Retornamos la información
+    	return $string;
+	}
 	# Anti-flood
    public function antiFlood($print = true, $type = 'post', $msg = '') {
       global $tsUser;
@@ -382,8 +362,7 @@ class tsCore {
       $limit = $tsUser->permisos['goaf'];
       $resta = $now - $_SESSION['flood'][$type];
       if($resta < $limit) {
-      	$seconds = ($limit - $resta);
-         $msg = "0: {$msg} Int&eacute;ntalo en <b>{$seconds}</b> segundos.";
+         $msg = '0: '.$msg.' Int&eacute;ntalo en '.($limit - $resta).' segundos.';
          // TERMINAR O RETORNAR VALOR
          if($print) die($msg);
          else return $msg;
@@ -395,12 +374,15 @@ class tsCore {
       }
    }
 	# MAXIMA CONVERSION => URL AMIGABLES | MAX no se usa
-	function setSEO($string, $max = NULL) {
+	public function setSEO($string, $max = false) {
+		// ESPAÑOL
 		$string = htmlentities($string, ENT_QUOTES, 'UTF-8');
 		$string = preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', $string);
 		$string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
 		$string = preg_replace('~[^0-9a-z]+~i', '-', $string);
-		$string = strtolower(trim($string, '-'));
+		$string = trim($string, '-');
+		if($max) $string = strtolower($string);
+		//
 		return $string;
 	}
 	/*
@@ -418,6 +400,7 @@ class tsCore {
       switch ($type) {
          // NORMAL
          case 'normal':
+         case 'smiles':
             // BBCodes permitidos
             $parser->setRestriction(array('url', 'code', 'quote', 'font', 'size', 'color', 'img', 'b', 'i', 'u', 's', 'align', 'spoiler', 'video', 'hr', 'sub', 'sup', 'ul', 'li', 'ol', 'thumbnails', 'trailer', 'capturas', 'descargas', 'servidores', 'info-movie', 'item', 'links'), $act, $title);
             // SMILES
@@ -446,14 +429,6 @@ class tsCore {
             // MENCIONES
             $parser->parseMentions();
          break; 
-         // SOLO SMILES (Esta opción se mantiene por compatibilidad con versiones anteriores, pero en su lugar se recomienda utilizar la opción "normal")
-         case 'smiles':
-            $parser->setRestriction(array('url', 'code', 'quote', 'font', 'size', 'color', 'img', 'b', 'i', 'u', 'align', 'spoiler', 'hr', 'li'));
-             // SMILES
-            $parser->parseSmiles();
-            // MENCIONES
-            $parser->parseMentions();
-         break;
       }
       // Retornar resultado HTML
       return $parser->getAsHtml();
@@ -478,9 +453,7 @@ class tsCore {
       foreach($menciones as $key => $user){
          $uid = $tsUser->getUserID($user);
          if(!empty($uid)) {
-            $find = "@{$user} ";
-            $replace = "@<a href=\"{$this->settings['url']}/perfil/{$user}\">{$user}</a> ";
-            $html = str_replace($find, $replace, $html);
+            $html = str_replace("@$user ", "@<a href=\"{$this->settings['url']}/perfil/$user\">$user</a> ", $html);
          }
       }
       # RETORNAMOS
@@ -543,17 +516,38 @@ class tsCore {
     	} else $result = @file_get_contents($tsUrl);
     	return $result ?: null;
 	}
-    /*
-        getIP
-    */
-    function getIP(){
-	   if(getenv('HTTP_CLIENT_IP') && strcasecmp(getenv('HTTP_CLIENT_IP'), 'unknown')) $ip = getenv('HTTP_CLIENT_IP');	
-	   elseif(getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) $ip = getenv('HTTP_X_FORWARDED_FOR');
-	   elseif(getenv('REMOTE_ADDR') && strcasecmp(getenv('REMOTE_ADDR'), 'unknown')) $ip = getenv('REMOTE_ADDR');
-	   elseif(isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], 'unknown')) $ip = $_SERVER['REMOTE_ADDR'];
-	   else $ip = 'unknown';
-	   return $this->setSecure($ip);
-   }
+	/**
+	 * Función privada para validar la IP del usuario
+	*/
+	private function isValidIP(string $ip): bool {
+    	return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false;
+	}
+
+	/**
+	 * Función para obtener la IP del usuario
+	*/
+	public function getIP(): string {
+   	$ip = 'unknown';
+   	// List of trusted proxy IP headers
+   	$trustedHeaders = ['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
+   	foreach ($trustedHeaders as $header) {
+        	if (isset($_SERVER[$header]) && $this->isValidIP($_SERVER[$header])) {
+            $ip = $_SERVER[$header];
+            break;
+        	}
+    	}
+    	return $this->setSecure($ip);
+	}
+
+	/**
+	 * Función para validar y obtener la dirección IP del cliente que realiza la petición.
+	 *
+	 * @return string|null La dirección IP válida del cliente o NULL si no se puede validar.
+	*/
+	public function validarIP() {
+		$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+		return $_SERVER['REMOTE_ADDR'];
+	}
 	
 	/**
 	 * Función para ayudar armar la sentencia en UPDATE

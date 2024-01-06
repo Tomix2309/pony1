@@ -73,6 +73,7 @@ if($_GET['do'] == NULL || $_GET['do'] == 'home' || $tsPage == 'fotos' || $tsPage
     'tsKey'             => $seo['keys']
   ];
 }
+
 $ContentSmarty += [
   'tsFooterDes'   => $seo['description'],
   'tsMobile'      => $detect->isMobile(), # Para detectar que tipo de dispositivo esta usando

@@ -6,6 +6,8 @@ require_once 'JBBCode/validators/ColorValidator.php';
 require_once 'JBBCode/validators/UrlValidator.php';
 require_once 'JBBCode/validators/AlignValidator.php';
 require_once 'JBBCode/validators/SizeValidator.php';
+require_once 'JBBCode/validators/SwfValidator.php';
+require_once 'JBBCode/validators/ImgValidator.php';
 require_once 'JBBCode/validators/FontValidator.php';
 
 /**
@@ -147,14 +149,15 @@ class BBCode {
      * OptionValidator: Clase con la cual se valida lo que se pasa por parámetro.
      * BodyValidator: Clase con la cual se valida lo que se pasa como contenido del tag.
      */
-   public function addBBcodes($act = 0, $title = '') {
-      global $tsCore;
-
-      $urlValidator = new \JBBCode\validators\UrlValidator();
-      $colorValidator = new \JBBCode\validators\ColorValidator();
-      $sizeValidator = new \JBBCode\validators\SizeValidator();
-      $alignValidator = new \JBBCode\validators\AlignValidator();
-		$fontValidator = new \JBBCode\validators\FontValidator();
+    public function addBBcodes($act = 0, $title = '') {
+        global $tsCore;
+        $urlValidator = new \JBBCode\validators\UrlValidator();
+        $colorValidator = new \JBBCode\validators\ColorValidator();
+        $sizeValidator = new \JBBCode\validators\SizeValidator();
+        $alignValidator = new \JBBCode\validators\AlignValidator();
+        $swfValidator = new \JBBCode\validators\SwfValidator();
+        $imgValidator = new \JBBCode\validators\ImgValidator();
+        $fontValidator = new \JBBCode\validators\FontValidator();
 
       $tagCodes = array(
          array('tag' => 'b', 'replace' => '<strong>{param}</strong>'),
@@ -177,6 +180,7 @@ class BBCode {
          array('tag' => 'spoiler', 'replace' => '<div class="spoiler"><div class="title"><a href="#" onclick="spoiler($(this)); return false;">Spoiler:</a></div><div class="body">{param}</div></div>'),
          array('tag' => 'quote', 'replace' => '<blockquote><div class="cita"><strong>Cita:</strong></div><div class="citacuerpo"><p>{param}</p></div></blockquote>'),
          array('tag' => 'quote', 'replace' => '<blockquote><div class="cita"><strong>{option} dijo:</strong></div><div class="citacuerpo"><p>{param}</p></div></blockquote>', 'option' => true),
+        array('tag' => 'swf', 'replace' => '<embed src="{param}" quality="high" width="640px" height="390px" type="application/x-shockwave-flash" allowfullscreen="true" allownetworking="internal" autoplay="false" wmode="transparent">', 'parse' => false, 'validParam' => $swfValidator),
 
          array('tag' => 'video', 'replace' => '<iframe width="100%" height="360" src="https://www.youtube.com/embed/{param}" frameborder="0" allow="accelerometer;  encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'),
          array('tag' => 'thumbnails', 'replace' => '<div class="thumbnails">{param}</div>'),

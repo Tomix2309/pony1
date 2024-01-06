@@ -4,6 +4,8 @@ require realpath('../') . DIRECTORY_SEPARATOR . "header.php";
 
 class Callback extends tsCore {
 
+	private $version = '2.0';
+
 	/**
 	 * @access public
 	 * Puede ser github, discord, google, etc.

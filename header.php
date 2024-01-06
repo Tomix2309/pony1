@@ -68,7 +68,6 @@ include TS_EXTRA.'functions.php';
 
 // Nuevas librer�as
 include TS_LIBS.'MobileDetect.php';
-$detect = new Mobile_Detect;
 
 // Nucleo
 include TS_CLASS.'c.core.php';

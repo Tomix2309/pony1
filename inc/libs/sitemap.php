@@ -2,7 +2,7 @@
 /**
  * @name Generador automatico de sitemap.xml
  * @author Miguel92
- * @copyright 25/11/2020
+ * @copyright 25/11/2020 | 06/01/2024
 */
 
 # Incluimos el header

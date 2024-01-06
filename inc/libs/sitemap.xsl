@@ -161,7 +161,7 @@ XML Sitemap<xsl:if test="sm:sitemapindex"> Index</xsl:if>
 - <span><xsl:value-of select="sm:urlset/sm:url/sm:loc"/></span>
 		</nav>
 <h3>
-<span><a href="https://newrisus.com">newrisus.com</a></span>
+<span><a href="https://phpost.es">phpost.es</a></span>
 <xsl:choose>
 <xsl:when  test="sm:sitemapindex"> 
 Total de archivos de mapas del sitio enumerados en este índice: <xsl:value-of select="count(sm:sitemapindex/sm:sitemap)"/>
@@ -179,8 +179,8 @@ Total de URL en este archivo de mapa del sitio: <xsl:value-of select="count(sm:u
 </div>
 
 <div id="footer">
-<p>Creado con <b>New Risus</b> Sitemap Generator.</p>
-<p>Copyright &#169; 2020 - 2021 <a href="https://newrisus.com/perfil/Miguel92">Miguel92</a></p>
+<p>Creado con <strong>PHPost.es</strong> Sitemap Generator.</p>
+<p>Copyright &#169; 2020 - 2024 <a href="https://phpost.es/user-23.html">Miguel92</a></p>
 </div>
 
 </body>

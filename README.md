@@ -1,5 +1,17 @@
 # Syntaxis Lite 2024
 
+| <!-- -->   | <!-- -->  | <!-- -->  |
+|:----------:|:------------:|:----------:|
+| PHP        |  :pushpin:   |    8.2     |
+| Smarty     |  :pushpin:   |    4.3.2   |
+| jQuery     |  :pushpin:   |    3.7     |
+| MySQL      |  :pushpin:   |  10.4.32   |
+| GD         |  :flashlight:   |  2.1.0     |
+| Zip	       |  :flashlight:   |  1.7.1     |
+| OpenSSL    |  :flashlight:   |  3.1.3     |
+| MobileDetect    |  :loudspeaker:  |     4.8.04   |
+| JBBCode         |  :loudspeaker:  |     1.4.2    |
+
 ## Core:
  * Mejor soporte a [http/https](https://github.com/isidromlc/PHPost/issues/10#issue-568723224).
  * Arreglo del redireccionamiento en la [función setLevel()](https://github.com/isidromlc/PHPost/issues/15#issue-568745572).
@@ -22,18 +34,17 @@
  * Redireccionamiento sin(www)
 
 Para esto deben ir a **.htaccess** y editar las 3 líneas que estan debajo de `RewriteEngine On` y le borran el hash que y en donde dice: "**_TU-SITIO-WEB_**" le agregan el de ustedes obviamente que si no termina en **.com** lo deben cambiar por su dominio
-
-### PHP = 8.1.x
-### Smarty = 4.3.2
-### jQuery = 3.7.x
+``` 
+# RewriteCond %{HTTPS} !on
+# RewriteCond %{HTTP_HOST} ^www.TU-SITIO-WEB.com
+# RewriteRule (.*) https://TU-SITIO-WEB.com/$1 [R=301,L]
+```
 
 > El archivo ajustes.php contiene algunas configuraciones para el sitio 
 
-Luego de instalar deben agregar las consultas que estan en el archivo **install_sql.sql**
-
 ---
 
-# Syntaxis Lite v2
+# Syntaxis Lite v2.0
  * Un tour en el perfil
  * Subir avatar mejorado y actualizado
  * Cambiar avatar rápidamente
@@ -42,6 +53,8 @@ Luego de instalar deben agregar las consultas que estan en el archivo **install_
  * Plugin Hook para simplificar acciones
  * Generación de contraseña más segura
  * Actualizaciones de algunos complementos
+ * Install modificado
+ * Se puede cambiar el avatar desde el perfil sin acceder a "**Editar cuenta**"
 
 # Syntaxis Lite es una versión bastante mejorada
 
@@ -74,10 +87,6 @@ Luego de instalar deben agregar las consultas que estan en el archivo **install_
  * Header **https://TU-SITIO-WEB.com/page/settings**
 
 > Esto se guardará en un archivo .json, y no se guardará en la base de datos. Por defecto habrá info como ejemplo
-
-### BETA:
- * Se puede cambiar el avatar desde el perfil sin acceder a "**Editar cuenta**"
- * Inicio de sesión dependiendo del dispositivo
 
 ## EN CURSO:
  * Sistema de configuración del sitio
