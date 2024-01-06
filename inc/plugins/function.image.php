@@ -41,7 +41,7 @@ function smarty_function_image($params, &$smarty) {
 			"srcset" => "$src 320w, $src 480w, $src 800w", 
 			"sizes" => "(max-width: 320px) 280px, (max-width: 480px) 440px, 800px"
 		],
-		'class' => 'image lazy ' . $params['class'],
+		'class' => 'image lazy' . (!empty($params['class']) ? ' ' . $params['class'] : ''),
 		'style' => $params['style']
 	];
 

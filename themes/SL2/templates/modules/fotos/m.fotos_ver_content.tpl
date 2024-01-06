@@ -2,7 +2,7 @@
    <div class="alert alert-warning">Esta foto no es visible{if $tsFoto.f_status == 1} por acumulaci&oacute;n de denuncias u orden administrativa{elseif $tsFoto.f_status == 2} porque est&aacute; eliminada{elseif $tsFoto.user_activo != 1} porque la cuenta del due&ntilde;o se encuentra desactivada{/if}, pero puedes verla porque eres {if $tsUser->is_admod == 1}administrador{elseif $tsUser->is_admod == 2}moderador{else}autorizado{/if}.</div><br />
 {/if}
 <div class="bg-light p-2 photo_author">
-   <img src="{$tsConfig.url}/files/avatar/{$tsFoto.f_user}.webp" class="rounded shadow" alt="{$tsFoto.user_name}" />
+   <img src="{$tsFoto.user_avatar}" class="rounded shadow" alt="{$tsFoto.user_name}" />
    <div class="d-flex justify-content-center align-items-start flex-column">
       <a href="{$tsConfig.url}/perfil/{$tsFoto.user_name}" class="h5 text-dark text-capitalize fw-bolder">{$tsFoto.user_name}</a>
       <span class="d-block" style="margin-top:-6px">

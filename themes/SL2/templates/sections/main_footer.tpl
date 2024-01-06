@@ -9,7 +9,7 @@
          <div class="col-12 col-md-6">
             <h3 class="m-0 p-2 mt-3 mb-2">Sobre nosotros!</h3>
             <p class="position-relative py-3 pr-2 fw-bold">
-               <img src="{$tsImagen}" alt="{$tsConfig.titulo}" class="float-start mr-3 img-fit-cover">
+               {image type="foto" alt="{$tsConfig.titulo}" src="{$tsImagenDes}" class="rounded img-fit-cover mr-3 float-start"}
                {$tsFooterDes}
             </p>
          </div>

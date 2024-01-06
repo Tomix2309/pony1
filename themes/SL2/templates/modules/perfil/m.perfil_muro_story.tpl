@@ -3,7 +3,7 @@
 
    <!-- Avatar | Nombre del usuario -->
    <a href="{$tsConfig.url}/perfil/{$p.user_name}" title="{if $tsUser->is_admod}{$p.p_ip}{else}{$p.user_name}{/if}" class="Story_Pic d-block text-center">
-      <img class="shadow rounded w-100" alt="{$p.user_name}" src="{$tsConfig.url}/files/avatar/{$p.p_user_pub}.webp"/>
+      <img class="shadow rounded w-100" alt="{$p.user_name}" src="{$p.user_avatar}"/>
    </a>
 
    <!-- La publicación del usuario -->
@@ -93,7 +93,7 @@
             <li class="ufiItem">
                <div class="newComment">
                   <div class="formulario">
-                     <img src="{$tsConfig.url}/files/avatar/{$tsUser->uid}.webp"/>
+                     <img src="{$tsUser->avatar}" title="@{$tsUser->nick}" class="shadow-3"/>
                      <textarea class="comentar form-input" placeholder="Escribe un comentario..." id="cf_{$p.pub_id}" pid="{$p.pub_id}" name="add_wall_comment" onfocus="onfocus_input(this)" onblur="onblur_input(this)"></textarea>
                   </div>
                </div>

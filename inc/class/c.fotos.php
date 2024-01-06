@@ -225,6 +225,8 @@ class tsFotos {
         // MORE FOTOS
         $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT f.*, u.user_name, u.user_activo, p.user_pais, p.user_sexo, u.user_rango, r.r_name, r.r_color, r.r_image FROM f_fotos AS f LEFT JOIN u_miembros AS u ON u.user_id = f.f_user LEFT JOIN u_perfil AS p ON p.user_id = u.user_id LEFT JOIN u_rangos AS r ON u.user_rango = r.rango_id WHERE f.foto_id = \''.(int)$fid.'\' '.($tsUser->is_admod || $tsUser->permisos['moacp'] ? '' : 'AND f.f_status = \'0\' AND u.user_activo = \'1\'').' LIMIT 1');
         $data['foto'] = db_exec('fetch_assoc', $query);
+
+        $data['foto']['user_avatar'] = $tsCore->getAvatar($data['foto']['f_user']);
         
         $q1 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(cid) AS cf FROM f_comentarios WHERE c_user = \''.$data['foto']['f_user'].'\''));
 		$q2 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(foto_id) AS f FROM f_fotos WHERE f_user = \''.$data['foto']['f_user'].'\' && f_status = \'0\''));

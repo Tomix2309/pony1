@@ -353,7 +353,7 @@ class tsMuro {
     function getWall($user_id, $start = 0){
         global $tsCore;
         // PUBLICACION
-        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT p.*, u.user_name FROM u_muro AS p LEFT JOIN u_miembros AS u ON p.p_user_pub = u.user_id WHERE p.p_user = \''.(int)$user_id.'\' ORDER BY p.pub_id DESC LIMIT '.$start.',10');
+        $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT p.*, u.user_id, u.user_name FROM u_muro AS p LEFT JOIN u_miembros AS u ON p.p_user_pub = u.user_id WHERE p.p_user = \''.(int)$user_id.'\' ORDER BY p.pub_id DESC LIMIT '.$start.',10');
         while($row = db_exec('fetch_array', $query)){
             // CARGAR LIKES
             if($row['p_likes'] > 0){
@@ -363,6 +363,7 @@ class tsMuro {
             if($row['p_comments'] > 0){
                 $row['comments'] = $this->getPubExtras($row['pub_id'], 'comments', 2);
             }
+            $row['user_avatar'] = $tsCore->getAvatar($row['user_id']);
             // MENCIONES
             $row['p_body'] = $tsCore->parseBadWords($tsCore->parseSmiles($tsCore->setMenciones($row['p_body'])), true);
             // CARGAR ADJUNTOS
@@ -432,10 +433,11 @@ class tsMuro {
             case 'comments':
                 $limit = ($likes > 0) ? "LIMIT {$likes}" : '';
                 //
-                $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT c.*, u.user_name FROM u_muro_comentarios AS c LEFT JOIN u_miembros AS u ON c.c_user = u.user_id WHERE c.pub_id = \''.(int)$pub_id.'\' ORDER BY c.c_date DESC '.$limit.'');
+                $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT c.*, u.user_id, u.user_name FROM u_muro_comentarios AS c LEFT JOIN u_miembros AS u ON c.c_user = u.user_id WHERE c.pub_id = \''.(int)$pub_id.'\' ORDER BY c.c_date DESC '.$limit.'');
                 while($row = db_exec('fetch_array', $query)){
                     $row['c_body'] = $tsCore->parseBadWords($tsCore->parseSmiles($tsCore->setMenciones($row['c_body'])), true);
                     $row['like'] = 'Me gusta';
+                    $row['avatar'] = $tsCore->getAvatar($row['user_id']);
                     // ME GUSTA?
                     if($row['c_likes'] > 0){
                         //

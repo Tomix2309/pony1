@@ -4,7 +4,7 @@
       <!-- Mostramos el avatar del usuario -->
       <div class="avatar {$tsInfo.status.css} position-relative">
          <div style="display: none" class="avatar-loading"></div>
-         <img alt="{$tsInfo.nick}" class="avatar-big" src="{$tsConfig.url}/files/avatar/{if $tsInfo.p_avatar}{$tsInfo.uid}{else}avatar{/if}.webp" id="cambiar-foto"/>
+         <img alt="{$tsInfo.nick}" class="avatar-big" src="{$tsInfo.user_avatar}" id="cambiar-foto"/>
          {if $tsUser->uid == $tsInfo.uid}
          <!-- Botón para cambiar foto -->
          <a href="javascript:avatar.accion.avamodal('{$tsUser->uid}', 0)" class="btn-portada"><i data-feather="camera"></i> Cambiar foto</a>
@@ -21,7 +21,7 @@
          <div class="d-extras">
          {if $tsUser->uid != $tsInfo.uid}
             {if $tsUser->is_member}
-               <a title="Enviar mensaje privado" class="btn-options-extras" href="#" onclick="mensaje.nuevo('{$tsInfo.nick}','','',''); return false"><i data-feather="mail"></i></a>
+               <a title="Enviar mensaje privado" class="btn-options-extras" href="javascript:mensaje.nuevo('{$tsInfo.nick}','','','')"><i data-feather="mail"></i></a>
             {/if}
          {/if}
          {if $tsInfo.p_socials.f}

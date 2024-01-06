@@ -62,23 +62,24 @@ $ContentSmarty = [
   "TwUser"    => $seo['tw_page']
 ];
 if($_GET['do'] == NULL || $_GET['do'] == 'home' || $tsPage == 'fotos' || $tsPage == 'tops' || $tsPage == 'videos') {
-  # SEO
-  $ContentSmarty += [
-    'tsTitle'           => $tsTitle,
-    'tsAuthor'          => 'Miguel92',
-    'tsSeoDescripcion'  => $seo['description'],
-    'tsPublished'       => $tsCore->timeseo(time()),
-    'tsUrl'             => $tsCore->settings['url'],
-    'tsImagen'          => $seo['images'],
-    'tsKey'             => $seo['keys']
-  ];
+	# SEO
+	$ContentSmarty += [
+		'tsTitle'           => $tsTitle,
+		'tsAuthor'          => 'Miguel92',
+		'tsSeoDescripcion'  => $seo['description'],
+		'tsPublished'       => $tsCore->timeseo(time()),
+		'tsUrl'             => $tsCore->settings['url'],
+		'tsImagen'          => $seo['images'],
+		'tsKey'             => $seo['keys']
+  	];
 }
 
 $ContentSmarty += [
-  'tsFooterDes'   => $seo['description'],
-  'tsMobile'      => $detect->isMobile(), # Para detectar que tipo de dispositivo esta usando
-  "tsAdmInfo"     => $tsJson->getAdminInfo(),# Extraemos la información del json para modificar
-  "tsAdmSeo"      => $tsJson->getSeo(),# Extraemos la información del json para modificar
-  "tsStyleAdmin"  => $tsJson->getAddInfo()# Añadimos la imagen y css al header
+	'tsImagenDes'   => $seo['images'],
+	'tsFooterDes'   => $seo['description'],
+	'tsMobile'      => $detect->isMobile(), # Para detectar que tipo de dispositivo esta usando
+	"tsAdmInfo"     => $tsJson->getAdminInfo(),# Extraemos la información del json para modificar
+	"tsAdmSeo"      => $tsJson->getSeo(),# Extraemos la información del json para modificar
+	"tsStyleAdmin"  => $tsJson->getAddInfo()# Añadimos la imagen y css al header
 ];
 $smarty->assign($ContentSmarty);

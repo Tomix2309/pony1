@@ -3,8 +3,8 @@
 	{foreach from=$tsLastFotos.data item=f}
 		<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
 			<div class="card-img">
-				<img src="{$tsConfig.images}/gif-cargando-sin-fondo-8.gif" data-src="{$f.f_url}" class="rounded w-100" alt="{$f.f_title}">
-				<div class="data-information rounded">
+				{image type="foto" alt="{$f.f_title}" src="{$f.f_url}" class="rounded w-100"}
+				<div class="data-information rounded backdrop_filter--6">
 					<h3>{$f.f_title}</h3>
 					<small class="d-block text-white"><i data-feather="clock"></i> {$f.f_date|hace}</small>
 					{if $f.f_description}<p>{$f.f_description|truncate:50}</p>{/if}
@@ -41,15 +41,5 @@
 	</div>
 {/if}
 <script>
-$(document).ready(function(){
-   $('img[data-src]').lazyload({
-   	effect: 'fadeIn', 
-   	gravity: 1000
-   }).addClass('lazyload');
-
-	$('img').each(function() { 
-      if((typeof this.naturalWidth != "undefined" && this.naturalWidth == 0 ) || this.readyState == 'uninitialized' ) 
-      $(this).attr('src', global_data.img + 'images/x.svg');  
-   });
-});
+$(document).ready(() => Miguel92.LazyLoad());
 </script>
