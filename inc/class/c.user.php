@@ -242,11 +242,11 @@ class tsUser {
       $checkPass = (int)$tsCore->passwordSL2($data['user_name'], $password, $data['user_password']); 
         // CHECAMOS
       if($checkPass === 0) return '0: Tu contrase&ntilde;a es incorrecta.';
-      if($data['user_activo'] == 1){
+      if($data['user_activo'] == 1) {
          self::sessionUpdate($data['user_id'], $remember);           
 			/* REDERIGIR */
 			if($redirectTo != NULL) $tsCore->redirectTo($redirectTo);	// REDIRIGIR
-			else return TRUE;
+			else return '1: Accediendo...';
 		} else return '0: Debes activar tu cuenta';
 	}
  	/*
