@@ -10,6 +10,8 @@ define('INSTALL', realpath(__DIR__) . SEPARATOR);
 
 define('ARCHIVO_LOCK', ROOT . '.lock');
 
+define('ARCHIVO_HTACCESS', ROOT . '.htaccess');
+
 define('CACHE', ROOT . 'cache' . SEPARATOR);
 
 define('FILES', ROOT . 'files' . SEPARATOR);
@@ -25,24 +27,24 @@ define('SETTINGS', FILES . 'settings' . SEPARATOR);
 define('UPLOADS', FILES . 'uploads' . SEPARATOR);
 
 # Nombre de la aplicación
-$config['nombre'] = 'Syntaxis Lite';
-$config['slogan'] = 'Pensar más allá de lo conocido';
+$ConfigInstall['nombre'] = 'Syntaxis Lite';
+$ConfigInstall['slogan'] = 'Pensar más allá de lo conocido';
 
 # Versión de la aplicación
-$config['version'] = '2.0';
+$ConfigInstall['version'] = '2.0';
 
-$config['version_a'] = "{$config['nombre']} {$config['version']}";
+$ConfigInstall['version_a'] = "{$ConfigInstall['nombre']} {$ConfigInstall['version']}";
 
-$config['version_b'] = str_replace([' ', '.'], '_', strtolower($config['version_a']));
+$ConfigInstall['version_b'] = str_replace([' ', '.'], '_', strtolower($ConfigInstall['version_a']));
 
-$config['config'] = [
+$ConfigInstall['config'] = [
 	'original' => 'config.inc.php',
 	'base' => 'config.example.php'
 ];
 
-define('CONFIG', ROOT . $config['config']['original']);
+define('CONFIG', ROOT . $ConfigInstall['config']['original']);
 
-define('EXAMPLE', INSTALL . $config['config']['base']);
+define('EXAMPLE', INSTALL . $ConfigInstall['config']['base']);
 
 $step = empty($_GET['step']) ? 0 : (int)$_GET['step'];
 
@@ -65,14 +67,14 @@ $local = dirname(dirname($_SERVER["REQUEST_URI"]));
 $url = "$ssl://" . ($_SERVER['HTTP_HOST'] === 'localhost' ? "localhost$local" : $_SERVER['HTTP_HOST']);
 $base_url = "$url/install";
 
-$withoutspace = str_replace(' ', '', $config['nombre']);
+$withoutspace = str_replace(' ', '', $ConfigInstall['nombre']);
 $tpath = "SL2";
 $theme = [
 	'tid' => 1, 
-	't_name' => $config['nombre'] . ' v' . $config['version'], 
+	't_name' => $ConfigInstall['nombre'] . ' v' . $ConfigInstall['version'], 
 	't_url' => '/themes/' . $tpath, 
 	't_path' => $tpath, 
-	't_copy' => $config['nombre'] . ' 2020 - ' . date('Y')
+	't_copy' => $ConfigInstall['nombre'] . ' 2020 - ' . date('Y')
 ];
 
 class Install {
@@ -175,6 +177,32 @@ class Install {
 		$response = password_hash($createPass, PASSWORD_BCRYPT, $options);
 		if(!empty($verify)) $response = password_verify($password, $passHash);
 		return $response;
+	}
+
+	# Seguridad
+	public function modoSeguro($string, $xss = false) {
+		global $db, $database;
+      // CONECTAMOS
+      $database->db = $db;
+      $database->db_link = $database->conn();
+      $database->setNames();
+    	// Verificar si magic_quotes_gpc está activado
+    	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) $string = stripslashes($string);
+    	// Escapar el valor
+    	$string = $database->escape($string);
+    	// Aplicar filtrado XSS si es necesario
+    	if ($xss) $string = htmlspecialchars($string, ENT_COMPAT | ENT_QUOTES, 'UTF-8');
+    	// Retornamos la información
+    	unset($database);
+    	unset($db);
+    	return $string;
+
+	}
+
+	public function getIUP(array $array = [], string $prefix = ''): string {
+	   $sets = [];
+	   foreach ($array as $field => $value) $sets[] = "$prefix$field = " . (is_numeric($value) ? (int)$value : "'{$this->modoSeguro($value)}'");
+	   return implode(', ', $sets);
 	}
 
 }

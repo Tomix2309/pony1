@@ -71,9 +71,9 @@ switch ($step) {
             } else {
                $database->setNames();
                // GUARDAR LOS DATOS DE CONEXION
-               $config = file_get_contents(CONFIG);
-               $config = str_replace(['dbhost', 'dbuser', 'dbpass', 'dbname'], $db, $config);
-               file_put_contents(CONFIG, $config);
+               $FileConfig = file_get_contents(CONFIG);
+               $FileConfig = str_replace(['dbhost', 'dbuser', 'dbpass', 'dbname'], $db, $FileConfig);
+               file_put_contents(CONFIG, $FileConfig);
                // ELIMINAMOS LAS TABLAS QUE EXISTAN EN LA BASE
                $result = $database->query("SHOW TABLES");
                while ($row = $result->fetch_row()) $database->query("DROP TABLE {$row[0]}");
@@ -124,9 +124,9 @@ switch ($step) {
             // Insertamos en w_temas
             $database->query("INSERT INTO w_temas (tid, t_name, t_url, t_path, t_copy) VALUES({$theme['tid']}, '{$theme['t_name']}', '{$web['url']}{$theme['t_url']}', '{$theme['t_path']}', '{$theme['t_copy']}')");
             // GUARDAR LOS DATOS DE CONEXION
-            $config = file_get_contents(CONFIG);
-            $config = str_replace(['dbpkey', 'dbskey'], [$web['pkey'], $web['skey']], $config);
-            file_put_contents(CONFIG, $config);
+            $FileConfig = file_get_contents(CONFIG);
+            $FileConfig = str_replace(['dbpkey', 'dbskey'], [$web['pkey'], $web['skey']], $FileConfig);
+            file_put_contents(CONFIG, $FileConfig);
             // Publicidad
             $linkad = "https://joelmiguelvalente.github.io/grupos/";
             $sizesad = ['160x600','300x250','468x60','728x90'];
@@ -139,7 +139,19 @@ switch ($step) {
             $ads = join(', ', $set);
             $database->query("UPDATE w_ads SET $ads WHERE asd_id = 1");
             // UPDATE
-            if ($database->query("UPDATE w_configuracion SET titulo = '{$web['name']}', slogan = '{$web['slogan']}', url = '{$web['url']}', email = '{$web['mail']}', `idioma` = '{$web['lang']}', version = '{$config['version_a']}', version_code = '{$config['version_b']}', pkey = '{$web['pkey']}', skey = '{$web['skey']}' WHERE tscript_id = 1")) header("Location: index.php?step=6");
+            $wConfig = [
+               'titulo' => $web['name'],
+               'slogan' => $web['slogan'],
+               'url' => $web['url'],
+               'email' => $web['mail'],
+               'idioma' => $web['lang'],
+               'version' => $ConfigInstall['version_a'],
+               'version_code' => $ConfigInstall['version_b'],
+               'pkey' => $web['pkey'],
+               'skey' => $web['skey']
+            ];
+
+            if ($database->query("UPDATE w_configuracion SET {$Install->getIUP($wConfig)} WHERE tscript_id = 1")) header("Location: index.php?step=6");
             else $message = $database->error();
          }
       }
@@ -226,6 +238,7 @@ switch ($step) {
             'a' => $udata['user_name'], 
             'i' => $udata['user_id']
          ];
+
          $key = base64_encode(serialize($code));
          // Abrir el archivo en modo de escritura ("w")
          $handle = fopen(ARCHIVO_LOCK, "w");
@@ -247,14 +260,14 @@ switch ($step) {
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 <link rel="shortcut icon" href="<?=$base_url?>/assets/SyntaxisLite-ico-64.ico?<?=time()?>" type="image/x-icon" />
-<title>Instalaci&oacute;n de <?=$config['version_a']?></title>
+<title>Instalaci&oacute;n de <?=$ConfigInstall['version_a']?></title>
 <link href="<?=$base_url?>/assets/estilo.css?<?=time()?>" rel="stylesheet" type="text/css" />
 </head>
 <body class="d-flex justify-content-center align-items-center flex-column">
    <div class="page-wrapper d-grid overflow-hidden rounded">
       <header class="text-center py-4 d-flex justify-content-center text-center position-relative">
          <p class="m-0 py-4">
-            Programa de instalaci&oacute;n: <b><?=$config['version_a']?></b>
+            Programa de instalaci&oacute;n: <b><?=$ConfigInstall['version_a']?></b>
          </p>
          <div class="dots position-absolute">
             <span class="d-inline-block rounded-circle"></span>
@@ -265,9 +278,9 @@ switch ($step) {
       <main class="h-100 position-relative">
          <?php if($step == 0): ?>
             <div class="init w-100 h-100 d-flex justify-content-center align-items-center flex-column">
-               <img class="rounded-circle" src="<?=$base_url?>/assets/SyntaxisLite-ico.png?<?=time()?>" alt="<?=$config['version_a']?>">
+               <img class="rounded-circle" src="<?=$base_url?>/assets/SyntaxisLite-ico.png?<?=time()?>" alt="<?=$ConfigInstall['version_a']?>">
                <h4 class="m-0 py-2">Bienvenidos a la instalación de:</h4>
-               <p class="m-0 py-2"><?=$config['version_a']?></p>
+               <p class="m-0 py-2"><?=$ConfigInstall['version_a']?></p>
                <a href="?step=1" class="button">Empezar...</a>
             </div>
          <?php elseif($step == 1): ?>
@@ -350,11 +363,11 @@ switch ($step) {
                   <?php if ($message) {echo '<div class="error">' . $message . '</div>';}?>
                   <dl>
                        <dt><label for="f1">Nombre:</label><span>El t&iacute;tulo de tu web.</span></dt>
-                       <dd><input type="text" id="f1" name="web[name]" placeholder="<?=$config['nombre']?>" value="<?=(empty($web['name']) ? '' : $web['name'])?>" required/></dd>
+                       <dd><input type="text" id="f1" name="web[name]" placeholder="<?=$ConfigInstall['nombre']?>" value="<?=(empty($web['name']) ? '' : $web['name'])?>" required/></dd>
                     </dl>
                     <dl>
                        <dt><label for="f2">Slogan:</label><span>Una breve descripción.</span></dt>
-                       <dd><input type="text" id="f2" name="web[slogan]" placeholder="<?=$config['slogan']?>" value="<?=(empty($web['slogan']) ? '' : $web['slogan'])?>" required/></span></dd>
+                       <dd><input type="text" id="f2" name="web[slogan]" placeholder="<?=$ConfigInstall['slogan']?>" value="<?=(empty($web['slogan']) ? '' : $web['slogan'])?>" required/></span></dd>
                     </dl>
                     <dl>
                        <dt><label for="f3">Direcci&oacute;n:</label><span>Ingresa la url donde  est&aacute; alojada tu web, sin la &uacute;ltima diagonal <strong>/</strong> </span></dt>
@@ -409,12 +422,12 @@ switch ($step) {
                <?php elseif($step == 7): ?>
 
                   <div class="init w-100 h-100 d-flex justify-content-center align-items-center flex-column">
-                     <img class="rounded-circle" src="<?=$base_url?>/assets/SyntaxisLite-ico.png?<?=time()?>" alt="<?=$config['version_a']?>">
-                     <h4 class="m-0 py-2">Bienvenido a <?=$config['nombre']?></h4>
+                     <img class="rounded-circle" src="<?=$base_url?>/assets/SyntaxisLite-ico.png?<?=time()?>" alt="<?=$ConfigInstall['version_a']?>">
+                     <h4 class="m-0 py-2">Bienvenido a <?=$ConfigInstall['nombre']?></h4>
                      <form action="https://phpost.es/feed/index.php?type=install" method="post" id="form">
                         <small>Al finalizar se eliminará la carpeta <b><?php echo basename(getcwd()); ?></b> automáticamente.</small>
                         <fieldset>
-                           <p style="line-height: 1.7rem;font-size: 16px;width:60%;margin:12px auto;" class="d-block text-center">Gracias por instalar <strong><?=$config['version_a']?></strong>, ya est&aacute; lista tu nueva comunidad <strong>Link Sharing System</strong>. S&oacute;lo inicia sesi&oacute;n con tus datos y comienza a disfrutar. Ahora no dejes de <a href="https://www.phpost.es" target="_blank"><u>visitarnos</u></a> para estar pendiente de futuras actualizaciones. Recuerda reportar cualquier bug que encuentres, de esta manera todos ganamos.</p>
+                           <p style="line-height: 1.7rem;font-size: 16px;width:60%;margin:12px auto;" class="d-block text-center">Gracias por instalar <strong><?=$ConfigInstall['version_a']?></strong>, ya est&aacute; lista tu nueva comunidad <strong>Link Sharing System</strong>. S&oacute;lo inicia sesi&oacute;n con tus datos y comienza a disfrutar. Ahora no dejes de <a href="https://www.phpost.es" target="_blank"><u>visitarnos</u></a> para estar pendiente de futuras actualizaciones. Recuerda reportar cualquier bug que encuentres, de esta manera todos ganamos.</p>
                         </fieldset>
                         <span class="grupos">Sumate a nuestros grupos:
                            <a sthref="https://discord.gg/mx25MxAwRe" target="_blank">Discord</a> - 
