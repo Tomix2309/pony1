@@ -2,12 +2,11 @@
 
 define('USEVERSION', '2.8.34');
 
+define('MOBILEDETECT', TS_LIBS . 'mobiledetect' . SEPARATOR);
+define('MOBILECACHE', MOBILEDETECT . 'Cache' . SEPARATOR);
+define('MOBILEEXCEPTION', MOBILEDETECT . 'Exception' . SEPARATOR);
 
 if(USEVERSION === '4.8.04') {
-	
-	define('MOBILEDETECT', TS_LIBS . 'mobiledetect' . SEPARATOR);
-	define('MOBILECACHE', MOBILEDETECT . 'Cache' . SEPARATOR);
-	define('MOBILEEXCEPTION', MOBILEDETECT . 'Exception' . SEPARATOR);
 
 	// 1. Include composer's autoloader
 	require MOBILEDETECT . 'MobileDetect.php';
