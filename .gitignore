@@ -1,5 +1,6 @@
 cache/
-settings/*.json
+settings/config-*.json
+settings/settings.json
 # Archivos base
 !settings/config-example-settings.json
 !settings/config-example-user.json

@@ -196,7 +196,10 @@ class Install {
     	unset($database);
     	unset($db);
     	return $string;
-
+	}
+	
+	public function is_localhost() {
+	   return $_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['REMOTE_ADDR'] === '::1';
 	}
 
 	public function getIUP(array $array = [], string $prefix = ''): string {

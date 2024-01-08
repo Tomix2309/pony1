@@ -53,14 +53,14 @@ switch ($step) {
       $accion_form = ($next == true) ? "index.php?step=4" : "index.php?step=2";
 	break;
    case 4:
-      // No saltar la licensia
+      // No saltar la licencia
       if (!$_SESSION['license']) header("Location: index.php");
       $next = false;
       if ($_POST['save']) {
          // Con esto evitamos escribir todos los campos
          foreach ($_POST['db'] as $key => $val) $db[$key] = empty($val) ? '' : htmlspecialchars($val);
          // Verificamos que todos los campos esten llenos
-         if (!empty($db["hostname"]) && !empty($db["username"]) && !empty($db["password"]) && !empty($db["database"])) $message = 'Todos los campos son requeridos';
+         if (empty($db["hostname"]) || empty($db["username"]) || (empty($db["password"]) && !$Install->is_localhost()) || empty($db["database"])) $message = 'Todos los campos son requeridos';
          else {
             // NO SE PUDO CONECTAR?
             $database->db = $db;
@@ -97,7 +97,7 @@ switch ($step) {
    break;
    // DATOS DEL SITIO
    case 5:
-      // No saltar la licensia
+      // No saltar la licencia
       if (!$_SESSION['license']) header("Location: index.php");
       $next = false;
       if ($_POST['save']) {
@@ -213,7 +213,7 @@ switch ($step) {
       }
    break;
    case 7:
-      // No saltar la licensia
+      // No saltar la licencia
       if (!$_SESSION['license']) header("Location: index.php");
       // DATOS DE CONEXION
       define('TS_HEADER', true);
