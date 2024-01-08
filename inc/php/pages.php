@@ -56,9 +56,11 @@
       case 'terminos':
       case 'privacidad':
       case 'dmca':
-		case 'settings':
 		case 'portada':
       break;
+		case 'settings':
+			if($tsUser->is_admod !== 1) header("Location: {$tsCore->settings['url']}");
+		break;
       default:
       	$tsCore->redirectTo($tsCore->settings['url']);
       break;

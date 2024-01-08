@@ -1014,10 +1014,7 @@ class MobileDetect
     /**
      * Construct an instance of this class.
      */
-    public function __construct(
-        Cache $cache = null,
-        array $config = [],
-    ) {
+    public function __construct(Cache $cache = null, array $config = []) {
         // If no custom cache provided then use our own.
         $this->cache = $cache == null ? new Cache() : $cache;
         // Override config from user.
@@ -1627,8 +1624,7 @@ class MobileDetect
      *
      * @return string|float|false The version of the property we are trying to extract.
      */
-    public function version(string $propertyName, string $type = self::VERSION_TYPE_STRING): float|bool|string
-    {
+    public function version(string $propertyName, string $type = self::VERSION_TYPE_STRING) {
         if (empty($propertyName) || !$this->hasUserAgent()) {
             return false;
         }

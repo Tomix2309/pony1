@@ -40,6 +40,7 @@ class tsCore {
 		$this->settings['avatar'] 		= $this->settings['files'].'/avatar';
 		$this->settings['avatares'] 	= $this->settings['files'].'/avatares';
 		$this->settings['uploads'] 	= $this->settings['files'].'/uploads';
+		$this->settings['downloads'] 	= $this->settings['files'].'/downloads';
       $this->settings['news'] 		= $this->getNews();
       $this->settings['oauth'] 		= $this->OAuth();
 		# Mensaje del instalador y pendientes de moderación #

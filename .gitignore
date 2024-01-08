@@ -1,11 +1,12 @@
 cache/
-!settings/backup.json
-!settings/conf.json
-!settings/create_new.json
-!settings/settings.json
+settings/*.json
+# Archivos base
+!settings/config-example-settings.json
+!settings/config-example-user.json
 
 # Los avatares
 files/avatar/*.webp
+!files/avatar/avatar.webp
 files/uploads/*.*
 files/downloads/*.*
 

@@ -22,7 +22,7 @@
                             	{if $tsAction == ''}
                             	{include file='admin_mods/m.mod_welcome.tpl'}
                                 {elseif $tsAction == 'posts'}
-                            	{include file='admin_mods/m.mod_report_posts.tpl}
+                            	{include file='admin_mods/m.mod_report_posts.tpl'}
 								{elseif $tsAction == 'fotos'}
                             	{include file='admin_mods/m.mod_report_fotos.tpl'}
                                 {elseif $tsAction == 'mps'}

@@ -9,7 +9,8 @@
 | GD         |  :flashlight:   |  2.1.0     |
 | Zip	       |  :flashlight:   |  1.7.1     |
 | OpenSSL    |  :flashlight:   |  3.1.3     |
-| MobileDetect    |  :loudspeaker:  |     4.8.04   |
+| MobileDetect    |  :white_check_mark:	    |     2.8.34   |
+| ~MobileDetect~    |  :x:	    |     ~4.8.04~   |
 | JBBCode         |  :loudspeaker:  |     1.4.2    |
 
 ## Core:

@@ -6,160 +6,291 @@
 */
 
 class tsJson {
-   
-   private $style = '';
+	
+	private $style = '';
 
-   public function getFile_Json($param) {      
-      # Buscamos el archivo .json
-      $json_rute = TS_SETTINGS . $param . '.json';
-      $json = json_decode(file_get_contents($json_rute), true);
-      return $json;
-   }
-   # Reemplazamos la #ID# por id de la imagen
-   function replaceID($id, $url, $page) {
-      # Buscamos el archivo .json
-      $json = $this->getFile_Json('settings');
-      # Creamos la ruta completa de la imagen
-      $url = str_replace('#ID#', $id, $url);
-      if($page == 'pexels') {
-         # Seleccionamos los datos de pexels
-         $p = $json['params'];
-         # Añadimos los parámatros
-         $url .= '?auto=' .$p['auto'] . '&cs=' .$p['cs'] . '&dpr=' .$p['dpr'] . '&fit=' .$p['fit'];
-      }
-      $url .= ($page == 'pexels') ? '&h='.$json['background']['height'].'&w='.$json['background']['width'] : '/' . $json['background']['width'].'x'.$json['background']['height'];
-      # Retornamos
-      return $url;
-   }
-   # Extraemos toda la información del archivo ADMIN
-   function getAdminInfo() {
-      # Buscamos el archivo
-      $json = $this->getFile_Json('settings');
-      # Asignamos los valores
-      $arr = $json['background'];
-      foreach ($arr as $k => $ty) {
-         if($arr == 'type' || $arr == 'id') continue;
-         $data[$k] = $json['background'][$k];
-      }
-      # Que página usa?
-      $page = $json['background']['type'];
-      $data['web'] = $page;
-      $data['id'] = $json['background']['id'];      
-      # Retornamos
-      return $data;
-   }
-   # Agregamos la información a la página para renderizarlo
-   function getAddInfo() {
-      # Buscamos el archivo
-      $json = $this->getFile_Json('settings');
-      # Tipo
-      $type = $json['background']['type'];
-      # Que página?
-      $data['web'] = $type;
-      $data['id'] = $json['background']['id'];
-      # Creamos la ruta de la imagen
-      $data['url'] = $this->replaceID($data['id'], $json[$type]['url'], $type);
-      $css = $json['background'];
-      foreach ($css as $k => $y) {
-         if($k == 'type' || $k == 'id' || $k == 'width' || $k == 'height' || $k == 'img') continue;
-         $style .= "background-{$k}: $css[$k]!important;";
-      }
-      # Para retornar datos armados
-      $data['css'] = $style;
-      # Retornamos
-      return $data;
-   }
-   # Guardamos todo el el archivo
-   function save_json($param) {
-      # Buscamos el archivo
-      $file_admin = TS_SETTINGS . "settings.json";
-      $j = array();
-      if ( file_exists($file_admin) ){
-         $j = (array)json_decode(file_get_contents($file_admin));
-         unlink($file_admin);
-      }  else {
-         # Si no existe creamos uno! No preguntamos.
-         $fichero = TS_SETTINGS . "backup.json";
-         $nuevo_fichero = TS_SETTINGS . "settings.json";
-         if (!copy($fichero, $nuevo_fichero)) echo "Error al copiar $fichero...\n";
-      }
-      # Añadimos los nuevos datos
-      foreach ($_POST as $k => $v) {
-         $PostAll[$k] = $_POST[$k];
-      }
-      $j[$param] = $PostAll;
-      # Insertamos los datos al archivo json
-      file_put_contents($file_admin, json_encode($j));
-      //unset($j);
-      # Retornamos un mensaje
-      return '1: Los cambios fuerón aplicados!';
-   }
-   function getSeo() {
-      # Buscamos el archivo
-      $json = $this->getFile_Json('settings');
-      #
-      foreach ($json['seo'] as $key => $value) {
-         $data[$key] = $json['seo'][$key];
-      }
-      # Retornamos
-      return $data;
-   }
-   
-   ### CONFIGURACIONES PARA EL USUARIOS NORMAL ###
+	private $fuentes = [
+		"unplash" => "https://source.unsplash.com/IMAGEID",
+		"pexels" => "https://images.pexels.com/photos/IMAGEID/pexels-photo-IMAGEID.jpeg"
+ 	];
 
-   # Extraemos toda la información del archivo USER
-   function getInfoPortada(){
-      global $tsCore, $tsUser;
-      $json = $this->getFile_Json(trim($tsUser->nick));
-      # ID
-      $json['position'] = $json['portada']['position'];
-      $json['repeat'] = $json['portada']['repeat'];
-      $json['width'] = $json['portada']['width'];
-      $json['height'] = $json['portada']['height'];
-      $json['id_img'] = $json['portada']['id'];
-      $json['web'] = $json['portada']['type'];
-      # Retornamos
-      return $json;
-   }
-   # Extraemos solo la id
-   function Id_Portada($who){
-      global $tsCore, $tsUser;
-      $json = $this->getFile_Json(trim($tsUser->nick));
-      echo $json[$who]['id'];
-   }
-   # Guardamos todo el el archivo
-   function saveInfoPortada() {
-      global $tsCore, $tsUser;
-      $id = intval($_POST['pid']);
-      if($tsUser->uid == $id){
-      $sql = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', "SELECT user_name FROM u_miembros WHERE user_id = {$id}"));
-         # Ahora lo agregaremos al achivo
-         $file_user = TS_SETTINGS . trim($sql['user_name']) . ".json";
-         //$j = json_decode($file_user, true);
-         $j = array();
-         if ( file_exists($file_user) ){
-            $j = (array)json_decode(file_get_contents($file_user));
-            unlink($file_user);
-         } else {
-            # Si no existe creamos uno! No preguntamos.
-            $fichero = TS_SETTINGS . "create_new.json";
-            $nuevo_fichero = TS_SETTINGS . trim($sql['user_name']) . ".json";
-            if (!copy($fichero, $nuevo_fichero)) echo "Error al copiar $fichero...\n";
-         }
-         # Añadimos los nuevos datos
-         $data['position'] = $_POST['position'];
-         $data['repeat'] = $_POST['repeat'];
-         $data['type'] = $_POST['sitio'];
-         $data['width'] = $_POST['width'];
-         $data['height'] = $_POST['height'];
-         $data['id'] = $_POST['imagen'];
-         $j['portada'] = $data;
-         # Insertamos los datos al archivo json
-         file_put_contents($file_user, json_encode($j));
-         //unset($j);
-         
-         return '1: Los cambios fuerón aplicados!';
-      } else return '0: Tu ID no es válido.';
-   }
-   # Fin del la clase
+	/** 
+	 * @access public 
+	 * @name getContentJson
+	 * @use Obtener la infomación del json y creamos si no existe
+	 * @param string
+	 * @param int
+	 * @return object => stdClass
+	*/
+	public function getContentJson(string $type = '', int $id = 0) {
+		$filename_base = TS_SETTINGS . "config-example-$type.json";
+		$filename_copy = TS_SETTINGS . ($id === 0 ? "settings.json" : "config-$id.json");
+		// Consultamos si existe
+		if(!file_exists($filename_copy)) {
+			// Si no existe, lo crearemos
+			if (!copy($filename_base, $filename_copy)) echo "Error al copiar $filename_copy...\n";
+		}
+		$jsonDecode = json_decode(file_get_contents($filename_copy));
+		return $jsonDecode;
+	}
+
+	/** 
+	 * @access private 
+	 * @name checkMD5
+	 * @use Genera una cadena desde archivo/url
+	 * @param string
+	 * @return string
+	*/
+	private function checkMD5(string $file = '') {
+		return md5(file_get_contents($file));
+	}
+
+	/** 
+	 * @access private 
+	 * @name filePut
+	 * @use Obtenemos información desde URL y la guardamos localmente
+	 * @param string
+	 * @param string
+	 * @return string
+	*/
+	private function filePut(string $rutauno = '', string $rutados = '') {
+		$datos = file_get_contents($rutados);
+		if ($datos !== false) {
+			 file_put_contents($rutauno, $datos);
+		} else {
+			 echo "Error al leer los datos de $rutados...\n";
+		}
+	}
+
+	/** 
+	 * @access public 
+	 * @name generateImage
+	 * @use Con esta función hacemos verificaciones para generar
+	 *      nuevas imagenes para portada/background(header)
+	 * @param string
+	 * @param string
+	 * @param object => stdClass
+	 * @param string
+	 * @return string
+	*/
+	public function generateImage(string $nombre = '', string $ruta = '', $json = null, string $where = '') {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		if ($json instanceof stdClass) {
+			$cover = isset($json->portada) ? 'portada' : 'background';
+			$pagina = $json->$cover->type;
+			$url = str_replace('IMAGEID', $json->$cover->id, $this->fuentes[$pagina]);
+			if($pagina == 'pexels') {
+				# Seleccionamos los datos de pexels
+				$param = $json->params;
+				$url .= "?" . http_build_query([
+					'h' => $json->$cover->height,
+					'w' => $json->$cover->width,
+					'auto' => $param->auto,
+					'cs' => $param->cs,
+					'dpr' => $param->dpr,
+					'fit' => $param->fit
+				]);
+			}
+			if($pagina === 'unplash') $url .= "/{$json->$cover->width}x{$json->$cover->height}";
+			// Verificar si la portada actual existe
+			$isAdmodUpload = (($tsUser->is_admod AND $tsUser->uid === 1) OR $where == 'uploads');
+			if (file_exists($ruta)) {
+				// Verificar si la nueva portada es diferente de la actual
+				if (self::checkMD5($url) !== self::checkMD5($ruta)) {
+					// Descargar y reemplazar la portada
+					if($isAdmodUpload) self::filePut($ruta, $url);
+					// Actualizar la URL que se devuelve
+					$url = "{$tsCore->settings[$where]}/$nombre?" . time();
+				// La nueva portada es idéntica a la actual, no es necesario descargarla nuevamente
+				} else $url = "{$tsCore->settings[$where]}/$nombre?" . time();
+			} else {
+				// La portada actual no existe, descargar y guardar la nueva portada
+				if($isAdmodUpload) self::filePut($ruta, $url);
+				// Actualizar la URL que se devuelve
+				$url = "{$tsCore->settings[$where]}/$nombre?" . time();
+			}
+			return $url;
+		} else {
+		  // Manejar el caso en el que el objeto JSON no es válido
+		  echo "El objeto JSON no es válido.";
+		  return;
+		}
+	}
+
+	/** 
+	 * @access public 
+	 * @name getAdminInfo
+	 * @use Extraemos toda la información del archivo ADMIN
+	 * @return array
+	*/
+	public function getAdminInfo():array {
+		# Buscamos el archivo
+		$json = self::getContentJson('settings');
+		# Asignamos los valores
+		foreach ($json->background as $k => $ty) {
+			if(in_array($json->background, ['type', 'id'])) continue;
+			$data[$k] = $json->background->$k;
+		}
+		# Que página usa?
+		$data = [
+			'web' => $json->background->type,
+			'id' => $json->background->id
+		];
+		# Retornamos
+		return $data;
+	}
+
+	/** 
+	 * @access public 
+	 * @name getAddInfo
+	 * @use Agregamos la información a la página para renderizarlo
+	 * @return array
+	*/
+	public function getAddInfo() {
+		# Configuraciones del usuario
+		$json = self::getContentJson('settings');
+		# Tipo
+		$type = $json->background->type;
+		# Que página?
+		$data['web'] = $type;
+		$data['id'] = $json->background->id;
+		# Creamos la ruta de la imagen
+		// Nombre del archivo de la portada actual
+		$backgroundname = "background-$type.jpg";
+		$backgroundroute = TS_DOWNLOADS . $backgroundname;
+
+		foreach ($json->background as $k => $y) {
+			if(in_array($k, ['type', 'id', 'width', 'height', 'img'])) continue;
+			$style .= "background-$k: {$json->background->$k}!important;";
+		}
+		# Para retornar datos armados
+		$data['url'] = self::generateImage($backgroundname, $backgroundroute, $json, 'downloads');
+		$data['css'] = $style;
+		# Retornamos
+		return $data;
+	}
+
+	/** 
+	 * @access public 
+	 * @name save_json
+	 * @use Guardamos todo el el archivo 
+	 * @param array
+	 * @return array
+	*/
+	public function save_json($param) {
+		# Buscamos el archivo
+		$file_admin = TS_SETTINGS . "settings.json";
+		$j = [];
+		if ( file_exists($file_admin) ){
+			$j = (array)json_decode(file_get_contents($file_admin));
+			unlink($file_admin);
+		}  else {
+			# Si no existe creamos uno! No preguntamos.
+			$fichero = TS_SETTINGS . "backup.json";
+			$nuevo_fichero = TS_SETTINGS . "settings.json";
+			if (!copy($fichero, $nuevo_fichero)) echo "Error al copiar $fichero...\n";
+		}
+		# Añadimos los nuevos datos
+		foreach ($_POST as $k => $v) $PostAll[$k] = $_POST[$k];
+		$j[$param] = $PostAll;
+		# Insertamos los datos al archivo json
+		file_put_contents($file_admin, json_encode($j));
+		# Retornamos un mensaje
+		return '1: Los cambios fuerón aplicados!';
+	}
+
+	/** 
+	 * @access public 
+	 * @name getSeo
+	 * @use Obtenemos los datos para el seo
+	 * @return array
+	*/
+	public function getSeo() {
+		$tsCore = new tsCore;
+		# Buscamos el archivo
+		$json = self::getContentJson('settings');
+		# Recorremos
+		foreach ($json->seo as $key => $value) $data[$key] = $json->seo->$key;
+		$data['images'] = $tsCore->settings['url']. $data['images'];
+		# Retornamos
+		return $data;
+	}
+	
+	### CONFIGURACIONES PARA EL USUARIOS NORMAL ###
+
+	/** 
+	 * @access public 
+	 * @name getAddInfo
+	 * @use Extraemos toda la información del archivo USER
+	 * @return array
+	*/
+	public function getInfoPortada(){
+		$tsUser = new tsUser;
+		$json = self::getContentJson('user', $tsUser->uid);
+		# data
+		$response = [
+			'position' => $json->portada->position,
+			'repeat' => $json->portada->repeat,
+			'width' => $json->portada->width,
+			'height' => $json->portada->height,
+			'id_img' => $json->portada->id,
+			'web' => $json->portada->type
+		];
+		# Retornamos
+		return $response;
+	}
+
+	/** 
+	 * @access public 
+	 * @name getAddInfo
+	 * @use Guardamos todo el el archivo
+	 * @return array
+	*/
+	public function saveInfoPortada() {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		$id = (int)$_POST['pid'];
+	
+		if($tsUser->uid == $id) {
+			$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_id FROM u_miembros WHERE user_id = {$id}"));
+			# Ahora lo agregaremos al achivo
+			$file_user = TS_SETTINGS . "config-{$sql['user_id']}.json";
+			$j = [];
+			if ( file_exists($file_user) ){
+				$j = (array)json_decode(file_get_contents($file_user));
+			} else {
+				# Si no existe creamos uno! No preguntamos.
+				$fichero = TS_SETTINGS . "config-example-user.json";
+				$nuevo_fichero = TS_SETTINGS . "config-{$sql['user_id']}.json";
+				if (!copy($fichero, $nuevo_fichero)) echo "Error al copiar $fichero...\n";
+			}
+			# Añadimos los nuevos datos
+			$data = [
+				'height' => (int)$_POST['height'],
+				'id' => $tsCore->setSecure($_POST['imagen']),
+				'position' => $tsCore->setSecure($_POST['position']),
+				'repeat' => $tsCore->setSecure($_POST['repeat']),
+				'type' => $tsCore->setSecure($_POST['sitio']),
+				'width' => (int)$_POST['width']
+			];
+			$j['portada'] = $data;
+			# Insertamos los datos al archivo json
+			file_put_contents($file_user, json_encode($j, JSON_PRETTY_PRINT));
+			//
+			$json = self::getContentJson('user', $id);
+			foreach ($data as $k => $prop) {
+				if(in_array($k, ['type', 'id', 'width', 'height'])) continue;
+				$res['css']["background".ucfirst($k)] = $prop;
+			}
+			# Para retornar datos armados
+			$backgroundname = "portada-{$_POST['sitio']}-$id.jpg";
+			$backgroundroute = TS_UPLOADS . $backgroundname;
+			unlink($backgroundroute);
+			$res['url'] = self::generateImage($backgroundname, $backgroundroute, $json, 'uploads');
+
+			return json_encode(['msg' => '1: Los cambios fueron aplicados!', 'obj' => $res]);
+		} else return json_encode(['msg' => '0: Tu ID no es válido.']);
+	}
+	# Fin del la clase
 }

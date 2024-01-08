@@ -19,7 +19,8 @@ $device = join(', ', $device);
 
 $description = trim(strip_tags($smarty->tpl_vars['tsSeoDescripcion']->value));
 
-$sl2html .= "<link rel=\"alternate\" hreflang=\"es-ES\" href=\"{$config['domain']}\"/>\n";
+$lg = explode('-', $lang)[0];
+$sl2html .= "<link rel=\"alternate\" hreflang=\"$lg\" href=\"{$config['domain']}\"/>\n";
 $sl2html .= "<link rel=\"canonical\" href=\"{$canonical}\" />\n";
 $sl2html .= "<link rel=\"shortcut icon\" href=\"{$imagen}\" />\n";
 

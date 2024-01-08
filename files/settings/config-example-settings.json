@@ -1,0 +1,26 @@
+{
+   "background": { 
+   	"type": "pexels", 
+   	"id": "389818", 
+   	"width": "1400", 
+   	"height": "300", 
+   	"position": "center center", 
+   	"repeat": "no-repeat",
+   	"attachment": "scroll", 
+   	"size": "100%" 
+   },
+   "params": { 
+   	"auto": "compress", 
+   	"cs": "tinysrgb", 
+   	"dpr": 1, 
+   	"fit": "crop"
+   },
+   "seo": {
+      "description": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus in molestiae quis porro repellat consequuntur sunt temporibus",
+      "images": "\/files\/favicon.ico",
+      "keys": "tag1, tag2, tag3, tag4, etc...",
+      "color": "#212121",
+      "app_fb": "123456789876543",
+      "tw_page": "@LoremIpsum"
+   }
+}

@@ -1,6 +1,6 @@
 /*!
- * Syntaxis Lite v1.2.0 (#)
- * Copyright 2020 - 2021 
+ * Syntaxis Lite v2 (#)
+ * Copyright 2020 - 20214
  * Autor: Miguel92
  * Licensed under MIT (#)
  * Esta basado en Bootstrap, Material UI, UI Kit
@@ -2172,12 +2172,24 @@ div[menu="open"] > .content-box .subitem.open {
   top: 10px;
   right: 10px;
 }
+#mydialog #dialog #cuerpo {
+  position: relative;
+}
 #mydialog #dialog #title,
 #mydialog #dialog #cuerpo #buttons {
   padding: 8px;
 }
 #mydialog #dialog #cuerpo #modalBody {
   padding: 20px;
+}
+#mydialog #dialog #cuerpo #procesando.load {
+  position:absolute;
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  background:#FFF9;
+  z-index:999;
 }
 #RegistroForm .form-group .help {
 	position: absolute;

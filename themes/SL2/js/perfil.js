@@ -577,9 +577,7 @@ $(function() {
       }
    });
    // ADJUNTAR
-   $('.adj').click(function() {
-      var aid = $(this).attr('aid');
-   })
+   $('.adj').on(() => aid = $(this).attr('aid'))
    //
    $('input[name=hack]').on("focus", function() {
       $(this).hide();
@@ -588,71 +586,62 @@ $(function() {
       //
       $('#cf_' + pub_id).focus()
    });
-   const driver = new Driver();
-   driver.defineSteps([{
-      element: '#cambiar-portada',
-      popover: {
-         title: 'Cambiar Portada',
-         description: 'Con este botón podrás cambiar la portada de tu perfil y usar la imagen que más te guste!',
-         position: 'left',
-      }
-   }, {
-      element: '#cambiar-foto',
-      popover: {
-         title: 'Cambiar Avatar',
-         description: 'Haciendo clic sobre la imagen, vas a poder cambiar tu avatar o seleccionar una ya predefinida por ' + global_data.s_title,
-         position: 'bottom'
-      }
-   }, {
-      element: '#publicar',
-      popover: {
-         title: 'Publicar contenido',
-         description: 'Acá puedes compartir un estado, foto, enlace o un video con todos tus seguidores y ellos también te podrán publicar en tu muro.',
-         position: 'top'
-      },
-   }, ]);
-   localStorage.setItem('TourPefil', 'completo');
-   // Start the introduction
-   if (DoneProfile != 'completo' && global_data.logueado != 'no') driver.start();
+   if(global_data.logueado === 'si') {
+      const driver = new Driver();
+      driver.defineSteps([{
+         element: '#cambiar-portada',
+         popover: {
+            title: 'Cambiar Portada',
+            description: 'Con este botón podrás cambiar la portada de tu perfil y usar la imagen que más te guste!',
+            position: 'left',
+         }
+      }, {
+         element: '#cambiar-foto',
+         popover: {
+            title: 'Cambiar Avatar',
+            description: 'Haciendo clic sobre la imagen, vas a poder cambiar tu avatar o seleccionar una ya predefinida por ' + global_data.s_title,
+            position: 'bottom'
+         }
+      }, {
+         element: '#publicar',
+         popover: {
+            title: 'Publicar contenido',
+            description: 'Acá puedes compartir un estado, foto, enlace o un video con todos tus seguidores y ellos también te podrán publicar en tu muro.',
+            position: 'top'
+         },
+      }, ]);
+      localStorage.setItem('TourPefil', 'completo');
+      // Start the introduction
+      if (DoneProfile != 'completo') driver.start();
+   }
 });
 
-var portada = {
-   cambiar: function(id) {
-      $.ajax({
-         type: 'POST',
-         url: global_data.url + '/perfil-cambiar.php',
-         data: 'pid='+id,
-         success: function(h) {
-            mydialog.show(true);
-            mydialog.title('Cambiar portada!');
-            mydialog.body(h);
-            mydialog.buttons(true, true, 'Enviar', 'portada.subir('+id+')',true, true, true, 'Cerrar', 'close', true, false);
-            mydialog.center();
-         }
-      });
+const portada = {
+   cambiar: () => {
+      $('#cambiar-portada-text').html('Espere...');
+      const pid = global_data.user_key;
+      $.post(global_data.url + '/perfil-cambiar.php', { pid }, response => {
+         $('#cambiar-portada-text').html('Cambiar portada');
+         mydialog.show(true);
+         mydialog.title('Cambiar portada!');
+         mydialog.body(response);
+         mydialog.buttons(true, true, 'Aplicar cambios...', 'portada.subir()',true, true, true, 'Cerrar', 'close', true, false);
+         mydialog.center();
+      })
    },
-   subir: function(id) {
-      u = id, s = $('input[name=web]:checked').val(), i = $('input[name=portada]').val(), w = $('input[name=width]').val(), h = $('input[name=height]').val(), p = encodeURIComponent($('select[name=position] option:selected').text()), r = encodeURIComponent($('select[name=repeat] option:selected').text());
-      parametros = 'pid=' + u + '&sitio=' + s + '&imagen=' + i + '&width=' + w + '&height=' + h + '&position=' + p + '&repeat=' + r;
-      $.ajax({
-         type: 'POST',
-         url: global_data.url + '/perfil-portada.php',
-         data: parametros,
-         success: function(h) {
-            console.log(h);
-            switch (h.charAt(0)) {
-               case '0': //Error
-                  mydialog.alert('Error:', h.substring(3));
-               break;
-               case '1': //OK
-                  mydialog.alert('Felicidades:', h.substring(3));
-                  location.href = window.location.pathname; 
-                  //$('.portada-perfil').css('background-image', 'url(' + img + ')');
-               break;
-            }
-            $('#loading').slideUp(450);
-         }
-      });
+   subir: () => {
+      const data = $('#changeCover').serialize();
+      mydialog.procesando_inicio(2, 'Haciendo cambios, espere...');
+      $.post(global_data.url + '/perfil-portada.php', data, response => {
+         $('.portada-perfil').removeAttr('style')
+         const { obj, msg } = response
+         let newStyles = { backgroundImage: `url('${obj.url}')`, ...obj.css };
+         if(msg.charAt(0) === '1') {
+            $('.portada-perfil').css(newStyles);
+            mydialog.alert('Bien!', msg.substring(3), false)
+         } else mydialog.alert('Error!', msg.substring(3), false)
+         mydialog.procesando_fin();
+      }, 'json');
    }
 }
 // CARGAMOS EL ARCHIVO DE CUENTA PARA SUBIR AVATAR

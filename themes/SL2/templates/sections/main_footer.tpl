@@ -55,9 +55,6 @@
    cdns=["feather-icons"]
    js=['script.js'] 
 }
-{if !$tsUser->is_member}
-<script src="{$tsConfig.js}/login.js?{$smarty.now}"></script>
-{/if}
 <!-- Contenido en espera -->
 {if $tsUser->is_admod && $tsConfig.c_see_mod && $tsConfig.novemods.total}
 <div id="stickymsg" class="position-fixed bottom-5 right-2 shadow-3 rounded p-2 bg-danger text-white"  data-url="{$tsConfig.url}/moderacion/">Hay {$tsConfig.novemods.total} contenido{if $tsConfig.novemods.total != 1}s{/if} esperando revisi&oacute;n</div>

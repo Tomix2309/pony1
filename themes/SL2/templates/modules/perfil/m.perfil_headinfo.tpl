@@ -13,7 +13,7 @@
       {if $tsUser->uid == $tsInfo.uid}
       <!-- Botón para cambiar la portada -->
       <a href="{$tsConfig.url}/pages/portada/" title="¿Comó cambiar portada?" style="margin-bottom: 35px;background-color:rgba(0, 0, 0, 0.493)" class="btn-portada" id="cambiar-portada"><i data-feather="help-circle"></i></a>
-      <a href="javascript:portada.cambiar('{$tsUser->uid}')" style="background-color:#0004" class="btn-portada" id="cambiar-portada">Cambiar portada</a>
+      <a href="javascript:portada.cambiar()" style="background-color:#0004" class="btn-portada" id="cambiar-portada-text">Cambiar portada</a>
       {/if}
 
       <!-- Info extra del usuario -->

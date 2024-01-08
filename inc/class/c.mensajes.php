@@ -327,7 +327,7 @@ class tsMensajes {
          $data['texto'] = $_GET['qm'];
       }
       // ORDENAR Y RETORNAR
-      krsort($data['data']);
+      if(!empty($data['data'])) krsort($data['data']);
       return $data;
    }
    /*

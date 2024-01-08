@@ -139,7 +139,6 @@
         break;
         case 'perfil-portada':
             echo $tsJson->saveInfoPortada();
-            //$smarty->assign("tsSaveInfo", $tsJsonUser->saveInfoPortada());
         break;
         default:
             die('0: Este archivo no existe.');

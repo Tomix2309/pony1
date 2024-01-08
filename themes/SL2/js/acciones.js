@@ -162,18 +162,16 @@ var mydialog = {
    show: function(class_aux){
       if(this.is_show) return;
       else this.is_show = true;
-      var PhpostRisus = '';
-      PhpostRisus += '<div id="dialog">';
-      PhpostRisus += '<div id="title"></div>';
-      PhpostRisus += '<div id="cuerpo">';
-      PhpostRisus += '<div id="procesando"><div id="mensaje"></div></div>';
-      PhpostRisus += '<div id="modalBody">';
-      PhpostRisus += '</div>'; // #modalBody
-      PhpostRisus += '<div id="buttons" class="d-flex justify-content-between align-items-center w-100"></div>';
-      PhpostRisus += '</div>'; // #cuerpo
-      PhpostRisus += '</div>'; // #dialog
+      const SyntaxisLite = `<div id="dialog">
+         <div id="title"></div>
+         <div id="cuerpo">
+            <div id="procesando"><div id="mensaje"></div></div>
+            <div id="modalBody"></div>
+            <div id="buttons" class="d-flex justify-content-between align-items-center w-100"></div>
+         </div>
+      </div>`;
       if($('#mydialog').html() == '') {
-         $('#mydialog').html(PhpostRisus).css('display', 'flex');
+         $('#mydialog').html(SyntaxisLite).css('display', 'flex');
          $('#body').addClass('modal-open');
       }
    
@@ -225,14 +223,6 @@ var mydialog = {
       if (btn1_focus) $('#mydialog #buttons .btn.btn-success').focus();
       else if (btn2_focus) $('#mydialog #buttons .btn.btn-danger').focus();
    },
-   buttons_enabled: function(btn1_enabled, btn2_enabled) {
-      if ($('#mydialog #buttons .btn.btn-success'))
-         if (btn1_enabled) $('#mydialog #buttons .btn.btn-success').removeClass('disabled').removeAttr('disabled');
-         else $('#mydialog #buttons .btn.btn-success').addClass('disabled').attr('disabled', 'disabled');
-      if ($('#mydialog #buttons .btn.btn-danger'))
-         if (btn2_enabled) $('#mydialog #buttons .btn.btn-danger').removeClass('disabled').removeAttr('disabled');
-         else $('#mydialog #buttons .btn.btn-danger').addClass('disabled').attr('disabled', 'disabled');
-   },
    alert: function(title, body, reload) {
       this.show();
       this.title(title);
@@ -258,11 +248,12 @@ var mydialog = {
          this.buttons(false, false);
          this.center();
       }
-      $('#mydialog #procesando #mensaje').html('<span class="d-block postition-relative text-center loading loading-lg success"></span>');
-      $('#mydialog #procesando').fadeIn('fast');
+      title = empty(title) ? '' : '<span>'+title+'</span>';
+      $('#mydialog #procesando #mensaje').html('<span class="d-block postition-relative text-center loading loading-lg success"></span>' + title);
+      $('#mydialog #procesando').addClass('load').fadeIn('fast');
    },
    procesando_fin: function() {
-      $('#mydialog #procesando').fadeOut('fast');
+      $('#mydialog #procesando').removeClass('load').fadeOut('fast');
    }
 };
 document.onkeydown = function(e) {
