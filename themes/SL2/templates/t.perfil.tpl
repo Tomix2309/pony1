@@ -1,9 +1,4 @@
 {include file='sections/main_header.tpl'}
-<link href="{$tsConfig.css}/{$tsPage}.css?{$smarty.now}" rel="stylesheet"/>
-{if $tsUser->is_member == true}
-<script src="{$tsConfig.js}/driver.min.js?{$smarty.now}"></script>
-{/if}
-<script src="{$tsConfig.js}/perfil.js?{$smarty.now}"></script>
 <style>
 .grid-avatares {
   grid-template-columns: repeat(4, 1fr)!important;

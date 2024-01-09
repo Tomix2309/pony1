@@ -30,7 +30,8 @@ $smarty->setCompileCheck(TRUE);
  * Compilamos los archivos en la carpeta cache
  * @link => https://www.smarty.net/docs/en/api.set.compile.dir.tpl 
 */
-$smarty->setCompileDir(TS_CACHE . TS_TEMA);
+$smarty->setCompileDir(TS_CACHE . TS_TEMA . date('dmy'));
+
 
 /**
  * Creamos key para asignarle el valor del directorio,

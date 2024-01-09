@@ -7,7 +7,7 @@
       {if $tsResultados}
 	      {foreach $tsResultados item=p}
 	      	<div class="posts rounded shadow-4 bg-white overflow-hidden position-relative">
-	      		<img onclick="location.href='{$tsConfig.url}/posts/{$p.c_seo}/{$p.post_id}/{$p.post_title|seo}.html'" class="w-100 img-fit-cover loading__lazyload" src="{$tsConfig.images}/gif-cargando-sin-fondo-8.gif" data-src="{if $p.post_portada}{$p.post_portada}{else}{$p.post_cover}{/if}" alt="{$p.post_title}">
+	      		<img onclick="location.href='{$tsConfig.url}/posts/{$p.c_seo}/{$p.post_id}/{$p.post_title|seo}.html'" class="w-100 img-fit-cover loading__lazyload" src="{$tsConfig.images}/loadImage.gif" data-src="{if $p.post_portada}{$p.post_portada}{else}{$p.post_cover}{/if}" alt="{$p.post_title}">
 	      		<a href="{$tsConfig.url}/posts/{$p.c_seo}/{$p.post_id}/{$p.post_title|seo}.html" class="fw-bolder text-dark d-block p-2">{$p.post_title|truncate:36}</a>
 	      		<a href="{$tsConfig.url}/posts/{$p.c_seo}/" class="cat position-absolute top-2 left-0 bg-dark py-1 px-2 text-orange fw-bolder">{$p.c_nombre}</a>
 	      	</div>

@@ -11,25 +11,17 @@
  * @return string Código HTML generado por la función.
 */
 
-function fileExists(string $carpeta = '', string $portada = ''):string {
-	global $tsCore;
-	return $tsCore->settings[$carpeta] . "/$portada";
-}
-
 function smarty_function_image($params, &$smarty) {
-	global $tsCore;
+	$tsCore = new tsCore;
 
-	$sinportada = 'SyntaxisLite-ico.png';
+	$_withoutcover = 'imagen_no_disponible.webp';
 	$src = $params['src'];
 	
-	$fol = ['files', 'images'];
-	foreach ($fol as $key => $carpeta) {
-		if($carpeta == 'files') {
-			if(file_exists(TS_FILES . $sinportada)) $sinportada = fileExists($carpeta, $sinportada);
-		} else {
-			if(file_exists(TS_TEMA_ACT . 'images' . SEPARATOR . $sinportada)) {
-				$sinportada = fileExists($carpeta, $sinportada);
-			}
+	foreach (['files', 'images'] as $key => $carpeta) {
+		if(file_exists(TS_FILES . $_withoutcover)) {
+			$sinportada = $tsCore->settings[$carpeta] . '/' . $_withoutcover;
+		} elseif(TS_TEMA_ACT . 'images' . SEPARATOR . $_withoutcover) {
+			$sinportada = $tsCore->settings['images'] . '/' . $_withoutcover;
 		}
 	}
 
@@ -37,9 +29,7 @@ function smarty_function_image($params, &$smarty) {
 		'alt' => "{$tsCore->settings['titulo']} {$tsCore->settings['slogan']}",
 		'attr' => [
 			'src' => $sinportada,
-			'data-src' => $src,
-			"srcset" => "$src 320w, $src 480w, $src 800w", 
-			"sizes" => "(max-width: 320px) 280px, (max-width: 480px) 440px, 800px"
+			'data-src' => $src
 		],
 		'class' => 'image lazy' . (!empty($params['class']) ? ' ' . $params['class'] : ''),
 		'style' => $params['style']
@@ -48,12 +38,11 @@ function smarty_function_image($params, &$smarty) {
 	# Verificamos si esta en la carpeta o es url
 	$filtrar = filter_var($parametros['attr']['data-src'], FILTER_VALIDATE_URL);
 	// Intenta obtener información sobre la imagen
-   $imageInfo = getimagesize($src);
+	$imageInfo = getimagesize($src);
 	if(in_array($params['type'], ['post', 'portada'])):
 		//if( $filtrar ):
 		if(empty($params['src']) OR !is_array($imageInfo)) {
 			$parametros['attr']['data-src'] = $sinportada;
-			$parametros['attr']['srcset'] = "{$parametros['attr']['data-src']} 320w, {$parametros['attr']['data-src']} 480w, {$parametros['attr']['data-src']} 800w";
 		}
 	endif;
 

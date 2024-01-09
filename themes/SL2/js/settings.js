@@ -15,16 +15,9 @@ var guardar = {
       });
    },
    header: function() {
-      t = $('input[name=web]:checked').val(),
-      i = $('input[name=portada]').val(),
-      w = $('input[name=width]').val(),
-      h = $('input[name=height]').val(),
-      p = encodeURIComponent($('select[name=position] option:selected').val()),
-      r = encodeURIComponent($('select[name=repeat] option:selected').val()),
-      a = encodeURIComponent($('select[name=attachment] option:selected').val()),
-      s = encodeURIComponent($('input[name=size]').val());
-      params = `type=${t}&id=${i}&width=${w}&height=${h}&position=${p}&repeat=${r}&attachment=${a}&size=${s}`;
-      $.post(global_data.url + '/live-header.php', params, function(h){
+      const params = $('form[name=confHeader]').serialize();
+      $.post(global_data.url + '/live-header.php', params, function(h) {
+         console.log(h)
          mydialog.alert((h.charAt(0) == '0' ? 'Opps!' : 'Hecho'), h.substring(3), false);
          mydialog.buttons(true, true, 'Recargar sitio', "reloader()", true, false, true, 'Cancelar', 'close', true, false);
          mydialog.center();

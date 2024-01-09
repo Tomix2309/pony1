@@ -289,7 +289,7 @@ class tsPosts {
       $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT p.post_id, p.post_user, p.post_category, p.post_title, p.post_portada, p.post_body, p.post_date, p.post_comments, p.post_puntos, p.post_private, p.post_sponsored, p.post_status, p.post_sticky, u.user_id, u.user_name, u.user_activo, u.user_baneado, c.c_nombre, c.c_seo FROM p_posts AS p LEFT JOIN u_miembros AS u ON p.post_user = u.user_id  ' . ($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : ' && u.user_activo = \'1\' && u.user_baneado = \'0\'') . ' LEFT JOIN p_categorias AS c ON c.cid = p.post_category WHERE ' . ($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? 'p.post_id > 0' : 'p.post_status = \'0\' && u.user_activo = \'1\' && u.user_baneado = \'0\'') . ' ' . $nop . ' ' . $c_where . ' ' . $s_where . ' GROUP BY p.post_id ORDER BY ' . $s_order . ' DESC LIMIT ' . $start);
       $lastPosts['data'] = result_array($query);
       foreach ($lastPosts['data'] as $id => $row) {
-         $lastPosts['data'][$id]['post_cover'] = $tsCore->extraer_img($lastPosts['data'][$id]['post_body']);
+         $lastPosts['data'][$id]['post_portada'] = !empty($row['post_portada']) ? $row['post_portada'] : $tsCore->extraer_img($row['post_body']);
       }
 
       return $lastPosts;

@@ -7,10 +7,11 @@
 	lang="{$Lang}" 
 	fonts=["Roboto"] 
 	favicon="$tsImagen" 
-	css=['SyntaxisLite.min.css'] 
-	js=['jquery.min.js', 'jquery.plugins.js', 'acciones.js'] 
+	css=['SyntaxisLite.min.css', "$tsPage.css"] 
+	js=['jquery.min.js', 'jquery.plugins.js', 'acciones.js', "$tsPage.js"] 
 	wysibb=true
 }
+{jsdelivr type='styles' sources=['driver.js', 'croppr'] combine=true}
 <script type="text/javascript">
 var global_data = {
 	user_key:'{$tsUser->uid}',
@@ -23,6 +24,7 @@ var global_data = {
 	s_slogan: '{$tsConfig.slogan}',
 	logueado: '{if $tsUser->is_member != true}no{else}si{/if}',
 	avatar: '{$tsUser->avatar}',
+	page: '{$tsPage}'
 }; 
 {if $tsNots || $tsMPs && $tsAction}
 $(document).ready(() => {
@@ -50,7 +52,7 @@ $(document).ready(() => {
 	   </ul>
 	</div>
 	{/if}
- 	<header class="background" style="background: radial-gradient(circle, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 50%, #000000 100%), url('{$tsStyleAdmin.url}');{$tsStyleAdmin.css}{if $tsMobile}padding: 3rem 0;{/if}">
+ 	<header class="background" data-bg-multi="url({$tsStyleAdmin.url})" style="background-color:#232323;{$tsStyleAdmin.css}{if $tsMobile}padding: 3rem 0;{/if}">
  		<div class="container d-flex justify-content-{if !$tsMobile}between{else}center{/if} align-items-center">
  			<a href="{$tsConfig.url}/">
  				<h1>{$tsConfig.titulo}</h1>

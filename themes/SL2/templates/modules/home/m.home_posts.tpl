@@ -1,5 +1,5 @@
 <div class="last_posts" itemscope itemtype="http://schema.org/CreateWork">
-   {image href="{$tsConfig.url}/posts/{$p.c_seo}/{$p.post_id}/{$p.post_title|seo}.html" onclick=true type="portada" alt="{$p.post_title}" src="{if $p.post_portada}{$p.post_portada}{else}{$p.post_cover}{/if}" class="portada"}
+   <img src="{$tsConfig.images}/loadImage.gif" data-src="{$p.post_portada}" class="image lazy portada" loading="lazy" alt="{$p.post_title}">
    <span onclick="location.href='{$tsConfig.url}/posts/{$p.c_seo}/'" data-cat="{$p.c_seo|truncate:2:''}" itemprop="genre"></span>
    <div class="data-info background__level--5 backdrop_filter--4">
       <a href="{$tsConfig.url}/posts/{$p.c_seo}/{$p.post_id}/{$p.post_title|seo}.html" itemprop="name">{$p.post_title|truncate:40}</a>

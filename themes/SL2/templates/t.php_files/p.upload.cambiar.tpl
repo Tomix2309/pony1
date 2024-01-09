@@ -7,14 +7,24 @@
       <div class="grid-avatares">
       {foreach $tsAvatares item=ava}
          <a class="avatar" href="javascript:avatar.accion.seleccionar({$tsUser->uid}, {$ava.name})">
-            {image type="avatar" alt="Avatar #{$ava.name}" class="rounded shadow img-fit-cover img-responsive" src="{$tsCarpeta}/{$ava.img}"}
+            <img src="{$tsConfig.images}/loadImage.gif" 
+            data-src="{$tsCarpeta}/{$ava.img}" 
+            alt="Avatar #{$ava.name}" 
+            class="rounded shadow img-fit-cover img-responsive">
          </a>
       {/foreach}
       </div>
       <div id="type-selection"></div>
    </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/feather-icons"></script>
 <script>
-  feather.replace();
+   feather.replace();
+   LazyLoadClass.map( lazyload => {
+      let NewOptions = {
+         elements_selector: '.images',
+         use_native: true,
+         class_loading: 'lazy-loading'
+      }
+      new LazyLoad(NewOptions)
+   });
 </script>

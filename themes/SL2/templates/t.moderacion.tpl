@@ -1,5 +1,4 @@
 {include file='sections/main_header.tpl'}
-                <script type="text/javascript" src="{$tsConfig.default}/js/moderacion.js"></script>
                 <div id="borradores">
 					<div class="clearfix">
                     	<div class="left" style="float:left;width:210px">

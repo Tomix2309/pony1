@@ -13,14 +13,9 @@ if($params['name'] == 'head' OR $params['name'] == 'header') {
 		}
 	}
 } elseif($params['name'] == 'footer') {
-	$myCDN = 'https://cdn.jsdelivr.net/combine/';
-
 	$isMember = $smarty->tpl_vars['tsUser']->value->is_member;
 	$myKey = $smarty->tpl_vars['tsKeyPbulic']->value;
 	
-	foreach ($params['cdns'] as $key => $cdn) $addCDN[$key] = "npm/$cdn";
-	$add = join(',', $addCDN);
-	$sl2html .= "<script src=\"{$myCDN}{$add}\"></script>\n";
 	foreach($params['js'] as $k => $js) {
 		if(!empty($js)) {
 			$sl2html .= "<script src=\"{$myRouteJS}/{$js}?$time\"></script>\n";

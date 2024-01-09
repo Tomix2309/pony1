@@ -36,32 +36,38 @@ class tsJson {
 
 	/** 
 	 * @access private 
-	 * @name checkMD5
-	 * @use Genera una cadena desde archivo/url
-	 * @param string
-	 * @return string
-	*/
-	private function checkMD5(string $file = '') {
-		return md5(file_get_contents($file));
-	}
-
-	/** 
-	 * @access private 
 	 * @name filePut
 	 * @use Obtenemos información desde URL y la guardamos localmente
 	 * @param string
 	 * @param string
 	 * @return string
 	*/
-	private function filePut(string $rutauno = '', string $rutados = '') {
+	private function filePut(string $rutauno = '', string $rutados = '', array $tamano = []) {
 		$datos = file_get_contents($rutados);
 		if ($datos !== false) {
-			 file_put_contents($rutauno, $datos);
-		} else {
-			 echo "Error al leer los datos de $rutados...\n";
-		}
+     		// Crear una imagen desde los datos JPEG
+        	$imagen = imagecreatefromstring($datos);
+        	if ($imagen !== false) {
+        		// Recortar la imagen según los parámetros proporcionados
+            $imagenRecortada = imagecrop($imagen, [
+            	'x' => 0, 
+            	'y' => 0, 
+            	'width' => $tamano['w'], 
+            	'height' => $tamano['h']
+            ]);
+        		// Guardar la imagen en formato WebP con la calidad deseada
+            imagewebp($imagen, $rutauno, 80);
+            // Liberar la memoria ocupada por la imagen
+            imagedestroy($imagen);
+            imagedestroy($imagenRecortada);
+        	} else echo "Error al crear la imagen desde los datos JPEG.\n";
+		} else echo "Error al leer los datos de $rutados...\n";
 	}
 
+	private function getIDImage(string $site = '', string $ruta = '') {
+		$imagen = pathinfo($ruta)['filename'];
+		return str_replace($site, '', $imagen);
+	}
 	/** 
 	 * @access public 
 	 * @name generateImage
@@ -92,25 +98,32 @@ class tsJson {
 					'fit' => $param->fit
 				]);
 			}
+			$sizes = [
+				'h' => $json->$cover->height,
+				'w' => $json->$cover->width
+			];
 			if($pagina === 'unplash') $url .= "/{$json->$cover->width}x{$json->$cover->height}";
-			// Verificar si la portada actual existe
-			$isAdmodUpload = (($tsUser->is_admod AND $tsUser->uid === 1) OR $where == 'uploads');
-			if (file_exists($ruta)) {
-				// Verificar si la nueva portada es diferente de la actual
-				if (self::checkMD5($url) !== self::checkMD5($ruta)) {
-					// Descargar y reemplazar la portada
-					if($isAdmodUpload) self::filePut($ruta, $url);
-					// Actualizar la URL que se devuelve
-					$url = "{$tsCore->settings[$where]}/$nombre?" . time();
-				// La nueva portada es idéntica a la actual, no es necesario descargarla nuevamente
-				} else $url = "{$tsCore->settings[$where]}/$nombre?" . time();
+			// Existe la imagen
+			if(file_exists($ruta)) {
+				# No existe entoces, la descargaremos y solo si es 1er usuario o admin
+				if((int)$tsUser->is_admod OR (int)$tsUser->uid === 1) {
+					$idimag = self::getIDImage($pagina, $ruta);
+					// Si las id's no son iguales
+					if($json->$cover->id !== $idimag) {
+						// Y descargaremos la portada otra vez
+						self::filePut($ruta, $url, $sizes);
+						// Actualizar la URL que se devuelve
+						$response = "{$tsCore->settings[$where]}/$nombre?asds" . time();
+					// Si son iguales, simplemente devolvemos la url
+					} else $response = "{$tsCore->settings[$where]}/$nombre?" . time();
+				}
 			} else {
-				// La portada actual no existe, descargar y guardar la nueva portada
-				if($isAdmodUpload) self::filePut($ruta, $url);
+				// Descargar y reemplazar la portada
+				self::filePut($ruta, $url, $sizes);
 				// Actualizar la URL que se devuelve
-				$url = "{$tsCore->settings[$where]}/$nombre?" . time();
+				$response = "{$tsCore->settings[$where]}/$nombre?" . time();
 			}
-			return $url;
+			return $response;
 		} else {
 		  // Manejar el caso en el que el objeto JSON no es válido
 		  echo "El objeto JSON no es válido.";
@@ -133,7 +146,7 @@ class tsJson {
 			$data[$k] = $json->background->$k;
 		}
 		# Que página usa?
-		$data = [
+		$data += [
 			'web' => $json->background->type,
 			'id' => $json->background->id
 		];
@@ -157,7 +170,7 @@ class tsJson {
 		$data['id'] = $json->background->id;
 		# Creamos la ruta de la imagen
 		// Nombre del archivo de la portada actual
-		$backgroundname = "background-$type.jpg";
+		$backgroundname = "$type{$data['id']}.webp";
 		$backgroundroute = TS_DOWNLOADS . $backgroundname;
 
 		foreach ($json->background as $k => $y) {
@@ -187,7 +200,7 @@ class tsJson {
 			unlink($file_admin);
 		}  else {
 			# Si no existe creamos uno! No preguntamos.
-			$fichero = TS_SETTINGS . "backup.json";
+			$fichero = TS_SETTINGS . "config-example-settings.json";
 			$nuevo_fichero = TS_SETTINGS . "settings.json";
 			if (!copy($fichero, $nuevo_fichero)) echo "Error al copiar $fichero...\n";
 		}
@@ -284,7 +297,7 @@ class tsJson {
 				$res['css']["background".ucfirst($k)] = $prop;
 			}
 			# Para retornar datos armados
-			$backgroundname = "portada-{$_POST['sitio']}-$id.jpg";
+			$backgroundname = "{$_POST['sitio']}{$json->portada->id}-$id.jpg";
 			$backgroundroute = TS_UPLOADS . $backgroundname;
 			unlink($backgroundroute);
 			$res['url'] = self::generateImage($backgroundname, $backgroundroute, $json, 'uploads');

@@ -77,7 +77,7 @@ function buscador_select(type) {
                      
                      Votos positivos <strong>{$r.f_votos_pos}</strong> <br> Votos negativos <strong>{$r.f_votos_neg}</strong></small>
                   </div>
-                  <img onclick="location.href='{$tsConfig.url}/fotos/{$r.user_name}/{$r.foto_id}/{$r.f_title|seo}.html'" class="portada rounded w-100 loading__lazyload" style="height:150px;" src="{$tsConfig.images}/gif-cargando-sin-fondo-8.gif" data-src="{$r.f_url}" />
+                  <img onclick="location.href='{$tsConfig.url}/fotos/{$r.user_name}/{$r.foto_id}/{$r.f_title|seo}.html'" class="portada rounded w-100 loading__lazyload" style="height:150px;" src="{$tsConfig.images}/loadImage.gif" data-src="{$r.f_url}" />
                </div>
             </div>
             {else}
@@ -90,7 +90,7 @@ function buscador_select(type) {
                      
                      Puntos <strong>{$r.post_puntos}</strong> <br> Favoritos <strong>{$r.post_favoritos}</strong> <br> Comentarios <strong>{$r.post_comments}</strong></small>
                   </div>
-                  <img onclick="location.href='{$tsConfig.url}/posts/{$r.c_seo}/{$r.post_id}/{$r.post_title|seo}.html'" class="portada rounded shadow-3 w-100 loading__lazyload" src="{$tsConfig.images}/gif-cargando-sin-fondo-8.gif" data-src="{if $r.post_portada}{$r.post_portada}{else}{$r.post_cover}{/if}" />
+                  <img onclick="location.href='{$tsConfig.url}/posts/{$r.c_seo}/{$r.post_id}/{$r.post_title|seo}.html'" class="portada rounded shadow-3 w-100 loading__lazyload" src="{$tsConfig.images}/loadImage.gif" data-src="{if $r.post_portada}{$r.post_portada}{else}{$r.post_cover}{/if}" />
                </div>
             </div>
             {/if}

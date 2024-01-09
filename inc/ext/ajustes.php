@@ -82,4 +82,5 @@ $ContentSmarty += [
 	"tsAdmSeo"      => $tsJson->getSeo(),# Extraemos la información del json para modificar
 	"tsStyleAdmin"  => $tsJson->getAddInfo()# Añadimos la imagen y css al header
 ];
+
 $smarty->assign($ContentSmarty);

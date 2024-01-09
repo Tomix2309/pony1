@@ -17,7 +17,9 @@
 $smarty->assign("tsPage", $tsPage);
 
 // Añadimos modules/{_pagina_}/
-$smarty->addTemplateDir(['module' => TS_MODULES . $tsPage . SEPARATOR]);
+$smarty->addTemplateDir([
+	'module' => TS_MODULES . $tsPage . SEPARATOR
+]);
 
 $smarty->assign("tsModulos", 'modules/'.$tsPage);
 

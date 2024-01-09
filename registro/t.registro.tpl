@@ -111,7 +111,8 @@ var global_data = {
 	</div>
 	<br>
 {if $tsConfig.c_reg_active === '1'}
-{hook name="footer" cdns=["feather-icons"] js=['script.js']}
+{jsdelivr type='scripts' sources=['feather-icons'] combine=false}
+{hook name="footer" js=['script.js']}
 <script>
 	$(() => {
 		const publicKey = '{$tsConfig.pkey}';

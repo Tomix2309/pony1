@@ -1,5 +1,4 @@
 {include file='sections/main_header.tpl'}
-<script src="{$tsConfig.js}/home.js?{$smarty.now}"></script>
 {$tsInstall}
 <div class="row">
    <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">

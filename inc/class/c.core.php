@@ -593,7 +593,7 @@ class tsCore {
       $total = safe_count($imgs[3]);
       // Sacamos la mejor imagen posible ._.
       $img = (count($imgs[3]) > 1) ? $imgs[3][1] : $imgs[3][0];    
-      if(empty($img)) $img = $this->settings['files'] . '/SyntaxisLite-ico.png';
+      if(empty($img)) $img = $this->settings['images'] . '/imagen_no_disponible.webp';
       //
       return $img;
    }	

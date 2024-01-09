@@ -1,6 +1,4 @@
 {include file='sections/main_header.tpl'}
-<script type="text/javascript" src="{$tsConfig.js}/perfil.js?{$smarty.now}"></script>
-<script type="text/javascript" src="{$tsConfig.js}/portal.js?{$smarty.now}"></script>
 <div class="row">
    <div id="portal" class="col-xl-9 col-lg-9 col-md-8 col-sm-12 col-12">
       <div class="tabs_menu box_title">

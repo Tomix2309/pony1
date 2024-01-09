@@ -64,6 +64,14 @@
 			//--->
 		break;
 		case 'live-header':
+			# Obtiene la lista de archivos .webp en la carpeta
+			$where = isset($_POST['type']) ? htmlspecialchars($_POST) : '';
+			if(!empty($where)) {
+				$carpeta = ($where === 'uploads') ? TS_UPLOADS : TS_DOWNLOADS;
+				$archivosWebp = glob($carpeta . '/*.webp');
+				// Elimina cada archivo
+				foreach ($archivosWebp as $archivo) unlink($archivo);
+			}			
 			echo $tsJson->save_json('background');
 		break;
 		case 'live-seo':

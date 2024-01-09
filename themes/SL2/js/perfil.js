@@ -586,34 +586,6 @@ $(function() {
       //
       $('#cf_' + pub_id).focus()
    });
-   if(global_data.logueado === 'si') {
-      const driver = new Driver();
-      driver.defineSteps([{
-         element: '#cambiar-portada',
-         popover: {
-            title: 'Cambiar Portada',
-            description: 'Con este botón podrás cambiar la portada de tu perfil y usar la imagen que más te guste!',
-            position: 'left',
-         }
-      }, {
-         element: '#cambiar-foto',
-         popover: {
-            title: 'Cambiar Avatar',
-            description: 'Haciendo clic sobre la imagen, vas a poder cambiar tu avatar o seleccionar una ya predefinida por ' + global_data.s_title,
-            position: 'bottom'
-         }
-      }, {
-         element: '#publicar',
-         popover: {
-            title: 'Publicar contenido',
-            description: 'Acá puedes compartir un estado, foto, enlace o un video con todos tus seguidores y ellos también te podrán publicar en tu muro.',
-            position: 'top'
-         },
-      }, ]);
-      localStorage.setItem('TourPefil', 'completo');
-      // Start the introduction
-      if (DoneProfile != 'completo') driver.start();
-   }
 });
 
 const portada = {

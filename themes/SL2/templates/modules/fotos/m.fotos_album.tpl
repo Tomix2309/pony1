@@ -4,7 +4,7 @@
       <div class="masonry list-unstyled">
          {foreach from=$tsFotos.data item=f}
             <div class="card-img">
-               <img src="{$tsConfig.images}/gif-cargando-sin-fondo-8.gif" data-src="{$f.f_url}" class="rounded w-100" alt="{$f.f_title}">
+               <img src="{$tsConfig.images}/loadImage.gif" data-src="{$f.f_url}" class="rounded w-100" alt="{$f.f_title}">
                <div class="data-information rounded">
                   <h3>{$f.f_title}</h3>
                   <small class="d-block text-white"><i data-feather="clock"></i> {$f.f_date|hace}</small>

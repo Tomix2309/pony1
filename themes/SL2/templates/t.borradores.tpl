@@ -59,7 +59,7 @@
 		{foreach from=$tsDrafts.data item=p}
 		<div class="col-lg-4 col-md-6 col-sm-12 col-12">
 			<div class="last_posts position-relative" id="brd_{$p.bid}" itemscope itemtype="http://schema.org/CreateWork">
-			   <img onclick="location.href='{$tsConfig.url}/agregar/{$p.bid}'" class="portada loading__lazyload" src="{$tsConfig.images}/gif-cargando-sin-fondo-8.gif" data-src="{if $p.b_portada}{$p.b_portada}{else}{$p.post_cover}{/if}" />
+			   <img onclick="location.href='{$tsConfig.url}/agregar/{$p.bid}'" class="portada loading__lazyload" src="{$tsConfig.images}/loadImage.gif" data-src="{if $p.b_portada}{$p.b_portada}{else}{$p.post_cover}{/if}" />
 			   <span onclick="location.href='{$tsConfig.url}/posts/{$p.c_seo}/'" data-cat="{$p.c_seo|truncate:2:''}" itemprop="genre"></span>
 			   	<span style="position:absolute;margin-top:4px;left:4px" onclick="borradores.eliminar('{$p.bid}', true); return false;" class="btn btn-danger">Borrar</span>
 			   <div class="data-info background__level--3">

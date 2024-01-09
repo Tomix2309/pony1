@@ -1,8 +1,7 @@
 {include file='sections/main_header.tpl'}
 <a name="cielo"></a>
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.0.0/build/styles/atelier-lakeside-dark.min.css">
-<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.0.0/build/highlight.min.js"></script>
-<script src="{$tsConfig.js}/posts.js?{$smarty.now}"></script>
+<!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.0.0/build/styles/atelier-lakeside-dark.min.css">
+<script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.0.0/build/highlight.min.js"></script> -->¿
 
 {if $tsPost.post_status > 0 || $tsAutor.user_activo != 1}
    <div class="alert alert-{if $tsPost.post_status == 2}danger{elseif $tsPost.post_status == 3}info{else}warning{/if} mb-3 text-center">Este post se encuentra {if $tsPost.post_status == 2}eliminado{elseif $tsPost.post_status == 1} inactivo por acomulaci&oacute;n de denuncias{elseif $tsPost.post_status == 3} en revisi&oacute;n{elseif $tsPost.post_status == 3} en revisi&oacute;n{elseif $tsAutor.user_activo != 1} oculto porque pertenece a una cuenta desactivada{/if}, t&uacute; puedes verlo porque {if $tsUser->is_admod == 1}eres Administrador{elseif $tsUser->is_admod == 2}eres Moderador{else}tienes permiso{/if}.</div>

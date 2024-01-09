@@ -1,7 +1,4 @@
 {include file='sections/main_header.tpl'}
-<link href="https://cdn.jsdelivr.net/npm/croppr@2.3.1/dist/croppr.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/croppr@2"></script>
-<script src="{$tsConfig.js}/cuenta.js?{$smarty.now}"></script>
 <script>
 $(document).ready(() => {
    avatar.uid = '{$tsUser->uid}';

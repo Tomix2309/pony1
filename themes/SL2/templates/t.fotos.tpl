@@ -1,5 +1,4 @@
 {include file='sections/main_header.tpl'}
-<script src="{$tsConfig.js}/fotos.js?{$smarty.now}"></script>
 <div class="row">
 {if $tsAction == ''}
    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">

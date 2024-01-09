@@ -1,4 +1,5 @@
 cache/
+PullIn/
 settings/config-*.json
 settings/settings.json
 # Archivos base

@@ -1,6 +1,4 @@
 {include file='sections/main_header.tpl'}
-<link rel="stylesheet" href="{$tsConfig.css}/files.css?{$smarty.now}">
-<script src="{$tsConfig.js}/files.js?{$smarty.now}"></script>
 {include "$tsModulos/archivos.svg"}
 <div class="row">
 {if $tsAction == 'new'}

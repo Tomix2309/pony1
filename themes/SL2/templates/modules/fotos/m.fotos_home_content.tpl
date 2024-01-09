@@ -4,7 +4,7 @@
 	{foreach from=$tsLastFotos.data item=f}
 		<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
 			<div class="card-img">
-				<img src="{$tsConfig.images}/gif-cargando-sin-fondo-8.gif" data-src="{$f.f_url}" class="rounded w-100" alt="{$f.f_title}">
+				<img src="{$tsConfig.images}/loadImage.gif" data-src="{$f.f_url}" class="rounded w-100" alt="{$f.f_title}">
 				<div class="data-information rounded background__level--31">
 					<h3>{$f.f_title}</h3>
 					<small class="d-block text-white"><i data-feather="clock"></i> {$f.f_date|hace}</small>

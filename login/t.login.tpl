@@ -79,7 +79,8 @@ var global_data = {
 	</div>
 	
 	<br>
-{hook name="footer" cdns=["feather-icons"] js=['script.js']}
+{jsdelivr type='scripts' sources=['feather-icons'] combine=false}
+{hook name="footer" js=['script.js']}
 <script src="{$tsConfig.url}/{$tsPage}/{$tsPage}.js?{$smarty.now}"></script>
 </body>
 </html>

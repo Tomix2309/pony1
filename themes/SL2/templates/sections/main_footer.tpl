@@ -9,7 +9,12 @@
          <div class="col-12 col-md-6">
             <h3 class="m-0 p-2 mt-3 mb-2">Sobre nosotros!</h3>
             <p class="position-relative py-3 pr-2 fw-bold">
-               {image type="foto" alt="{$tsConfig.titulo}" src="{$tsImagenDes}" class="rounded img-fit-cover mr-3 float-start"}
+               <img 
+               src="{$tsConfig.images}/loadImage.gif" 
+               data-src="{$tsImagenDes}" 
+               alt="{$tsConfig.titulo}" 
+               class="image img-fit-cover rounded mr-3 float-start"
+               >                
                {$tsFooterDes}
             </p>
          </div>
@@ -37,7 +42,7 @@
             <a href="{$tsConfig.url}/pages/terminos-y-condiciones/">T&eacute;rminos & condiciones</a> &bull; 
             <a href="{$tsConfig.url}/pages/privacidad/">Privacidad de datos</a> &bull; 
             <a href="{$tsConfig.url}/sitemap.xml">Sitemap</a>
-            <small class="font-italic d-block">Theme creado por <a class="fw-bold text-primary" href="https://newrisus.com/perfil/Miguel92">Miguel92</a></small>
+            <small class="font-italic d-block">Theme creado por <a class="fw-bold text-primary" href="https://phpost.es/user-23.html">Miguel92</a></small>
          </div>
          <div class="d-flex justify-content-center align-items-md-end align-items-center flex-column">
             <span><strong>{$tsConfig.titulo}</strong> © {$smarty.now|date_format:"Y"}.</span>
@@ -50,11 +55,9 @@
    </div>
 </footer>
 
-{hook 
-   name="footer" 
-   cdns=["feather-icons"]
-   js=['script.js'] 
-}
+{jsdelivr type='scripts' sources=['feather-icons','driver.js', 'vanilla-lazyload','croppr'] combine=true}
+{hook name="footer" js=['script.js']}
+
 <!-- Contenido en espera -->
 {if $tsUser->is_admod && $tsConfig.c_see_mod && $tsConfig.novemods.total}
 <div id="stickymsg" class="position-fixed bottom-5 right-2 shadow-3 rounded p-2 bg-danger text-white"  data-url="{$tsConfig.url}/moderacion/">Hay {$tsConfig.novemods.total} contenido{if $tsConfig.novemods.total != 1}s{/if} esperando revisi&oacute;n</div>
