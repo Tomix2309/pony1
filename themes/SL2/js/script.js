@@ -1,33 +1,24 @@
-var Miguel92 = {},
-DoneProfile = localStorage.getItem('TourPefil');
-(function($){
+//
+(() => {
   	"use strict";
 
-   const $window = $(window);
-   const $document = $(document);
-
    /* SCROLL */
-  const loaderFadeLogo = () => {
+   const loaderNavegationFixed = () => {
       // Le cambiamos las clases al menu
-      if ($window.scrollTop() > 265) $("nav").removeClass('navbar-pill').addClass('navbar-pill-off');
-      else $("nav").removeClass('navbar-pill-off').addClass('navbar-pill');
+      if ($(window).scrollTop() > 265) $(".navegation").addClass('scrolling');
+      else $(".navegation").removeClass('scrolling');
    }
 
    /* DOCUMENT READY */
    const loaderFatherIcons = () => {
-      // Constante de 2 opciones "clase" y "stroke"
-      const $klass = 'featherIcons', $stroke_w = 1.5
       // le incorporamos a los SVG
       feather.replace({ 
-         class: $klass, 
-         'stroke-width': $stroke_w 
+         class: 'featherIcons', 'stroke-width': 1.5 
       });
    }
   	const loaderTipsy = () => {
-      // Buscamos el objeto o enlace
-   	var $link = $('a[title]');
       // Le aplicamos los atributos necesarios
-   	$link.tipsy({fade: true, html: true, gravity: $.fn.tipsy.autoNS});
+   	$('a[title]').tipsy({fade: true, html: true, gravity: $.fn.tipsy.autoNS});
    }
    const loaderLazy = () => {
       var LazyLoadClass = ['.image', '.background', '.iframe']
@@ -46,23 +37,21 @@ DoneProfile = localStorage.getItem('TourPefil');
          new LazyLoad(NewOptions)
       });
    }
+
 	const loaderScrollToTop = () => {  
 	 	$('.subir').on('click', () => $('body, html').animate({scrollTop: '40px'}, 1000));
   	}
 
-   // Window scroll functions
-   $window.on('scroll', () => loaderFadeLogo());
- 	// Document ready functions
-   $document.ready(() => {
-     loaderFatherIcons(),
-     loaderLazy(),
-     loaderTipsy(),
-     loaderScrollToTop();
-	});
+   $(window).on('scroll', () => loaderNavegationFixed());
 
-})(jQuery);
+   loaderFatherIcons();
+   loaderLazy();
+   loaderTipsy();
+   loaderScrollToTop();
+	
+})();
 
-
+const ProfileComplete = localStorage.getItem('TourPefil');
 if(global_data.logueado === 'si' && global_data.page === 'perfil') {
    const driver = window.driver.js.driver;
    const iniciarPaseo = driver({
@@ -96,7 +85,7 @@ if(global_data.logueado === 'si' && global_data.page === 'perfil') {
       ]
    });
 
-   localStorage.setItem('TourPefil', 'c');
+   localStorage.setItem('TourPefil', 'completo');
    // Start the introduction
-   if (DoneProfile != 'completo') iniciarPaseo.drive();
+   if (ProfileComplete != 'completo') iniciarPaseo.drive();
 }

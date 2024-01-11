@@ -184,6 +184,8 @@ class tsJson {
 		return $data;
 	}
 
+
+
 	/** 
 	 * @access public 
 	 * @name save_json
@@ -191,26 +193,19 @@ class tsJson {
 	 * @param array
 	 * @return array
 	*/
-	public function save_json($param) {
+	public function save_json(string $param = '') {
 		# Buscamos el archivo
-		$file_admin = TS_SETTINGS . "settings.json";
-		$j = [];
-		if ( file_exists($file_admin) ){
-			$j = (array)json_decode(file_get_contents($file_admin));
-			unlink($file_admin);
-		}  else {
-			# Si no existe creamos uno! No preguntamos.
-			$fichero = TS_SETTINGS . "config-example-settings.json";
-			$nuevo_fichero = TS_SETTINGS . "settings.json";
-			if (!copy($fichero, $nuevo_fichero)) echo "Error al copiar $fichero...\n";
-		}
-		# Añadimos los nuevos datos
-		foreach ($_POST as $k => $v) $PostAll[$k] = $_POST[$k];
-		$j[$param] = $PostAll;
-		# Insertamos los datos al archivo json
-		file_put_contents($file_admin, json_encode($j));
-		# Retornamos un mensaje
-		return '1: Los cambios fuerón aplicados!';
+  		$admin = (array)self::getContentJson('settings');
+  		$_POST['robots'] = isset($_POST['robots']) ? $_POST['robots'] : 0;
+  		foreach ($_POST as $k => $newValue) {
+  			if(is_array($newValue)) {
+  				foreach($newValue as $i => $val) $newData[$k][$i] = is_numeric($val) ? (int)$val : $val;
+  			} else $newData[$k] = is_numeric($newValue) ? (int)$newValue : $newValue;
+  		}
+		$admin[$param] = $newData;
+		# Insertamos los datos al archivo json, y retornamos
+		$rsp = (file_put_contents(TS_SETTINGS . "settings.json", json_encode($admin, JSON_PRETTY_PRINT))) ? '1: Los cambios fuerón aplicados!' :  '0: Los datos no se guardaron.';
+		return $rsp;
 	}
 
 	/** 
@@ -222,10 +217,17 @@ class tsJson {
 	public function getSeo() {
 		$tsCore = new tsCore;
 		# Buscamos el archivo
-		$json = self::getContentJson('settings');
+		$json = (array)self::getContentJson('settings')->seo;
 		# Recorremos
-		foreach ($json->seo as $key => $value) $data[$key] = $json->seo->$key;
-		$data['images'] = $tsCore->settings['url']. $data['images'];
+		foreach($json as $key => $val) {
+			if($val instanceof stdClass) {
+				foreach ((array)$val as $i => $valores) {
+					if(is_numeric($i)) $data['images'][$i] = $valores;
+					else $data['robots_data'][$i] = $valores;
+				}
+			} else $data[$key] = $val;
+		}
+		$data['seo_images_total'] = [16, 32, 64];
 		# Retornamos
 		return $data;
 	}

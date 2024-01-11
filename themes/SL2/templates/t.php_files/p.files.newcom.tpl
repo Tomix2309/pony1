@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-start align-items-start mb-2" id="comfile_{$newCom.4}">
-   <a href="{$tsConfig.url}/perfil/{$newCom.2}" class="mr-2" title="{$newCom.2}">
+   <a href="{$tsConfig.url}/perfil/{$newCom.2}" class="me-2" title="{$newCom.2}">
       <img src="{$tsConfig.url}/files/avatar/{$newCom.1}.webp" class="avatar avatar-lg shadow rounded" alt="{$newCom.2}" />
    </a>
    <div class="position-relative w-100">

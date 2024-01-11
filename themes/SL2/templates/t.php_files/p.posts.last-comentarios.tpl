@@ -1,7 +1,7 @@
 <ol id="filterByTodos" class="filterBy cleanlist" style="display:block;">
   	{foreach from=$tsComments key=i item=c}
 	<li class="d-flex justify-content-start align-items-center mb-2">
-		<img src="{$tsConfig.url}/files/avatar/{$c.user_id}.webp" alt="{$c.user_name}" class="avatar avatar-rounded mr-2">
+		<img src="{$tsConfig.url}/files/avatar/{$c.user_id}.webp" alt="{$c.user_name}" class="avatar avatar-rounded me-2">
 		<span class="d-block">
 			{if $c.post_status != 0 || $c.user_activo == 0 || $c.user_baneado || $c.c_status != 0}
 				<a href="{$tsConfig.url}/perfil/{$c.user_name}/" class="d-block text-dark">

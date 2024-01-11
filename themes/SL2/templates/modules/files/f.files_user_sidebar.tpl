@@ -51,7 +51,7 @@
             {if $filesUser.total_favs > 0}
                {foreach from=$filesUser.favoritos item=f}
                   <div class="d-flex justify-content-start align-items-center" {if $f.f_estado == 0}style="opacity: 0.5;" title="Este archivo est&aacute; desabilitado"{/if}>
-                     <a href="{$tsConfig.url}/perfil/{$f.user_name}" title="Subido por {$f.user_name}" class="mr-2"><img src="{$tsConfig.url}/files/avatar/{$f.f_user}.webp" class="avatar rounded shadow" height="30" width="30" /></a>
+                     <a href="{$tsConfig.url}/perfil/{$f.user_name}" title="Subido por {$f.user_name}" class="me-2"><img src="{$tsConfig.url}/files/avatar/{$f.f_user}.webp" class="avatar rounded shadow" height="30" width="30" /></a>
                      <a href="{$tsConfig.url}/files/{$f.file_id}/{$f.f_seo}" class="fw-bold text-dark">{$f.f_nombre|truncate:45}</a>
                   </div>
                {/foreach}
@@ -67,7 +67,7 @@
          {if $getLastcom}
             {foreach from=$getLastcom item=f}
                <div class="d-flex mb-2 justify-content-start align-items-center" {if $f.f_estado == 0}style="opacity: 0.5;" title="Este archivo est&aacute; desabilitado"{/if}>
-                  <a href="{$tsConfig.url}/perfil/{$f.user_name}" title="{$f.user_name}" class="mr-2">
+                  <a href="{$tsConfig.url}/perfil/{$f.user_name}" title="{$f.user_name}" class="me-2">
                      <img src="{$tsConfig.url}/files/avatar/{$f.com_user}.webp" class="avatar rounded shadow" height="35" width="35" />
                   </a>
                   <span>

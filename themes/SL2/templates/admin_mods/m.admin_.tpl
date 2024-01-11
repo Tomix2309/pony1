@@ -24,7 +24,7 @@
          <div class="phpost version">
             <h3 class="h5 m-0 mt-2 p-2 bg-light">{$tsConfig.titulo}</h3>
             <ul id="ultima_version" class="pp_list">
-               <li class="list-clone ml-2 mb-3">
+               <li class="list-clone ms-2 mb-3">
                   <div class="title fw-bold">Versi&oacute;n instalada</div>
                   <div class="body text-secondary small">{$tsConfig.version}</div>
                </li>

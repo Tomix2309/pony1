@@ -1,16 +1,11 @@
 var guardar = {
    seo: function() {
-      i = encodeURIComponent($('input[name=images]').val()),
-      a = $('input[name=appfb]').val(),
-      t = encodeURIComponent($('input[name=twuser]').val()),
-      c = $('input[name=color]').val(),
-      d = encodeURIComponent($('textarea[name=description]').val()),
-      k = encodeURIComponent($('textarea[name=keys]').val()),
-      params = `description=${d}&images=${i}&keys=${k}&color=${c}&app_fb=${a}&tw_page=${t}`;
-      $.post(global_data.url + '/live-seo.php', params, function(h){
-         mydialog.alert((h.charAt(0) == '0' ? 'Opps!' : 'Hecho'), h.substring(3), false);
-         mydialog.buttons(true, true, 'Recargar sitio', "reloader()", true, false, true, 'Cancelar', 'close', true, false);
-         mydialog.center();
+      const params = $('form[name=confSeo]').serialize();
+      $.post(global_data.url + '/live-seo.php', params, response => {
+         console.log(response)
+         const title = response.charAt(0) == '0' ? 'Opps!' : 'Hecho';
+         const reload = response.charAt(0) == '0' ? false : true;
+         mydialog.alert(title, response.substring(3), reload);
          $('#loading').fadeOut(350);
       });
    },
@@ -39,3 +34,12 @@ function acortar() {
       }
    })
 }
+
+$(document).ready(() => {
+   const titulo = $('form[name=confSeo] #titulo');
+   const descripcion = $('form[name=confSeo] #descripcion');
+   const portada = $('form[name=confSeo] #portada');
+   titulo.on('keyup', () => $('.result .title').html(titulo.val()))
+   descripcion.on('keyup', () => $('.result .descripcion').html(descripcion.val()))
+   portada.on('keyup', () => $('.result .image').attr({ src: portada.val() }))
+})

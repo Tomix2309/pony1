@@ -70,13 +70,14 @@ if($_GET['do'] == NULL || $_GET['do'] == 'home' || $tsPage == 'fotos' || $tsPage
 		'tsPublished'       => $tsCore->timeseo(time()),
 		'tsUrl'             => $tsCore->settings['url'],
 		'tsImagen'          => $seo['images'],
+		'tsImagenSocial'    => $seo['social'],
 		'tsKey'             => $seo['keys']
   	];
 }
 
 $ContentSmarty += [
-	'tsImagenDes'   => $seo['images'],
-	'tsFooterDes'   => $seo['description'],
+	'tsImagenDes'   => $seo['images']['64'],
+	'tsFooterDes'   => $seo['descripcion'],
 	'tsMobile'      => $detect->isMobile(), # Para detectar que tipo de dispositivo esta usando
 	"tsAdmInfo"     => $tsJson->getAdminInfo(),# Extraemos la información del json para modificar
 	"tsAdmSeo"      => $tsJson->getSeo(),# Extraemos la información del json para modificar

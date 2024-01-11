@@ -27,22 +27,27 @@
 	<!-- Acá se mostrarán las opciones del usuario -->
 	<div class="position-relative">
 		<a href="{$tsConfig.url}/perfil/{$tsUser->nick}" onclick="menu.last(); return false" name="Menu" class="text-capitalize d-flex justify-content-end align-items-center fw-bolder">{$tsUser->nick} 
-			<img src="{$tsUser->avatar}" alt="{$tsUser->nick}" class="avatar-head shadow avatar ml-2 avatar-circle">
+			<img src="{$tsUser->avatar}" alt="{$tsUser->nick}" class="avatar-head shadow avatar ms-2 avatar-circle">
 		</a>
 		<div class="notis-panel" id="menu_list" style="display:none;">
-			<ul>
-				<li class="user position-relative">
-		         <span class="d-block">
-		         	<a class="nombre h4 text-capitalize" title="Mi Perfil" href="{$tsConfig.url}/perfil/{$tsUser->info.user_name}">{if $tsUser->nombre}{$tsUser->nombre}{else}{$tsUser->nick}{/if}</a>
-		         	<a class="small d-block fw-bold" title="Mi Correo" href="mailto:{$tsUser->correo}">{$tsUser->correo}</a>
-		         </span>
-		      </li>
-		      {if $tsUser->is_admod == 1}<li class="item"><a class="d-block" title="Gestionar configuracion web" href="{$tsConfig.url}/pages/settings"><i data-feather="sliders"></i> Gestionar configuracion web</a></li>{/if}
-		      <li class="item"><a class="d-block" title="Gestionar mi cuenta" href="{$tsConfig.url}/cuenta/"><i data-feather="settings"></i> Gestionar mi cuenta</a></li>
-				<li class="item"><a class="d-block" title="Mis Favoritos" href="{$tsConfig.url}/favoritos.php"><i data-feather="star"></i> Mis Favoritos</a></li>
-		      <li class="item"><a class="d-block" title="Mis Borradores" href="{$tsConfig.url}/borradores.php"><i data-feather="trash-2"></i> Mis Borradores</a></li>
-		      <li class="item"><a class="d-block" href="{$tsConfig.url}/login-salir.php" title="Salir"><i data-feather="log-out"></i> Cerrar sesión</a></li>
-	      </ul>
+			<div class="usuario">
+				<div class="datos">
+					<a class="d-flex justify-content-center align-items-center" title="Gestionar mi cuenta" href="{$tsConfig.url}/cuenta/"><i data-feather="settings"></i></a>
+					<span onclick="menu.last(); return false" name="Menu" class="dato-username d-flex justify-content-end align-items-center" >
+						<span>{$tsUser->nick}</span>
+						<img class="image shadow avatar avatar-head avatar-circle" src="{$tsConfig.images}/loadImage.gif" data-src="{$tsUser->avatar}" alt="{$tsUser->nick}">
+					</span>
+				</div>
+				<div class="usuario-lista p-2">
+					<a title="Ir a mi perfil" rel="internal" href="{$tsConfig.url}/perfil/{$tsUser->info.user_name}"><i data-feather="user"></i> Ir a mi perfil</a>
+					{if $tsUser->is_admod == 1}
+						<a title="Gestionar configuracion web" rel="internal" href="{$tsConfig.url}/pages/settings"><i data-feather="sliders"></i> Gestionar configuracion web</a>
+					{/if}
+					<a title="Mis Favoritos" rel="internal" href="{$tsConfig.url}/favoritos.php"><i data-feather="star"></i> Mis Favoritos</a>
+					<a title="Mis Borradores" rel="internal" href="{$tsConfig.url}/borradores.php"><i data-feather="trash-2"></i> Mis Borradores</a>
+					<a rel="internal" href="{$tsConfig.url}/login-salir.php" title="Salir"><i data-feather="log-out"></i> Cerrar sesión</a>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

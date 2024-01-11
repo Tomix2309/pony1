@@ -13,7 +13,7 @@
                src="{$tsConfig.images}/loadImage.gif" 
                data-src="{$tsImagenDes}" 
                alt="{$tsConfig.titulo}" 
-               class="image img-fit-cover rounded mr-3 float-start"
+               class="image img-fit-cover rounded me-3 float-start"
                >                
                {$tsFooterDes}
             </p>

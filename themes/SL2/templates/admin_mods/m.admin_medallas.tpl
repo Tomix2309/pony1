@@ -104,7 +104,7 @@
                     <dl>
 				<dt><label for="cat_img">Icono de la categor&iacute;a:</label></dt>
 				<dd class="d-flex justify-content-start align-items-center">
-					<img src="{$tsConfig.images}/icons/med/{if $tsMed.m_image}{$tsMed.m_image}{else}{$tsIcons.0}{/if}_32.png" class="mr-3" id="c_icon"/>
+					<img src="{$tsConfig.images}/icons/med/{if $tsMed.m_image}{$tsMed.m_image}{else}{$tsIcons.0}{/if}_32.png" class="me-3" id="c_icon"/>
 					<select name="med_img" id="med_img">
 					{foreach from=$tsIcons key=i item=img}
 						<option value="{$img}" {if $tsMed.m_image == $img}selected="selected"{/if}>{$img}</option>

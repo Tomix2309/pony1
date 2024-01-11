@@ -1,0 +1,40 @@
+/**
+ * Buscador
+*/
+#buscadorLite {
+  margin: 26px auto;
+}
+.searchCont .searchWith {
+  margin-bottom: 10px;
+}
+.searchCont .searchWith a {
+  display: block;
+  background-color: #0002;
+  color: #444;
+  padding: 4px 12px;
+  margin: 0 12px;
+}
+.searchCont .searchWith a.active {
+  background-color: #0006;
+  color: #EEE;
+}
+.searchCont .filtar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px
+}
+.post-found {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  grid-gap: 10px;
+  margin-bottom: 14px;
+  height: 170px;
+}
+.post-found > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.post-found .post-found-info .titlePost {
+
+}

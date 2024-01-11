@@ -36,7 +36,7 @@
             {foreach from=$tsFile.users item=a}
                <a href="{$tsConfig.url}/perfil/{$a.user_name}" class="d-flex justify-content-start align-items-center">
                   <img src="{$tsConfig.url}/files/avatar/{$a.d_user}.webp" class="avatar rounded avatar-sm shadow" title="{if $a.d_total > 1}{$a.d_total} veces - {/if}{$a.d_fecha|hace}" />
-                  <span class="text-capitalize text-dark text-capitalize ml-2">{$a.user_name}</span>
+                  <span class="text-capitalize text-dark text-capitalize ms-2">{$a.user_name}</span>
                </a>
             {/foreach}
          {else}
@@ -52,7 +52,7 @@
             {foreach from=$tsFile.favoritos item=a}
                <a href="{$tsConfig.url}/perfil/{$a.user_name}" class="d-flex justify-content-start align-items-center" >
                   <img src="{$tsConfig.url}/files/avatar/{$a.fav_user}.webp" class="avatar rounded avatar-sm shadow" title="{$a.fav_fecha|fecha}" />
-                  <span class="text-capitalize text-dark text-capitalize ml-2">{$a.user_name}</span>
+                  <span class="text-capitalize text-dark text-capitalize ms-2">{$a.user_name}</span>
                </a>
             {/foreach}
          {else}

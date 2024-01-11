@@ -38,7 +38,7 @@
             <ul class="" id="borradores-categorias">
                <li id="todas" class="bg-info d-flex justify-content-between align-items-center active">
                	<a href="" onclick="borradores.active(this); borradores.categoria = 'todas'; borradores.query(); return false;">Ver todas</a>
-               	<span class="text-white mr-3">{$tsTotalCat.total}</span>
+               	<span class="text-white me-3">{$tsTotalCat.total}</span>
                </li>
             </ul>
          </div><!-- boxy-content -->

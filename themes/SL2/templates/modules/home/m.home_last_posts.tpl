@@ -1,19 +1,19 @@
 {if $tsPostsStickys}
-   <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+   <div class="col-12">
       <h2>Temas fijados</h2>
    </div>
    {foreach from=$tsPostsStickys item=p}
-   <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+   <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-xxl-4">
       {include "$tsModulos/m.home_posts.tpl"}
    </div>
    {/foreach}
 {/if}
 {if $tsPosts}
-   <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+   <div class="col-12">
       <h2>Otros </h2>
    </div>
    {foreach from=$tsPosts item=p}
-   <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+   <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 col-xxl-4">
       {include "$tsModulos/m.home_posts.tpl"}
    </div>
    {/foreach}

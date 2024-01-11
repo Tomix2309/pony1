@@ -1,26 +1,38 @@
 {
-   "background": { 
-   	"type": "pexels", 
-   	"id": "389818", 
-   	"width": "1400", 
-   	"height": "300", 
-   	"position": "center center", 
-   	"repeat": "no-repeat",
-   	"attachment": "scroll", 
-   	"size": "100%" 
-   },
-   "params": { 
-   	"auto": "compress", 
-   	"cs": "tinysrgb", 
-   	"dpr": 1, 
-   	"fit": "crop"
-   },
-   "seo": {
-      "description": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus in molestiae quis porro repellat consequuntur sunt temporibus",
-      "images": "\/files\/favicon.ico",
-      "keys": "tag1, tag2, tag3, tag4, etc...",
-      "color": "#212121",
-      "app_fb": "123456789876543",
-      "tw_page": "@LoremIpsum"
-   }
+	"background": { 
+		"type": "pexels", 
+		"id": "389818", 
+		"width": "1400", 
+		"height": "300", 
+		"position": "center center", 
+		"repeat": "no-repeat",
+		"attachment": "scroll", 
+		"size": "100%" 
+	},
+	"params": { 
+		"auto": "compress", 
+		"cs": "tinysrgb", 
+		"dpr": 1, 
+		"fit": "crop"
+	},
+	"seo": {
+	 	"titulo": "Syntaxis Lite",
+	 	"descripcion": "Syntaxis Lite, es un sitio donde tu puedes encontrar todo, y puedes crear una cuenta gratis, nunca se te va a pedir un pago por ello!",
+	 	"portada": "",
+	 	"favicon": "",
+      "images": {
+          "16": "",
+          "32": "",
+          "64": ""
+      },
+	 	"robots": 1,
+	 	"robots_data": {
+		  	"name": 0,
+		  	"content": 5
+	 	},
+	 	"color": "#212121",
+	 	"app_fb": "123456789876543",
+	 	"tw_page": "@LoremIpsum",
+	 	"keywords": "tag1, tag2, tag3, tag4, etc..."
+	}
 }

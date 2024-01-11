@@ -4,7 +4,7 @@
       {if $tsCom.total > 0}
         {foreach from=$tsCom.com item=c}
          <div class="d-flex justify-content-start align-items-start mb-2" id="comfile_{$c.com_id}">
-            <a href="{$tsConfig.url}/perfil/{$c.user_name}" class="mr-2" title="{$c.user_name}">
+            <a href="{$tsConfig.url}/perfil/{$c.user_name}" class="me-2" title="{$c.user_name}">
                <img src="{$tsConfig.url}/files/avatar/{$c.com_user}.webp" class="avatar avatar-lg shadow rounded" alt="{$c.user_name}" />
             </a>
             <div class="position-relative w-100">

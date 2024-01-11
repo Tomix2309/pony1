@@ -1,5 +1,5 @@
 <div class="post-info">
-	<a class="position-absolute mt-2 ml-2 text-white" href="{$tsConfig.url}/posts/{$tsPost.categoria.c_seo}/">
+	<a class="position-absolute mt-2 ms-2 text-white" href="{$tsConfig.url}/posts/{$tsPost.categoria.c_seo}/">
 		<span data-cat="{$tsPost.categoria.c_seo|truncate:2:''}"></span>
 	</a>
 	<div class="post-portada">

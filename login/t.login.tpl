@@ -2,12 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{$Lang_short}" xml:lang="{$Lang_short}">
 <head>
 <title>{$tsTitle}</title>
+{meta facebook=true twitter=true}
 {hook 
 	name="head" 
-	meta=false 
 	lang="{$Lang}" 
 	fonts=["Roboto"] 
-	favicon="$tsImagen" 
 	css=['SyntaxisLite.min.css', "{$tsPage}.css"] 
 	js=['jquery.min.js', 'jquery.plugins.js', 'acciones.js'] 
 }

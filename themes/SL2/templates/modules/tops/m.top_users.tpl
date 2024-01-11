@@ -12,7 +12,7 @@
                 	{foreach from=$tsTops.puntos item=u}
                     {if $u.total > 0}
                 	<li class="mb-2 d-flex justify-content-start aling-items-center clearfix">
-                        <img style="width:45px;height:45px;" class="rounded mr-2" src="{$tsConfig.url}/files/avatar/{$u.user_id}.webp"/>
+                        <img style="width:45px;height:45px;" class="rounded me-2" src="{$tsConfig.url}/files/avatar/{$u.user_id}.webp"/>
                         <span class="d-flex flex-column">
                             <a class="text-dark fw-bolder text-capitalize" href="{$tsConfig.url}/perfil/{$u.user_name}">{$u.user_name}</a> 
                             <span class="small">Tiene {$u.total} Punto{if $u.total > 1}s{/if}</span>
@@ -36,7 +36,7 @@
                 	{foreach from=$tsTops.seguidores item=u}
                     {if $u.total > 0}
                 	<li class="mb-2 d-flex justify-content-start aling-items-center clearfix">
-                        <img style="width:45px;height:45px;" class="rounded mr-2" src="{$tsConfig.url}/files/avatar/{$u.user_id}.webp"/>
+                        <img style="width:45px;height:45px;" class="rounded me-2" src="{$tsConfig.url}/files/avatar/{$u.user_id}.webp"/>
                         <span class="d-flex flex-column">
                             <a class="text-dark fw-bolder text-capitalize" href="{$tsConfig.url}/perfil/{$u.user_name}">{$u.user_name}</a> 
                             <span class="small">Tiene {$u.total} Seguidor{if $u.total > 1}es{/if}</span>
@@ -60,7 +60,7 @@
                 	{foreach from=$tsTops.medallas item=u}
                     {if $u.total > 0}
                 	<li class="mb-2 d-flex justify-content-start aling-items-center clearfix">
-                        <img style="width:45px;height:45px;" class="rounded mr-2" src="{$tsConfig.url}/files/avatar/{$u.user_id}.webp"/>
+                        <img style="width:45px;height:45px;" class="rounded me-2" src="{$tsConfig.url}/files/avatar/{$u.user_id}.webp"/>
                         <span class="d-flex flex-column">
                             <a class="text-dark fw-bolder text-capitalize" href="{$tsConfig.url}/perfil/{$u.user_name}">{$u.user_name}</a> 
                             <span class="small">Tiene {$u.total} Medalla{if $u.total > 1}s{/if}</span>

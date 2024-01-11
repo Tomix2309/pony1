@@ -5,7 +5,7 @@
       <h2 class="box-header">¿Com&oacute; cambiar portada/header?</h2>
       <div class="box-body lead">
          <p>Para cambiar la portada es bastante f&aacute;cil, primero deben seleccionar entre <b><a class="text-primary" title="Ir a unsplash" target="_blank" href="{$unsplash}">Unsplash</a></b> y <b><a class="text-primary" title="Ir a pexels" target="_blank" href="{$pexels}">Pexels</a></b>, una vez que decidan cual usar acceden a la p&aacute;gina correspondiente:</p>
-         <ul class="ml-4 my-3">
+         <ul class="ms-4 my-3">
             <li><a class="text-primary fw-bold" title="Ir a pexels" target="_blank" href="{$pexels}">Pexels</a></li>
             <li><a class="text-primary fw-bold" title="Ir a unsplash" target="_blank" href="{$unsplash}">Unsplash</a></li>
          </ul>

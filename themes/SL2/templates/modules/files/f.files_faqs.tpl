@@ -6,9 +6,9 @@
             <li class="mb-2"><a class="text-dark" href="#aviso_de_copyright">Aviso de Copyright</a>
             <li class="mb-2"><a class="text-dark" href="#preguntas_frecuentes">Preguntas frecuentes</a>
             <ul class="mt-2 list-unstyled">
-               <li class="small mb-2 ml-2"><a class="text-dark" href="#faqs_1">¿Qu&eacute; archivos puedo cargar y almacenar?</a></li>
-               <li class="small mb-2 ml-2"><a class="text-dark" href="#faqs_2">¿Cuantos archivos puedo subir y que tama&ntilde;o permite?</a></li>
-               <li class="small mb-2 ml-2"><a class="text-dark" href="#faqs_3">¿C&oacute;mo comparto mis archivos?</a></li>
+               <li class="small mb-2 ms-2"><a class="text-dark" href="#faqs_1">¿Qu&eacute; archivos puedo cargar y almacenar?</a></li>
+               <li class="small mb-2 ms-2"><a class="text-dark" href="#faqs_2">¿Cuantos archivos puedo subir y que tama&ntilde;o permite?</a></li>
+               <li class="small mb-2 ms-2"><a class="text-dark" href="#faqs_3">¿C&oacute;mo comparto mis archivos?</a></li>
                </ul>
             </li>
          </ul>
@@ -26,15 +26,15 @@
          <h2 class="h4 p-2" id="faqs_3">¿C&oacute;mo comparto mis archivos?</h2>
          <strong class="h5 mt-2 d-block bg-light p-2 text-uppercase">Para los archivos:</strong>
          <ul class="list-unstyled">
-            <li class="mb-2 ml-2">&bull; Al subir un archivo este ser&aacute; p&uacute;blico para todos los usuarios registrados en <b>{$tsConfig.titulo}</b>, sin embargo puedes cambiar esta configuraci&oacute;n para cada archivo sea privado/p&uacute;blico.</li>
-            <li class="mb-2 ml-2">&bull; Mientras el archivo sea p&uacute;blico, podr&aacute; ser visto y descargado por cualquier usuario registrado en <b>{$tsConfig.titulo}</b>.</li>
+            <li class="mb-2 ms-2">&bull; Al subir un archivo este ser&aacute; p&uacute;blico para todos los usuarios registrados en <b>{$tsConfig.titulo}</b>, sin embargo puedes cambiar esta configuraci&oacute;n para cada archivo sea privado/p&uacute;blico.</li>
+            <li class="mb-2 ms-2">&bull; Mientras el archivo sea p&uacute;blico, podr&aacute; ser visto y descargado por cualquier usuario registrado en <b>{$tsConfig.titulo}</b>.</li>
          </ul>
          <strong class="h5 mt-2 d-block bg-light p-2 text-uppercase">Para las carpetas:</strong>
          <ul class="list-unstyled">
-            <li class="mb-2 ml-2">&bull; Al crear una carpeta o folder de archivos esta ser&aacute; privada y solo t&uacute; podras acceder a sus archivos, sin embargo puedes cambiar esta configuraci&oacute;n para cada carpeta sea privada/p&uacute;blica.</li>
-            <li class="mb-2 ml-2">&bull; Mientras la carpeta sea p&uacute;blica, podr&aacute; ser vista junto con su contenido por cualquier usuario registrado en <b>{$tsConfig.titulo}</b> cuando visite tu p&aacute;gina principal de archivos.</li>
-            <li class="mb-2 ml-2">&bull; Los archivos dentro de las carpetas privadas no ser&aacute;n visibles por otros usuarios en esa ubicaci&oacute;n pero si alguno de estos archivos es p&uacute;blico podr&aacute;n acceder otros usuarios a quienes se les haya compartido el enlace de descarga del mismo.</li>
-            <li class="mb-2 ml-2">&bull; Al cambiar el estado de privacidad de una carpeta, los archivos que esten dentro de ella (si hay) cambiaran tambien su configuracion deacuerdo al estado al que se le asigne a la carpeta.</li>
+            <li class="mb-2 ms-2">&bull; Al crear una carpeta o folder de archivos esta ser&aacute; privada y solo t&uacute; podras acceder a sus archivos, sin embargo puedes cambiar esta configuraci&oacute;n para cada carpeta sea privada/p&uacute;blica.</li>
+            <li class="mb-2 ms-2">&bull; Mientras la carpeta sea p&uacute;blica, podr&aacute; ser vista junto con su contenido por cualquier usuario registrado en <b>{$tsConfig.titulo}</b> cuando visite tu p&aacute;gina principal de archivos.</li>
+            <li class="mb-2 ms-2">&bull; Los archivos dentro de las carpetas privadas no ser&aacute;n visibles por otros usuarios en esa ubicaci&oacute;n pero si alguno de estos archivos es p&uacute;blico podr&aacute;n acceder otros usuarios a quienes se les haya compartido el enlace de descarga del mismo.</li>
+            <li class="mb-2 ms-2">&bull; Al cambiar el estado de privacidad de una carpeta, los archivos que esten dentro de ella (si hay) cambiaran tambien su configuracion deacuerdo al estado al que se le asigne a la carpeta.</li>
          </ul>
       </div>
    </div>

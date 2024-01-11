@@ -174,29 +174,29 @@ function smarty_function_html_radios_output($name, $value, $output, $selected, $
 		}
 	} else $output = (string)$output;
 	
-	$_output .= '<div class="form-check form-check-inline">';
-	if ($labels) {
-		if ($label_ids) {
-			$find = '![^\w\-\.]!' . Smarty::$_UTF8_MODIFIER;
-			$newTxt = preg_replace($find, '_', $name . '_' . $value);
-			$_id .= smarty_function_escape_special_chars($newTxt);
-			$_for .= ' for="' . $_id . '"';
-		} else $_for .= '';
-		$_output .= '<label class="form-check-label"'.$_for.'>' . $output;
-	}
+	//$_output .= '<div class="form-radio">';
+	
+	//if ($labels) {
+	if ($label_ids) {
+		$find = '![^\w\-\.]!' . Smarty::$_UTF8_MODIFIER;
+		$newTxt = preg_replace($find, '_', $name . '_' . $value);
+		$_id .= smarty_function_escape_special_chars($newTxt);
+		$_for .= ' for="' . $_id . '"';
+	} else $_for .= '';
+	$_output .= '<label class="form-radio"'.$_for.'> ' . $output;
+	//}
+	$_output .= '<input type="radio" class="form-check-input" name="' . $name . '" value="' . $value . '"';
+	if ($labels && $label_ids) $_output .= ' id="' . $_id . '"';
+	if ($value === $selected) $_output .= ' checked';
+	$_output .= $extra . ' /><span class="form-icon"></span> ';
+
 	$name = smarty_function_escape_special_chars($name);
 	$value = smarty_function_escape_special_chars($value);
 
 	if ($escape) $output = smarty_function_escape_special_chars($output);
-	if ($labels) $_output .= '</label>';
+	//if ($labels) $_output .= '</label>';
 	
-	$_output .= '<input type="radio" class="form-check-input" name="' . $name . '" value="' . $value . '"';
-	if ($labels && $label_ids) $_output .= ' id="' . $_id . '"';
-	if ($value === $selected) $_output .= ' checked';
-
-	$_output .= $extra . ' />';
-	
-	$_output .= '</div>';
+	$_output .= '</label>';
 	$_output .= $separator;
 	return $_output;
 }

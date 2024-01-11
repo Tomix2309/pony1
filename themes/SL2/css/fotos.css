@@ -1,0 +1,153 @@
+/**
+ * Fotos
+*/
+.box-lateral .box-body li > img {
+  width: 40px;
+  height: 40px;
+}
+.card-img {
+  position: relative;
+  margin-bottom: 20px;
+  height: 240px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 6px;
+}
+.card-img > img {
+  width: 100%;
+  object-fit: cover;
+  height: 100%;
+}
+.card-img .data-information {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #2224;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  color: #EEE;
+  transition: top .6s ease-in-out;
+}
+.card-img:hover .data-information {
+  top: 0;
+  transition: top .6s ease-in-out;
+}
+.card-img .data-information > h3 {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+}
+.card-img .data-information .acceder {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 0;
+  left: 0;
+}
+.card-img .data-information .acceder a {
+  margin: 0 5px;
+  font-size: 18px;
+}
+.card-img .data-information small .featherIcons,
+.card-img .data-information .acceder .featherIcons {
+  stroke: #EEE;
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-top: 6px;
+  margin-right: 3px;
+}
+.card-img .data-information small {
+  font-size: 11px;
+  margin:0;
+}
+.card-img .data-information small .featherIcons {
+  width: 11px;
+  height: 11px;
+  margin-top: 2px;
+}
+#v_album, .masonry {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 5px;
+  list-style: none;
+}
+#v_album li a img {
+  height: 120px;
+  object-fit: cover;
+}
+#v_album li .seg,
+#v_album li a span {
+  top: 4px !important;
+  left: 4px;
+}
+.v_album li {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  grid-gap: 4px
+}
+.photo .photo_tools {
+  display: none;
+} 
+.photo:hover .photo_tools {
+  display: block;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  background-color: #0003;
+}
+.photo_author, .photo_author_mini {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  grid-gap: 10px
+}
+.photo > img {
+  width: 100%;
+}
+.photo_author > img, .photo_author_mini > img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover
+}
+.photo_title {
+  border-bottom: 1px solid #CCC;
+  margin-bottom: 6px;
+}
+.photo_options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+.photo_options > div {
+  padding: 0 5px;
+}
+.photo_options > div .featherIcons {
+  width: 18px;
+  height: 18px;
+  margin-right: 3px;
+  cursor: pointer;
+}
+.form,
+#mensajes .item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  grid-gap: 10px;
+}
+.form > img {
+  width: 100%;
+  height: 80px;
+}
+#mensajes .item {
+  grid-template-columns: 46px 1fr;
+  border: 1px solid #E9E9E9;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+#mensajes .item > a img {
+  width: 100%;
+  height: 46px;
+}
+.masonry {
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 12px
+}

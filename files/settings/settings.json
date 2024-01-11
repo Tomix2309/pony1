@@ -1,1 +1,38 @@
-{"background":{"type":"unplash","id":"jXd2FSvcRr8","width":"1200","height":"300","position":"center center","repeat":"no-repeat","attachment":"scroll","size":"cover"},"params":{"auto":"compress","cs":"tinysrgb","dpr":1,"fit":"crop"},"seo":{"description":"Syntaxis Lite, es un sitio donde tu puedes encontrar todo, y puedes crear una cuenta gratis, nunca se te va a pedir un pago por ello!","images":"\/files\/SyntaxisLite-ico-64.ico","keys":"web, juegos, blog, posts, videos, peliculas, series, offtopic, diferentes, titulos, aventura, accion, drama, comedia, estrategia","color":"#212121","app_fb":"234123465456783","tw_page":"@SyntaxisLite2"}}
+{
+    "background": {
+        "type": "unplash",
+        "id": "jXd2FSvcRr8",
+        "width": "1200",
+        "height": "300",
+        "position": "center center",
+        "repeat": "no-repeat",
+        "attachment": "scroll",
+        "size": "cover"
+    },
+    "params": {
+        "auto": "compress",
+        "cs": "tinysrgb",
+        "dpr": 1,
+        "fit": "crop"
+    },
+    "seo": {
+        "titulo": "Syntaxis Lite v2",
+        "descripcion": "Syntaxis Lite, es un sitio donde tu puedes encontrar todo, y puedes crear una cuenta gratis, nunca se te va a pedir un pago por ello!!!",
+        "portada": "http:\/\/localhost\/SyntaxisLite\/files\/portada.png",
+        "favicon": "http:\/\/localhost\/SyntaxisLite\/files\/SyntaxisLite-ico-64.png",
+        "images": {
+            "16": "http:\/\/localhost\/SyntaxisLite\/files\/SyntaxisLite-ico-16.png",
+            "32": "http:\/\/localhost\/SyntaxisLite\/files\/SyntaxisLite-ico-32.png",
+            "64": "http:\/\/localhost\/SyntaxisLite\/files\/SyntaxisLite-ico-64.png"
+        },
+        "robots": 1,
+        "robots_data": {
+            "name": 0,
+            "content": 0
+        },
+        "color": "#212121",
+        "app_fb": 234123465456783,
+        "tw_page": "@SyntaxisLite2",
+        "keywords": "web, juegos, blog, posts, videos, peliculas, series, offtopic, diferentes, titulos, aventura, accion, drama, comedia, estrategia"
+    }
+}

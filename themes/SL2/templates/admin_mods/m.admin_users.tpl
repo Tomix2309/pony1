@@ -155,48 +155,48 @@
 			</div>
 	   {elseif $tsType == 6}
 			<legend>Eliminaci&oacute;n de contenidos</legend>
-			<input type="checkbox" id="bocuenta" name="bocuenta" onclick="$('#ext').slideToggle();" class="float-start mt-3 mr-2" /><label class="fw-bolder" for="bocuenta">Cuenta Completa <small class="d-block">Se eliminar&aacute; la cuenta y todo el contenido relacionado a {$tsUsername}.</small></label>
+			<input type="checkbox" id="bocuenta" name="bocuenta" onclick="$('#ext').slideToggle();" class="float-start mt-3 me-2" /><label class="fw-bolder" for="bocuenta">Cuenta Completa <small class="d-block">Se eliminar&aacute; la cuenta y todo el contenido relacionado a {$tsUsername}.</small></label>
 			<div id="ext">
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="boposts" name="boposts" class="mr-2" /><label class="fw-bolder" for="boposts">Posts <small class="d-block">Se eliminar&aacute;n todos sus posts y sus comentarios.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="boposts" name="boposts" class="me-2" /><label class="fw-bolder" for="boposts">Posts <small class="d-block">Se eliminar&aacute;n todos sus posts y sus comentarios.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bocomposts" name="bocomposts" class="mr-2" /><label class="fw-bolder" for="bocomposts">Comentarios de Posts <small class="d-block">Se eliminar&aacute;n todos sus comentarios en posts.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bocomposts" name="bocomposts" class="me-2" /><label class="fw-bolder" for="bocomposts">Comentarios de Posts <small class="d-block">Se eliminar&aacute;n todos sus comentarios en posts.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bofotos" name="bofotos" class="mr-2" /><label class="fw-bolder" for="bofotos">Fotos <small class="d-block">Se eliminar&aacute;n todas sus fotos publicadas y sus comentarios.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bofotos" name="bofotos" class="me-2" /><label class="fw-bolder" for="bofotos">Fotos <small class="d-block">Se eliminar&aacute;n todas sus fotos publicadas y sus comentarios.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bocomfotos" name="bocomfotos" class="mr-2" /><label class="fw-bolder" for="bocomfotos">Comentarios de Fotos <small class="d-block">Se eliminar&aacute;n todos sus comentarios en fotos.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bocomfotos" name="bocomfotos" class="me-2" /><label class="fw-bolder" for="bocomfotos">Comentarios de Fotos <small class="d-block">Se eliminar&aacute;n todos sus comentarios en fotos.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bofiles" name="bofiles" class="mr-2" /><label class="fw-bolder" for="bofiles">Archivos <small class="d-block">Se eliminar&aacute;n todas sus archivos publicadas y sus comentarios.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bofiles" name="bofiles" class="me-2" /><label class="fw-bolder" for="bofiles">Archivos <small class="d-block">Se eliminar&aacute;n todas sus archivos publicadas y sus comentarios.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bocomfiles" name="bocomfiles" class="mr-2" /><label class="fw-bolder" for="bocomfiles">Comentarios de Archivos <small class="d-block">Se eliminar&aacute;n todos sus comentarios en archivos.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bocomfiles" name="bocomfiles" class="me-2" /><label class="fw-bolder" for="bocomfiles">Comentarios de Archivos <small class="d-block">Se eliminar&aacute;n todos sus comentarios en archivos.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="boestados" name="boestados" class="mr-2" /><label class="fw-bolder" for="boestados">Estados <small class="d-block">Se eliminar&aacute;n todas sus publicaciones de muros</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="boestados" name="boestados" class="me-2" /><label class="fw-bolder" for="boestados">Estados <small class="d-block">Se eliminar&aacute;n todas sus publicaciones de muros</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bocomestados" name="bocomestados" class="mr-2" /><label class="fw-bolder" for="bocomestados">Comentarios en Estados <small class="d-block">Se eliminar&aacute;n todos sus comentarios en estados</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bocomestados" name="bocomestados" class="me-2" /><label class="fw-bolder" for="bocomestados">Comentarios en Estados <small class="d-block">Se eliminar&aacute;n todos sus comentarios en estados</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bolike" name="bolike" class="mr-2" /><label class="fw-bolder" for="bolike">Like <small class="d-block">Se eliminar&aacute;n sus likes en estados y comentarios en estados</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bolike" name="bolike" class="me-2" /><label class="fw-bolder" for="bolike">Like <small class="d-block">Se eliminar&aacute;n sus likes en estados y comentarios en estados</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="boseguidores" name="boseguidores" class="mr-2" /><label class="fw-bolder" for="boseguidores">Seguidores <small class="d-block">Se eliminar&aacute; la lista de todos sus seguidores.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="boseguidores" name="boseguidores" class="me-2" /><label class="fw-bolder" for="boseguidores">Seguidores <small class="d-block">Se eliminar&aacute; la lista de todos sus seguidores.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bosiguiendo" name="bosiguiendo" class="mr-2" /><label class="fw-bolder" for="bosiguiendo">Siguiendo <small class="d-block">Se eliminar&aacute; la lista de todos a los que sigue.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bosiguiendo" name="bosiguiendo" class="me-2" /><label class="fw-bolder" for="bosiguiendo">Siguiendo <small class="d-block">Se eliminar&aacute; la lista de todos a los que sigue.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bofavoritos" name="bofavoritos" class="mr-2" /><label class="fw-bolder" for="bofavoritos">Favoritos <small class="d-block">Se eliminar&aacute; la lista de favoritos que haya agregado.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bofavoritos" name="bofavoritos" class="me-2" /><label class="fw-bolder" for="bofavoritos">Favoritos <small class="d-block">Se eliminar&aacute; la lista de favoritos que haya agregado.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bovotosposts" name="bovotosposts" class="mr-2" /><label class="fw-bolder" for="bovotosposts">Votos en Posts <small class="d-block">Se eliminar&aacute;n los votos de puntos que haya dejado en posts.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bovotosposts" name="bovotosposts" class="me-2" /><label class="fw-bolder" for="bovotosposts">Votos en Posts <small class="d-block">Se eliminar&aacute;n los votos de puntos que haya dejado en posts.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bovotosfotos" name="bovotosfotos" class="mr-2" /><label class="fw-bolder" for="bovotosfotos">Votos en Fotos <small class="d-block">Se eliminar&aacute;n los votos positivos y negativos que haya dejado en fotos.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bovotosfotos" name="bovotosfotos" class="me-2" /><label class="fw-bolder" for="bovotosfotos">Votos en Fotos <small class="d-block">Se eliminar&aacute;n los votos positivos y negativos que haya dejado en fotos.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="boactividad" name="boactividad" class="mr-2" /><label class="fw-bolder" for="boactividad">Actividad <small class="d-block">Se eliminar&aacute; toda su actividad.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="boactividad" name="boactividad" class="me-2" /><label class="fw-bolder" for="boactividad">Actividad <small class="d-block">Se eliminar&aacute; toda su actividad.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="boavisos" name="boavisos" class="mr-2" /><label class="fw-bolder" for="boavisos">Avisos <small class="d-block">Se eliminar&aacute;n todos los avisos que ha recibido.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="boavisos" name="boavisos" class="me-2" /><label class="fw-bolder" for="boavisos">Avisos <small class="d-block">Se eliminar&aacute;n todos los avisos que ha recibido.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bobloqueos" name="bobloqueos" class="mr-2" /><label class="fw-bolder" for="bobloqueos">Bloqueos <small class="d-block">Se eliminar&aacute;n todos los bloqueos que ha recibido.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bobloqueos" name="bobloqueos" class="me-2" /><label class="fw-bolder" for="bobloqueos">Bloqueos <small class="d-block">Se eliminar&aacute;n todos los bloqueos que ha recibido.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bomensajes" name="bomensajes" class="mr-2" /><label class="fw-bolder" for="bomensajes">Mensajes Privados <small class="d-block">Se eliminar&aacute;n todos los mensajes que ha enviado y recibido.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bomensajes" name="bomensajes" class="me-2" /><label class="fw-bolder" for="bomensajes">Mensajes Privados <small class="d-block">Se eliminar&aacute;n todos los mensajes que ha enviado y recibido.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bosesiones" name="bosesiones" class="mr-2" /><label class="fw-bolder" for="bosesiones">Sesiones <small class="d-block">Se eliminar&aacute;n todas las sesiones.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bosesiones" name="bosesiones" class="me-2" /><label class="fw-bolder" for="bosesiones">Sesiones <small class="d-block">Se eliminar&aacute;n todas las sesiones.</small></label>
 	           <hr style="margin:3px 0">
-	           <input type="checkbox" class="float-start mt-3 mr-2" id="bovisitas" name="bovisitas" class="mr-2" /><label class="fw-bolder" for="boavisos">Visitas <small class="d-block">Se eliminar&aacute;n todo rastro de visitas de este usuario en perfiles, posts y fotos.</small></label>
+	           <input type="checkbox" class="float-start mt-3 me-2" id="bovisitas" name="bovisitas" class="me-2" /><label class="fw-bolder" for="boavisos">Visitas <small class="d-block">Se eliminar&aacute;n todo rastro de visitas de este usuario en perfiles, posts y fotos.</small></label>
 			</div>
 			<hr/>
 			Introduzca su contrase&ntilde;a para continuar: <input type="password" class="form-input" name="password"/>

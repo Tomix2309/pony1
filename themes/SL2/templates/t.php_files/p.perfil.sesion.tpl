@@ -7,7 +7,7 @@
    	
 	   <li class="clearfix">
 		 	<label class="form-label">Dispositivo</label>
-		 	<span onclick="dispositivo('{$tsSesion.navegador}');return false;" class="d-flex justify-content-start align-items-center"><i data-feather="{$tsSesion.tipo}" class="mr-2"></i> {$tsSesion.system}</span>
+		 	<span onclick="dispositivo('{$tsSesion.navegador}');return false;" class="d-flex justify-content-start align-items-center"><i data-feather="{$tsSesion.tipo}" class="me-2"></i> {$tsSesion.system}</span>
 		</li>
 		<li class="clearfix">
 	   	<label class="form-label">Usuario del dispositivo</label>

@@ -22,7 +22,7 @@
                   <i class="form-icon"></i> Recordarme?
                </label>
             </div>
-				<input type="submit" value="Iniciar sesión" class="btn btn-login btn-gradient-three mr-4">	
+				<input type="submit" value="Iniciar sesión" class="btn btn-login btn-gradient-three me-4">	
 			</form>
          <div class="d-flex justify-content-around align-items-center py-2">
 				<a tabindex="23" href="javascript:remind_password()" class="text-dark fw-bolder">&iquest;Olvidaste tu contrase&ntilde;a?</a> 

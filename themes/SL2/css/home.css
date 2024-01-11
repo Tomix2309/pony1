@@ -1,0 +1,65 @@
+/**
+ * Home
+*/
+.last_posts > .portada {
+  height: 350px;
+  object-fit: cover;
+}
+.last_posts > span[data-cat] {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+span[data-cat]::before {
+	content: attr(data-cat);
+  	background: rgba(var(--bs-dark-rgb), .8);
+	padding: 0.2rem 0.4rem;
+	display: block;
+	text-align: center;
+	font-size: .6rem;
+	text-transform: uppercase;
+	font-weight: 700;
+	border-radius: .4rem;
+}
+.last_posts .data-info {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  font-size: 13px;
+  background: rgba(var(--bs-dark-rgb), .8);
+}
+.last_posts .data-info a {
+  color: #EEE;
+  font-weight: 500;
+  font-size: .9rem;
+}
+
+.filterBy {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.box-body .filterBy li > img {
+  width: 40px;
+  height: 40px;
+}
+.box-body .destacado {
+  width: 100%;
+  position: relative;
+  margin: 4px 0;
+}
+.box-body .destacado img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover
+}
+.box-body .destacado .data {
+  width: 100%;
+  bottom: 0;
+  padding: 5px;
+  background-color: #0003;
+}
+.box-body .destacado span {
+  top: 4px;
+  left: 4px;
+}

@@ -22,10 +22,10 @@
    {if $tsFoto.f_user == $tsUser->uid || $tsUser->is_admod || $tsUser->permisos.moef || $tsUser->permisos.moedfo}
    <div class="photo_tools">
       {if $tsFoto.f_status != 2 && ($tsUser->is_admod || $tsUser->permisos.moef || $tsFoto.f_user == $tsUser->uid)}
-         <a href="#" class="mr-1 btn btn-sm btn-danger"onclick="{if $tsUser->uid == $tsFoto.f_user}fotos.borrar({$tsFoto.foto_id}, 'foto'); {else}mod.fotos.borrar({$tsFoto.foto_id}, 'foto'); {/if} return false;">Borrar</a>
+         <a href="#" class="me-1 btn btn-sm btn-danger"onclick="{if $tsUser->uid == $tsFoto.f_user}fotos.borrar({$tsFoto.foto_id}, 'foto'); {else}mod.fotos.borrar({$tsFoto.foto_id}, 'foto'); {/if} return false;">Borrar</a>
       {/if}
       {if $tsUser->is_admod || $tsUser->permisos.moedfo || $tsFoto.f_user == $tsUser->uid}
-         <a href="#" class="mr-1 btn btn-sm btn-success"onclick="location.href='{$tsConfig.url}/fotos/editar.php?id={$tsFoto.foto_id}'; return false">Editar</a>
+         <a href="#" class="me-1 btn btn-sm btn-success"onclick="location.href='{$tsConfig.url}/fotos/editar.php?id={$tsFoto.foto_id}'; return false">Editar</a>
       {/if}
    </div>
    {/if}

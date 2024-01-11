@@ -1,0 +1,27 @@
+/**
+ * Agregar
+*/
+#contentPosts .form-group {
+  position: relative;
+}
+#contentPosts .form-group .errormsg {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  font-style: italic;
+}
+#generator .caja {
+  padding: 6px;
+}
+#generator .caja h2 {
+  display: block;
+  font-size: 18px;
+}
+#generator .caja p {
+  font-size: 12px;
+}
+#generator .caja h2,
+#generator .caja p {
+  margin: 0;
+  padding: 0;
+}
