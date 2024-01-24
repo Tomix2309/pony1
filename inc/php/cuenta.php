@@ -67,8 +67,8 @@
 		$smarty->assign("tsEndY",$end_year);
 		// PERFIL INFO
       $tsPerfil = $tsCuenta->loadPerfil();
-		$smarty->assign("tsPerfil",$tsPerfil);		
-		$smarty->assign("tsRedes", $tsCuenta->redes);
+		$smarty->assign("tsPerfil", $tsPerfil);		
+		$smarty->assign("tsRedes", $redes);
 		// PERFIL DATA
 		$smarty->assign("tsPData",$tsPerfilData);
         $smarty->assign("tsPrivacidad",$tsPrivacidad);
@@ -90,10 +90,8 @@
 		$smarty->assign('tsCarpeta', "{$tsCore->settings['avatares']}/$Carpeta_Avatar");
 		$Avatar = array_diff(scandir(TS_AVATARES . $Carpeta_Avatar), ['.', '..', 'Thumbs.db']);
 		foreach($Avatar as $k => $ava) 
-			$Avatar[$k] = [
-				'img' => $ava,
-				'name' => str_replace('.jpg', '', $ava)
-			];
+			$Avatar[$k] = ['img' => $ava, 'name' => str_replace('.webp', '', $ava)];
+		natsort($Avatar);
 		$smarty->assign('tsAvatares', $Avatar);
 	}
 	$smarty->assign("tsAccion", $_GET["accion"]); 

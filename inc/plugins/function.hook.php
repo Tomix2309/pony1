@@ -31,7 +31,7 @@ function smarty_function_hook($params, &$smarty) {
 		include TS_PLUGINS . 'hook' . SEPARATOR . 'hook.js.php';
 
 		if($params['wysibb'] === true) {
-			if(in_array($pagew, ['posts', 'ver', 'agregar'])) {
+			if(in_array($pagew, ['posts', 'ver', 'agregar', 'files'])) {
 				$sl2html .= "<script src=\"{$config['tema']['t_url']}/wysibb/wysibb.js?$time\"></script>\n";
 				$sl2html .= "<link rel=\"stylesheet\" href=\"{$config['tema']['t_url']}/wysibb/wysibb.css?$time\" />\n";
 			}

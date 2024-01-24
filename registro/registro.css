@@ -1,7 +1,6 @@
 main {
 	display: grid;
-	grid-template-columns: 300px 1fr;
-	min-height: 350px;
+	grid-template-columns: 350px 1fr;
 	width: 90%;
 	margin: 0 auto;
 	border-radius: .7rem;
@@ -23,11 +22,18 @@ main .cover img {
 	border-radius: 10em;
 }
 
+#RegistroForm {
+	max-height: 550px;
+	overflow-y: auto;
+}
 #RegistroForm .mensajeAviso {
 	top: 0;
 	left: 0;
 	background-color: #FFF5;
 	backdrop-filter: blur(5px);
+}
+.chequear {
+	position: relative;
 }
 .chequear .help {
 	position: absolute;
@@ -47,6 +53,13 @@ main .cover img {
 	border-radius: 10em;
 	background-color: #CCC;
 }
+#showpass {
+	position: absolute;
+	top: 2.5rem;
+	right: 0.8rem;
+	font-size: 11px;
+	text-transform: uppercase;
+}
 .data.finish {
    display: grid;
    align-items: center;
@@ -54,4 +67,30 @@ main .cover img {
 .data.finish .box_body {
    padding: 1rem;
    text-align: center;
+}
+.wrapper .lader.saludo-dias {
+  background: linear-gradient(140deg, transparent 0%, #DBA42D60 75%), url('../files/images/buenos_dias.webp');
+}
+.wrapper .lader.saludo-tardes {
+  background: linear-gradient(140deg, transparent 0%, #DB772D60 75%), url('../files/images/buenas_tardes.webp');
+}
+.wrapper .lader.saludo-noche {
+  background: linear-gradient(140deg, transparent 0%, #186C8860 75%), url('../files/images/buenas_noches.webp');
+}
+.wrapper .lader.saludo-dias,
+.wrapper .lader.saludo-tardes,
+.wrapper .lader.saludo-noche {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	filter: saturate(90%);
+}
+.wrapper .lader h3 {
+  text-align: center;
+  font-weight: 700;
+  color: #FFF;
+  text-shadow: 0 0 3px #000;
+  text-transform: uppercase;
+  font-size: 1.6em;
+  padding: 20px 0;
 }

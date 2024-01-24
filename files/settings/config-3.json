@@ -1,0 +1,17 @@
+{
+    "mode": "dark",
+    "portada": {
+        "height": 300,
+        "id": "1139541",
+        "position": "center center",
+        "repeat": "no-repeat",
+        "type": "pexels",
+        "width": 1200
+    },
+    "params": {
+        "auto": "compress",
+        "cs": "tinysrgb",
+        "dpr": 1,
+        "fit": "crop"
+    }
+}

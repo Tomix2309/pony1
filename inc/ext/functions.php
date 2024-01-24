@@ -26,7 +26,7 @@ try {
       throw new Exception('No se pudo establecer la codificación de caracteres.');
    }
 } catch (Exception $e) {
-   exit(show_error($e->getMessage(), 'other'));
+   exit(show_error($e->getMessage(), 'Sin conexión'));
 }
 
 /**

@@ -32,10 +32,11 @@ switch ($step) {
 			$all = [
 				"config" => '../config.inc.php',
 				"cache" => '../cache/',
-				"avatar" => '../files/avatar/',
+            "archivos" => '../files/archivos/',
+            "avatar" => '../files/avatar/',
+            "settings" => '../files/settings/',
             "downloads" => '../files/downloads/',
-				"settings" => '../files/settings/',
-				"uploads" => '../files/uploads/'
+            "uploads" => '../files/uploads/'
 			];
 			foreach ($all as $key => $val) {
 				$permisos[$key]['chmod'] = (int)substr(sprintf('%o', fileperms($val)), -3);
@@ -128,12 +129,12 @@ switch ($step) {
             $FileConfig = str_replace(['dbpkey', 'dbskey'], [$web['pkey'], $web['skey']], $FileConfig);
             file_put_contents(CONFIG, $FileConfig);
             // Publicidad
-            $linkad = "https://joelmiguelvalente.github.io/grupos/";
+            $linkad = "https://phpost.es/";
             $sizesad = ['160x600','300x250','468x60','728x90'];
             foreach ($sizesad as $key => $ad) {
                $width = explode('x', $ad)[0];
                $height = explode('x', $ad)[1];
-               $html = "<a href=\"$linkad\" target=\"_blank\"><img alt=\"ads $ad\" title=\"Publicidad $ad\" width=\"$width\" height=\"$height\" src=\"{$web['url']}/public/images/ad$ad.png\"></a>";
+               $html = "<a href=\"$linkad\" target=\"_blank\"><img alt=\"ads $ad\" title=\"Publicidad $ad\" width=\"$width\" height=\"$height\" src=\"https://phpost.es/feed/ads/ad$ad.png\"></a>";
                $set[] = "ads_" . explode('x', $ad)[0] . " = '" . html_entity_decode($html) . "'";
             }
             $ads = join(', ', $set);
@@ -318,12 +319,12 @@ switch ($step) {
                <a href="?step=2" class="button button-fix">Continuar...</a>
 
          <?php elseif($step > 1 && $step < 8): ?>
-            <form action="<?php echo $accion_form; ?>" method="post" id="form" autocomplete="OFF">
+            <form action="<?= $accion_form; ?>" method="post" id="form" autocomplete="OFF">
                <fieldset>
                <?php if($step == 2): ?>
                   <legend>Licencia</legend>
                   <p>Para utilizar PHPost Risus debes estar de acuerdo con nuestra licencia de uso.</p>
-                  <textarea name="license"><?php echo $licence; ?></textarea>
+                  <textarea name="license"><?= $licence; ?></textarea>
                   <p><input type="submit" class="button" value="Acepto"/></p>
                <?php elseif($step == 3): ?>
                   <legend>Permisos de escritura</legend>
@@ -382,8 +383,8 @@ switch ($step) {
                      <dd> 
                         <select name="web[lang]" id="f5">
                            <option value="0">Selecciona un idioma</option>
-                           <option value="es-ES"<?php echo ($wlang == 'es-ES') ?? ' selected'; ?>>Español</option>
-                           <option value="en-GB"<?php echo ($wlang == 'en-GB') ?? ' selected'; ?>>English</option>
+                           <option value="es-ES"<?= ($wlang == 'es-ES') ?? ' selected'; ?>>Español</option>
+                           <option value="en-GB"<?= ($wlang == 'en-GB') ?? ' selected'; ?>>English</option>
                         </select>
                      </dd>
                   </dl>
@@ -425,7 +426,7 @@ switch ($step) {
                      <img class="rounded-circle" src="<?=$base_url?>/assets/SyntaxisLite-ico.png?<?=time()?>" alt="<?=$ConfigInstall['version_a']?>">
                      <h4 class="m-0 py-2">Bienvenido a <?=$ConfigInstall['nombre']?></h4>
                      <form action="https://phpost.es/feed/index.php?type=install" method="post" id="form">
-                        <small>Al finalizar se eliminará la carpeta <b><?php echo basename(getcwd()); ?></b> automáticamente.</small>
+                        <small>Al finalizar se eliminará la carpeta <b><?= basename(getcwd()); ?></b> automáticamente.</small>
                         <fieldset>
                            <p style="line-height: 1.7rem;font-size: 16px;width:60%;margin:12px auto;" class="d-block text-center">Gracias por instalar <strong><?=$ConfigInstall['version_a']?></strong>, ya est&aacute; lista tu nueva comunidad <strong>Link Sharing System</strong>. S&oacute;lo inicia sesi&oacute;n con tus datos y comienza a disfrutar. Ahora no dejes de <a href="https://www.phpost.es" target="_blank"><u>visitarnos</u></a> para estar pendiente de futuras actualizaciones. Recuerda reportar cualquier bug que encuentres, de esta manera todos ganamos.</p>
                         </fieldset>
@@ -434,7 +435,7 @@ switch ($step) {
                            <a sthref="https://t.me/PHPost23" target="_blank">Telegram</a>
                         </span>
                         <center>
-                           <input type="hidden" name="key" value="<?php echo $key; ?>" />
+                           <input type="hidden" name="key" value="<?= $key; ?>" />
                            <input type="submit" value="Finalizar" class="button"/>
                        </center>
                     </form>

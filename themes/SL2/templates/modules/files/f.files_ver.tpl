@@ -1,35 +1,45 @@
 <div class="col-xl-9 col-lg-9 col-md-8 col-sm-12 col-12">
-	<div class="box-lateral">
-      <div class="box-header">
-         <span><span id="File_nombre">{$tsFile.data.f_nombre|truncate:75}</span>.{$tsFile.data.f_ext}</span>
-         <span id="File_Fav" {if $tsFile.mifav.act == 0}style="display: none;"{/if} title="Lo tienes en tus favoritos"><i data-feather="star"></i></span>
+   <div class="archivo">
+      <div class="archivo-header d-flex justify-content-between align-items-center">
+         <div>
+             <h4 class="m-0">{$tsArchivo.data.arc_name}</h4>
+            <small class="fst-italic">{$tsArchivo.data.arc_name}.{$tsArchivo.data.arc_ext}</small>
+         </div>
+         <div>
+            {if $tsArchivo.data.arc_user == $tsUser->uid || $tsUser->is_admod}
+               <a href="#" onclick="editar_nombre({$tsArchivo.data.file_id}, '{$tsArchivo.data.arc_name}', false); return false;"><i data-feather="edit-2"></i></a>
+               <a href="#" class="File_privado_b{$tsArchivo.data.file_id}"{if $tsArchivo.f_privado == 1} style="display: none;"{/if} onclick="file_private({$tsArchivo.data.file_id}, 1); return false;" title="Cambiar a privado"><i data-feather="lock"></i></a>
+               <a href="#" class="File_privado_b{$tsArchivo.data.file_id}"{if $tsArchivo.f_privado == 0} style="display: none;"{/if} onclick="file_private({$tsArchivo.data.file_id}, 0); return false;" title="Cambiar a p&uacute;blico"><i data-feather="unlock"></i></a>
+               <a href="#" onclick="borrar_file({$tsArchivo.data.file_id}, false); return false;"><i data-feather="trash-2"></i></a>
+               <input type="hidden" id="del_file" value="true" />
+            {/if}
+            <!--  <span id="File_Fav" {if $tsArchivo.mifav.act == 0}style="display: none;"{/if} title="Lo tienes en tus favoritos"><i data-feather="star"></i></span> -->
+            <span id="File_Fav" title="Lo tienes en tus favoritos"><i data-feather="star"></i></span>
+         </div>
       </div>
-      {if $tsFile.data.f_user == $tsUser->uid || $tsUser->is_admod}
-      <div class="d-flex justify-content-start align-items-center">
-         <a href="#" onclick="editar_nombre({$tsFile.data.file_id}, '{$tsFile.data.f_nombre}', false); return false;" class="btn btn-sm btn-block btn-primary">Editar</a>
-         <a href="#" class="btn btn-sm btn-block btn-success qtip File_privado_b{$tsFile.data.file_id}" {if $tsFile.data.f_privado == 1}style="display: none;"{/if} onclick="file_private({$tsFile.data.file_id}, 1); return false;" title="Cambiar a privado">Privado</a>
-         <a href="#" class="btn btn-sm btn-block btn-success qtip File_privado_b{$tsFile.data.file_id}" {if $tsFile.data.f_privado == 0}style="display: none;"{/if} onclick="file_private({$tsFile.data.file_id}, 0); return false;" title="Cambiar a p&uacute;blico">P&uacute;blico</a>
-         <a href="#" onclick="borrar_file({$tsFile.data.file_id}, false); return false;" class="btn btn-sm btn-block btn-danger">Borrar</a>
-         <input type="hidden" id="del_file" value="true" />
-      </div>
+   </div>
+   <div class="archivo-visor">
+      {if $tsArchivo.data.arc_status == 0}
+         <div class="alert text-danger">Este archivo ha sido eliminado, puedes verlo porque eres {if $tsUser->is_admod == 1}administrador <br />Para eliminarlo definitivamente haz click <a href="javascript:adminborrar_file({$tsArchivo.data.arc_id}, false);" class="text-danger fw-bold">aqui</a>{else}moderador{/if}.<br />Puedes reactivarlo <a href="javascript:reactivar_file({$tsArchivo.data.arc_id})" class="text-danger fw-bold">Aqui</a></div>
       {/if}
+      {include "f.files_ver_archivo.tpl"}
+   </div>
+	<div class="box-lateral">
       <div class="box-body">
-      	{if $tsFile.data.f_estado == 0}
-            <div class="alert alert-danger text-center" id="File_deleted">Este archivo ha sido eliminado, puedes verlo porque eres {if $tsUser->is_admod == 1}administrador <br />Para eliminarlo definitivamente haz click <a onclick="adminborrar_file({$tsFile.data.file_id}, false);">aqui</a>{else}moderador{/if}.<br />Puedes reactivarlo <a onclick="reactivar_file({$tsFile.data.file_id})">Aqui</a></div>
-         {/if}
-    	   {include "$tsModulos/f.files_ver_archivo.tpl"}
          {* DETALLES *}
          <div class="d-flex justify-content-between align-items-center">
             <div>
-               <span class="d-block">Subido <b>{$tsFile.data.f_fecha|hace}</b></span>
-               <span>Tamaño: <b>{$tsFile.data.f_peso}</b></span>
-               {if $tsUser->is_admod == 1} <a href="{$tsConfig.url}/moderacion/buscador/1/1/{$tsFile.data.f_ip}" class="text-dark small fw-bold text-uppercase" target="_blank">{$tsFile.data.f_ip}</a>{/if}
+               <span class="d-block">Subido <b>{$tsArchivo.data.arc_date|hace}</b></span>
+               <span>Tamaño: <b>{$tsArchivo.data.arc_weight}</b></span>
+               {if $tsUser->is_admod} 
+                  <a href="{$tsConfig.url}/moderacion/buscador/1/1/{$tsArchivo.data.arc_ip}" class="small fw-bold text-uppercase" target="_blank">{$tsArchivo.data.arc_ip}</a>
+               {/if}
             </div>
             <div class="d-flex justify-content-center align-items-center">
-               {if $tsFile.data.f_user != $tsUser->uid}
-               <input type="button" onclick="{if !$tsUser->is_member}registro_load_form(){else}{if $tsFile.mifav.act != 1}favorit_file({$tsFile.data.file_id}){else}borrar_fav({$tsFile.mifav.fav_id}, false); return false;{/if}{/if}" class="btn btn-{if $tsFile.mifav.act != 1}info{else}danger{/if} btn-sm" value="{if $tsFile.mifav.act != 1}Favoritos{else}Borrar favoritos{/if}"{if $tsFile.mifav.act != 1} id="btn_favoritfile"{/if} />
+               {if $tsArchivo.data.arc_user != $tsUser->uid}
+                  <a class="btn btn-sm btn-primary me-2" id="btnfavorito" href="{if !$tsUser->is_member}{$tsConfig.url}/registro/{else}javascript:Files.archivo.favorito({$tsArchivo.data.arc_id}){/if}">{if $tsFavs}Guardado en{else}A{/if} Favoritos</a>
                {/if}
-               <input type="button" onclick="download_file({$tsFile.data.file_id})" class="btn btn-success btn-sm" value="DESCARGAR" id="btn_downloadfile">
+               <a href="{$tsConfig.url}/files/descargar/{$tsArchivo.data.arc_code}" class="btn btn-success btn-sm" id="btn_downloadfile">DESCARGAR</a>
             </div>
          </div>
       </div>
@@ -39,7 +49,7 @@
    <div class="row">
       <div class="col"></div>
       <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12 col-12">
-         {include "$tsModulos/f.files_ver_comentarios.tpl"}
+         {include "f.files_ver_comentarios.tpl"}
       </div>
       <div class="col"></div>
    </div>

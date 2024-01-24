@@ -1,3 +1,18 @@
+function wait(type, text) {
+	if(type === 'start') {
+		var opt = {
+			effect : 'bounce',
+			text : text,
+			bg : "rgba(255,255,255,0.7)",
+			color : "#000",
+			waitTime : -1,
+			textPos : 'vertical'
+		}
+	} else var opt = 'hide';
+	$('#body').waitMe(opt);
+}
+
+wait('start', 'Obteniendo código de reCAPTCHA...')
 // Evitamos el colapso con otras funciones
 const registro = (() => {
 	'use strict';
@@ -128,22 +143,23 @@ const registro = (() => {
 			if(areAllTrue(approved)) {
 				$('#loading').fadeIn(250);
 				let formulario = $("#RegistroForm").serialize();
-				$(".mensajeAviso").css({ display: 'grid' })
-				$(".mensajeAviso span").html('Espere, creando su cuenta...');
+		      wait('start', 'Espere, creando su cuenta...')
 				formulario += '&terminos=' + checked;
 				$.post(__getURL('nuevo'), formulario, h => {
-					console.log(h)
 					switch(h.charAt(0)){
 		            case '0':
 		               $('#loading').fadeOut(350);
 							mydialog.alert('Error', h.substring(3))
-							$(".mensajeAviso").css({ display: 'none' })
+							 wait('end')
 		            break;
 		            case '1':
 		            case '2':
+			            Swal.fire({
+  								showConfirmButton: false,
+								html: h.substring(3)
+							});
 		               $('#loading').fadeOut(350);
-		               $('.data > #RegistroForm').remove();
-		               $('.data').addClass('finish').html(h.substring(3));
+							 wait('end')
 		            break;
 		         }
 				})
@@ -157,6 +173,9 @@ const registro = (() => {
 
 	return {
     	crearCuenta: crearCuenta, // Hace pública la función crearCuenta
-    	redireccionar: redireccionar
+    	redireccionar: redireccionar,
+    	wait:wait
   	};
 })();
+
+new LazyLoad({elements_selector: '.image', use_native: true, class_loading: 'lazy-loading'})

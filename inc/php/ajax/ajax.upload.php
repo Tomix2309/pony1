@@ -51,41 +51,21 @@
 			$smarty->assign('tsCarpeta', "{$tsCore->settings['avatares']}/$Carpeta_Avatar");
 			$Avatar = array_diff(scandir(TS_AVATARES . $Carpeta_Avatar), ['.', '..', 'Thumbs.db']);
 			foreach($Avatar as $k => $ava) 
-				$Avatar[$k] = [
-					'img' => $ava,
-					'name' => str_replace('.jpg', '', $ava)
-				];
+				$Avatar[$k] = ['img' => $ava, 'name' => str_replace('.webp', '', $ava)];
+			natsort($Avatar);
 			$smarty->assign('tsAvatares', $Avatar);
       break;
       case 'upload-subir':
         	$sex = $tsUpload->sexuser();
         	$Carpeta_Avatar =  ($sex["user_sexo"] == 1) ? 'm' : 'f';
         	# Copiamos el avatar 120x120 a la carpeta correspondiente
-        	$dirimg = TS_AVATARES . $Carpeta_Avatar . SEPARATOR . $_POST['id'] . '.jpg';
-			$newName = TS_AVATAR . $_POST['usuario'] . '.default.webp';
-			if (file_exists($dirimg)) {
-		    	$img = imagecreatefromjpeg($dirimg);
-		    	if ($img === false) {
-		        	echo "Error al cargar la imagen JPEG.";
-		   	} else {
-		       	imagepalettetotruecolor($img);
-		        	imagealphablending($img, true);
-		        	imagesavealpha($img, true);
-		        	if (imagewebp($img, $newName, 100)) {
-		            // Conversión exitosa, continuar con otras operaciones
-		            copy($dirimg, $newName);
-		            imagedestroy($img);
-		        	} else {
-		            echo "Error al convertir la imagen a WebP.";
-		        	}
-		    	}
-			} else {
-		    	echo "La imagen de origen no existe.";
-			}
+        	$dirimg = TS_AVATARES . $Carpeta_Avatar . SEPARATOR . $_POST['id'] . '.webp';
+			$newName = TS_AVATAR . $_POST['usuario'] . '.webp';
+			copy($dirimg, $newName);
         	# Realizamos la actualización en la base de datos
 			db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE u_perfil SET p_avatar = 1 WHERE user_id = \''.$sex["user_id"].'\'');
 			# Mostramos la imagen actualizada, y reemplazamos con jquery
-			echo $tsCore->settings['avatar'] . '/' . $_POST['usuario'] . '.default.webp?' . time();
+			echo $tsCore->settings['avatar'] . '/' . $_POST['usuario'] . '.webp?' . time();
       break;
       case 'upload-gravatar': 
 			$email = $_POST['email_gravatar'];

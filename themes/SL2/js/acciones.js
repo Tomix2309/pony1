@@ -106,7 +106,7 @@ function bloquear(user, bloqueado, lugar, aceptar) {
       return;
    }
    if (bloqueado) mydialog.procesando_inicio('Procesando...', 'Bloquear usuario');
-   $('#loading').fadeIn(250);
+   SL2.start();
    $.ajax({
       type: 'POST',
       url: global_data.url + '/bloqueos-cambiar.php',
@@ -140,136 +140,19 @@ function bloquear(user, bloqueado, lugar, aceptar) {
                   break;
             }
          }
-         $('#loading').fadeOut(350);
+         SL2.stop();
       },
       error: function() {
          mydialog.error_500("bloquear('" + user + "', '" + bloqueado + "', '" + lugar + "', true)");
-         $('#loading').fadeOut(350);
+         SL2.stop();
       },
       complete: function() {
          mydialog.procesando_fin();
-         $('#loading').fadeOut(350);
+         SL2.stop();
       }
    });
 }
 
-/* MyDialog */
-var mydialog = {
-   is_show: false,
-   class_aux: '',
-   mask_close: true,
-   close_button: false,
-   show: function(class_aux){
-      if(this.is_show) return;
-      else this.is_show = true;
-      const SyntaxisLite = `<div id="dialog">
-         <div id="title"></div>
-         <div id="cuerpo">
-            <div id="procesando"><div id="mensaje"></div></div>
-            <div id="modalBody"></div>
-            <div id="buttons" class="d-flex justify-content-between align-items-center w-100"></div>
-         </div>
-      </div>`;
-      if($('#mydialog').html() == '') {
-         $('#mydialog').html(SyntaxisLite).css('display', 'flex');
-         $('#body').addClass('modal-open');
-      }
-   
-      if(class_aux==true) $('#mydialog').addClass(this.class_aux);
-      else if(this.class_aux != ''){
-         $('#mydialog').removeClass(this.class_aux);
-         this.class_aux = '';
-      }
-   
-      if(this.close_button) $('#mydialog #dialog').append('<svg onclick="mydialog.close()" id="i-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M2 30 L30 2 M30 30 L2 2" /></svg>');
-      else $('#mydialog #dialog .close_dialog').remove();
-   
-      $('#mydialog #dialog').fadeIn('fast');
-   },
-   close: function(){
-      //Vuelve todos los parametros por default
-      this.class_aux = '';
-      this.mask_close = true;
-      this.close_button = false;
-      this.is_show = false;
-      $('#mydialog').css('display', 'none');
-      $('#mydialog #dialog').fadeOut('fast', function(){ $(this).remove() });
-      $('#body').removeClass('modal-open');
-      this.procesando_fin();
-   },
-   center: function() {
-   },
-   title: function(title) {
-      $('#mydialog #title').html(title);
-   },
-   body: function(body, width, height) {
-      $('#mydialog #modalBody').html(body);
-   },
-   buttons: function(display_all, btn1_display, btn1_val, btn1_action, btn1_enabled, btn1_focus, btn2_display, btn2_val, btn2_action, btn2_enabled, btn2_focus) {
-      if (!display_all) {
-         $('#mydialog #buttons').css('display', 'none').html('');
-         return;
-      }
-      if (btn1_action == 'close') btn1_action = 'mydialog.close()';
-      if (btn2_action == 'close' || !btn2_val) btn2_action = 'mydialog.close()';
-      if (!btn2_val) {
-         btn2_val = 'Cancelar';
-         btn2_enabled = true;
-      }
-      var html = '';
-      if (btn1_display) html += '<input type="button" class="btn btn-success' + (btn1_enabled ? '' : ' disabled') + '" style="display:' + (btn1_display ? 'inline-block' : 'none') + '"' + (btn1_display ? ' value="' + btn1_val + '"' : '') + (btn1_display ? ' onclick="' + btn1_action + '"' : '') + (btn1_enabled ? '' : ' disabled') + ' />';
-      if (btn2_display) html += ' <input type="button" class="btn btn-danger' + (btn1_enabled ? '' : ' disabled') + '" style="display:' + (btn2_display ? 'inline-block' : 'none') + '"' + (btn2_display ? ' value="' + btn2_val + '"' : '') + (btn2_display ? ' onclick="' + btn2_action + '"' : '') + (btn2_enabled ? '' : ' disabled') + ' />';
-      $('#mydialog #buttons').html(html).css('display', 'inline-block');
-      if (btn1_focus) $('#mydialog #buttons .btn.btn-success').focus();
-      else if (btn2_focus) $('#mydialog #buttons .btn.btn-danger').focus();
-   },
-   alert: function(title, body, reload) {
-      this.show();
-      this.title(title);
-      this.body(body);
-      this.buttons(true, true, 'Aceptar', 'mydialog.close();' + (reload ? 'location.reload();' : 'close'), true, true, false);
-      this.center();
-   },
-   error_500: function(fun_reintentar) {
-      setTimeout(function() {
-         mydialog.procesando_fin();
-         mydialog.show();
-         mydialog.title('Error');
-         mydialog.body('Error al intentar procesar lo solicitado');
-         mydialog.buttons(true, true, 'Reintentar', 'mydialog.close();' + fun_reintentar, true, true, true, 'Cancelar', 'close', true, false);
-         mydialog.center();
-      }, 200);
-   },
-   procesando_inicio: function(value, title) {
-      if (!this.is_show) {
-         this.show();
-         this.title(title);
-         this.body('');
-         this.buttons(false, false);
-         this.center();
-      }
-      title = empty(title) ? '' : '<span>'+title+'</span>';
-      $('#mydialog #procesando #mensaje').html('<span class="d-block postition-relative text-center loading loading-lg success"></span>' + title);
-      $('#mydialog #procesando').addClass('load').fadeIn('fast');
-   },
-   procesando_fin: function() {
-      $('#mydialog #procesando').removeClass('load').fadeOut('fast');
-   }
-};
-document.onkeydown = function(e) {
-   key = (e == null) ? event.keyCode : e.which;
-   if (key == 27) //escape, close mydialog
-      mydialog.close();
-};
-
-
-$(document).ready(function() {
-   $('body').on('click', e => {
-      if ($('#mon_list').css('display') != 'none' && $(e.target).closest('#mon_list').length == 0 && $(e.target).closest('a[name=Monitor]').length == 0) notifica.last();
-      if ($('#mp_list').css('display') != 'none' && $(e.target).closest('#mp_list').length == 0 && $(e.target).closest('a[name=Mensajes]').length == 0) mensaje.last();
-      if ($('#menu_list').css('display') != 'none' && $(e.target).closest('#menu_list').length == 0 && $(e.target).closest('a[name=Menu]').length == 0) menu.last();
-   });
-});
 var notifica = {
    cache: {},
    retry: Array(),
@@ -369,7 +252,7 @@ var notifica = {
       notifica.retry.push(cb);
       var error = param[0] != 'action=count';
       $(obj).addClass('spinner');
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          url: global_data.url + '/notificaciones-ajax.php',
          type: 'post',
@@ -377,11 +260,11 @@ var notifica = {
          success: function(r) {
             $(obj).removeClass('spinner');
             cb(r, obj);
-            $('#loading').fadeOut(350);
+            SL2.stop();
          },
          error: function() {
             if (error) mydialog.error_500('notifica.ajax(notifica.retry[0], notifica.retry[1])');
-            $('#loading').fadeOut(350);
+            SL2.stop();
          }
       });
    },
@@ -602,14 +485,14 @@ var mensaje = {
    },
    // POST
    ajax: function(action, params, fn) {
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'POST',
          url: global_data.url + '/mensajes-' + action + '.php',
          data: params,
          success: function(h) {
             fn(h);
-            $('#loading').fadeOut(350);
+            SL2.stop();
          }
       });
    },
@@ -719,14 +602,14 @@ var mensaje = {
 var denuncia = {
    nueva: function(type, obj_id, obj_title, obj_user){
       // PLANTILLA
-		$('#loading').fadeIn(250); 
+		SL2.start(); 
       $.ajax({
 			type: 'POST',
 			url: global_data.url + '/denuncia-' + type + '.php',
 			data: 'obj_id=' + obj_id + '&obj_title=' + obj_title + '&obj_user=' + obj_user,
 			success: function(h){
             denuncia.set_dialog(h, obj_id, type);
-            $('#loading').fadeOut(350);                                 
+            SL2.stop();                                 
 			}
 		});
    },
@@ -745,7 +628,7 @@ var denuncia = {
       var razon = $('select[name=razon]').val();
       var extras = $('textarea[name=extras]').val();
       //
-      $('#loading').fadeIn(250);                         
+      SL2.start();                         
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/denuncia-' + type + '.php',
@@ -759,7 +642,7 @@ var denuncia = {
                   mydialog.alert("Bien", '<div class="alert alert-warning">' + h.substring(3) + '</div>');
                break;
             }
-            $('#loading').fadeOut(350);                                                 
+            SL2.stop();                                                 
 			}
 		});
    }
@@ -818,7 +701,7 @@ var afiliado = {
    },
    enviando: function(params){
    	//
-      $('#loading').fadeIn(250); 
+      SL2.start(); 
    	$.ajax({
    		type: 'POST',
    		url: global_data.url + '/afiliado-nuevo.php',
@@ -838,12 +721,12 @@ var afiliado = {
                break;
    		  	}
             mydialog.center();
-            $('#loading').fadeOut(350); 
+            SL2.stop(); 
    		}
    	});
    },
    detalles: function(aid){
-      $('#loading').fadeIn(250); 
+      SL2.start(); 
    	$.ajax({
    		type: 'POST',
    		url: global_data.url + '/afiliado-detalles.php',
@@ -855,7 +738,7 @@ var afiliado = {
        		mydialog.body(h);
             mydialog.buttons(true, true, 'Aceptar', 'mydialog.close()', true, true);
             mydialog.center();
-            $('#loading').fadeOut(350); 
+            SL2.stop(); 
          }
    	});   
    }
@@ -875,38 +758,6 @@ var news = {
       }
    }       
 }
-// READY
-$(document).ready(function(){
-   /* NOTICIAS */
-   news.total = $('#top_news > li').length;
-   news.slider();
-   // Moderacion
-   $('#stickymsg').on('onmouseover', function() {
-      $('#brandday').css('opacity',0.5);
-   }).on('onmouseout', function() {
-      $('#brandday').css('opacity',1);
-   }).on('onclick', function() {
-   	var enlace = $(this).attr('data-url');
-      location.href = enlace;
-   });
-
-   // Versión 1: Buscar usuarios [BETA]
-   $('#buscarusuario input[name=usuario]').on('keyup', function(e){
-		var usuario = $(this).val(), id = $(this).data('user');
-		all = (usuario == 'all') ? 'todos' : usuario;
-		$.ajax({
-			type: 'POST',
-			url: global_data.url + '/buscador-usuario.php',
-			data: 'users=' + usuario + '&s=' + all + '&id=' + id,
-			success: function(usuarios) {
-				// Donde queremos visualizar el resultado!
-				$('#resUser').html(usuarios);
-			}
-		});
-   });
-
-});
-
 var menu = {
    cache: {},
    last: function() {
@@ -920,3 +771,19 @@ var menu = {
       $('#menu_list').slideUp();
    }
 }
+// READY
+$(document).ready(function() {
+   $('body').on('click', e => {
+      if ($('#mon_list').css('display') != 'none' && $(e.target).closest('#mon_list').length == 0 && $(e.target).closest('a[name=Monitor]').length == 0) notifica.last();
+      if ($('#mp_list').css('display') != 'none' && $(e.target).closest('#mp_list').length == 0 && $(e.target).closest('a[name=Mensajes]').length == 0) mensaje.last();
+      if ($('#menu_list').css('display') != 'none' && $(e.target).closest('#menu_list').length == 0 && $(e.target).closest('a[name=Menu]').length == 0) menu.last();
+   });
+
+   /* NOTICIAS */
+   news.total = $('#top_news > li').length;
+   news.slider();
+   // Moderacion
+   $('#stickymsg').on('onmouseover', () => $('#brandday').css('opacity',0.5))
+   .on('onmouseout', () => $('#brandday').css('opacity',1))
+   .on('onclick', () => location.href = $(this).attr('data-url'));
+});

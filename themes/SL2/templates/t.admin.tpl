@@ -1,6 +1,4 @@
 {include file='sections/main_header.tpl'}
-<link rel="stylesheet" href="{$tsConfig.css}/admin.css?{$smarty.now}">
-<script src="{$tsConfig.js}/admin.js?{$smarty.now}"></script>
 <div id="borradores" class="row">
    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
       <div id="admin_menu">

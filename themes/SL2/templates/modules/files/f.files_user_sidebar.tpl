@@ -3,7 +3,7 @@
       <div class="box-header">Uploader <i data-feather="upload"></i></div>
       <div class="box-body">
          <a href="{$tsConfig.url}/perfil/{$filesUser.user_name}" class="d-block my-3 text-center" title="{$filesUser.user_name}">
-            <img src="{$tsConfig.url}/files/avatar/{$filesUser.user_id}.webp" class="w-50 rounded shadow mb-2 mx-auto" alt="Autor del archivo" />
+            <img src="{$filesUser.avatar}" class="w-50 rounded shadow mb-2 mx-auto" alt="Autor del archivo" />
             <span class="d-block text-dark text-capitalize fw-bolder">{$filesUser.user_name}</span>
          </a>
       </div>

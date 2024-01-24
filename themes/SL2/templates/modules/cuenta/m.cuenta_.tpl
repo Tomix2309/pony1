@@ -3,7 +3,7 @@
    <fieldset>
       <div class="form-group">
          <label for="email" class="form-label">E-Mail:</label>
-         <input type="text" value="{$tsUser->info.user_email}" maxlength="35" name="email" id="email" class="text form-input">
+         <input type="text" value="{$tsUser->info.user_email}" maxlength="35" name="email" id="email" class="text form-control">
       </div>
       <div class="form-group">
          <label for="pais" class="form-label">Pa&iacute;s:</label>
@@ -25,14 +25,14 @@
       <div class="form-group">
          <label class="form-label">Género</label>
          <div>
-            <label class="form-radio">
-               <input type="radio" value="m" name="sexo" class="cuenta-save-1"{if $tsPerfil.user_sexo == '1'} checked{/if}>
-               <i class="form-icon"></i> Masculino
-            </label>
-            <label class="form-radio">
-               <input type="radio" value="f" name="sexo" class="cuenta-save-1"{if $tsPerfil.user_sexo == '0'} checked{/if}>
-               <i class="form-icon"></i> Femenino
-            </label>
+            <div class="form-check">
+               <input class="form-check-input" type="radio" name="sexo" id="sexo1" value="m"{if $tsPerfil.user_sexo == '1'} checked{/if}>
+               <label class="form-check-label" for="sexo1">Masculino</label>
+            </div>
+            <div class="form-check">
+               <input class="form-check-input" type="radio" name="sexo" id="sexo0" value="f"{if $tsPerfil.user_sexo == '0'} checked{/if}>
+               <label class="form-check-label" for="sexo0">Femenino</label>
+            </div>
          </div>
       </div>
       <div class="form-group">
@@ -58,7 +58,7 @@
       {if $tsConfig.c_allow_firma}
       <div class="form-group">
          <label for="firma" class="form-label">Firma:<small class="d-block small font-italic">(Acepta BBCode) Max. 300 car.</small></label>
-         <textarea name="firma" id="firma" class="form-input cuenta-save-1">{$tsPerfil.user_firma}</textarea>
+         <textarea name="firma" id="firma" class="form-control cuenta-save-1">{$tsPerfil.user_firma}</textarea>
       </div>
       {/if}
    </fieldset>

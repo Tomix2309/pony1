@@ -4,15 +4,15 @@
 <div id="res" class="boxy-content">
 	<div class="row">
 		<div class="col-lg-4">
-			<h1 class="h5 m-0 p-2 bg-light">Informaci&oacute;n de versiones:</h1>
+			<h1 class="h5 mb-2 mt-2 p-2 bg-dark-subtle">Informaci&oacute;n de versiones:</h1>
       	<ul class="list-group list-group-flush">
-			  	<li class="mb-3">Versi&oacute;n: <strong class="d-block">{$tsConfig.version}</strong></li>
-			  	<li class="mb-3">Versi&oacute;n de PHP: <strong class="d-block">{$tsVersion.php}</strong></li>
-			  	<li class="mb-3">Versi&oacute;n de MySQL: <strong class="d-block">{$tsVersion.mysql.0}</strong></li>
-			  	<li class="mb-3">Versi&oacute;n del Servidor: <strong class="d-block">{$tsVersion.server}</strong></li>
-			  	<li class="mb-3">Versi&oacute;n de GD: <strong class="d-block">{$tsVersion.gd}</strong></li>
-			  	<li class="mb-3">Versi&oacute;n de OpenSSL: <strong class="d-block">{$tsVersion.openssl}</strong></li>
-			  	<li class="mb-3">Extensi&oacute;n ZIP: <strong class="d-block">{$tsVersion.zip}</strong></li>
+			  	<li class="list-group-item">Versi&oacute;n: <strong class="d-block">{$tsConfig.version}</strong></li>
+			  	<li class="list-group-item">Versi&oacute;n de PHP: <strong class="d-block">{$tsVersion.php}</strong></li>
+			  	<li class="list-group-item">Versi&oacute;n de MySQL: <strong class="d-block">{$tsVersion.mysql.0}</strong></li>
+			  	<li class="list-group-item">Versi&oacute;n del Servidor: <strong class="d-block">{$tsVersion.server}</strong></li>
+			  	<li class="list-group-item">Versi&oacute;n de GD: <strong class="d-block">{$tsVersion.gd}</strong></li>
+			  	<li class="list-group-item">Versi&oacute;n de OpenSSL: <strong class="d-block">{$tsVersion.openssl}</strong></li>
+			  	<li class="list-group-item">Extensi&oacute;n ZIP: <strong class="d-block">{$tsVersion.zip}</strong></li>
 			</ul>
 		</div>
 		<div class="col-lg-8">

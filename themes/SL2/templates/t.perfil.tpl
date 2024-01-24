@@ -1,14 +1,4 @@
 {include file='sections/main_header.tpl'}
-<style>
-.grid-avatares {
-  grid-template-columns: repeat(4, 1fr)!important;
-}
-.grid-avatares .avatar {
-  width: 100px!important;
-  height: 100px!important;
-}
-.box-type > span { display: none; }
-</style>
 {include "$tsModulos/m.perfil_headinfo.tpl"}
 <div class="container my-2">
    <div class="row">

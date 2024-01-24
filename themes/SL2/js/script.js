@@ -5,8 +5,13 @@
    /* SCROLL */
    const loaderNavegationFixed = () => {
       // Le cambiamos las clases al menu
-      if ($(window).scrollTop() > 265) $(".navegation").addClass('scrolling');
-      else $(".navegation").removeClass('scrolling');
+      if ($(window).scrollTop() >= 185) {
+         $(".navbar.navbar-expand-lg").addClass('sticky-top');
+         $('.navbar-brand').fadeIn(300);
+      } else {
+         $(".navbar.navbar-expand-lg").removeClass('sticky-top');
+         $('.navbar-brand').fadeOut(300);
+      }
    }
 
    /* DOCUMENT READY */
@@ -18,7 +23,8 @@
    }
   	const loaderTipsy = () => {
       // Le aplicamos los atributos necesarios
-   	$('a[title]').tipsy({fade: true, html: true, gravity: $.fn.tipsy.autoNS});
+      const listTooltip = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...listTooltip].map(element => new bootstrap.Tooltip(element))
    }
    const loaderLazy = () => {
       var LazyLoadClass = ['.image', '.background', '.iframe']
@@ -50,6 +56,22 @@
    loaderScrollToTop();
 	
 })();
+
+function modechange() {
+   if(global_data.user_key > 0) {
+      let htmlElement = document.documentElement; // Obtener el elemento html
+      let currentMode = htmlElement.dataset.bsTheme;
+      let mode = (currentMode === 'dark') ? 'light' : 'dark';
+      htmlElement.dataset.bsTheme = mode;
+      const uid = global_data.user_key;
+      $("#mode_change").html((mode === 'dark' ? 'light' : 'dark'))
+      $.post(global_data.url + '/settings-mode.php', { mode, uid }, res => console.log(res));
+   }
+}
+
+$(document).on('keydown', event => {
+   if (event.key === 'M' && event.shiftKey) modechange();
+});
 
 const ProfileComplete = localStorage.getItem('TourPefil');
 if(global_data.logueado === 'si' && global_data.page === 'perfil') {

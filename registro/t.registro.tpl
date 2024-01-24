@@ -1,14 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="{$Lang_short}" xml:lang="{$Lang_short}">
+<html data-bs-theme="dark" xmlns="http://www.w3.org/1999/xhtml" lang="{$Lang_short}" xml:lang="{$Lang_short}">
 <head>
 <title>{$tsTitle}</title>
 {meta facebook=true twitter=true}
+{jsdelivr type='styles' sources=['bootstrap','waitme','sweetalert2'] combine=true}
 {hook 
 	name="head" 
 	lang="{$Lang}" 
 	fonts=["Roboto"] 
 	css=['SyntaxisLite.min.css', "{$tsPage}.css"] 
-	js=['jquery.min.js', 'jquery.plugins.js', 'acciones.js'] 
+	js=['jquery.min.js'] 
 }
 <script>
 var global_data = {
@@ -24,16 +25,18 @@ var global_data = {
 <body name="superior" id="body" class="py-3">
 	<div id="mydialog" class="background__level--3" style="display:none"></div>
 	<div class="wrapper container">
-		<main class="shadow-4 overflow-hidden bg-white">
-			<div class="cover">
-				{image type="portada" src="{$tsConfig.files}/SyntaxisLite-ico.png"}
-			</div>
+		<main class="shadow-4 overflow-hidden bg-light-subtle">
+			{if !$tsMobile}
+		   <div class="lader position-relative d-flex justify-content-center align-items-center saludo-{$tsLader}">
+		      <h3>{$tsMessage}</h3>
+		      <div class="position-absolute mx-auto bottom-5 right-3 left-0 w-25" style="display:none;" id="loading">
+		         <div class="loading loading-lg success"></div>
+		      </div>
+		   </div>
+		   {/if}
 			{if $tsConfig.c_reg_active === '1'}
 				<div class="data">
-					<form id="RegistroForm" action="javascript:registro.crearCuenta()" method="POST" autocomplete="OFF" class="d-flex justify-content-start align-items-start flex-column p-3 position-relative">
-						<div class="mensajeAviso position-absolute w-100 h-100 zIndexFull">
-							<span class="fw-bolder d-flex justify-content-center align-items-center w-100 h-100">Obteniendo código de reCAPTCHA...</span>
-						</div>
+					<form id="RegistroForm" action="javascript:registro.crearCuenta()" method="POST" autocomplete="OFF" class=" p-3 position-relative">
 
 						<h2 class="text-center py-1">Crea tu cuenta</h2>
 
@@ -48,6 +51,7 @@ var global_data = {
 							<label class="form-label" for="password">Contrase&ntilde;a deseada*</label>
 							<input name="password" type="text" id="password" tabindex="2" placeholder="Ingresa una contrase&ntilde;a segura" class="form-control" required /> 
 							<div class="help fst-italic"></div>
+							<div id="showpass">Mostrar</div>
 							<div id="password-strength"><span></span> <em>Nivel</em></div>
 						</div>
 
@@ -57,36 +61,39 @@ var global_data = {
 							<div class="help fst-italic"></div>
 						</div>
 
-						<div class="mb-3 chequear position-relative w-100">
-							<label class="form-label">Fecha de Nacimiento*</label>
-							<input type="hidden" id="max" value="{$tsMaxY}">
-							<input type="hidden" id="end" value="{$tsEndY}">
-							<input name="nacimiento" type="date" id="nacimiento" tabindex="5" min="{$tsMaxY}-12-31" max="{$tsEndY}-12-31" class="form-control" required /> 
-							<div class="help fst-italic"></div>
+						<div class="row">
+							<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="mb-3 chequear position-relative w-100">
+									<label class="form-label">Fecha de Nacimiento*</label>
+									<input type="hidden" id="max" value="{$tsMaxY}">
+									<input type="hidden" id="end" value="{$tsEndY}">
+									<input name="nacimiento" type="date" id="nacimiento" tabindex="5" min="{$tsMaxY}-12-31" max="{$tsEndY}-12-31" class="form-control" required /> 
+									<div class="help fst-italic"></div>
+								</div>
+							</div>
+							<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+								<div class="mb-3 chequear position-relative w-100">
+								   <label class="form-label" for="sexo">G&eacute;nero</label>
+								   <select id="genero" class="form-select" name="sexo" tabindex="6" title="Selecciona tu g&eacute;nero">
+								     	<option value="">Seleccionar g&eacute;nero</option>
+								      <option value="1" id="sexo_m">Masculino</option>
+								      <option value="0" id="sexo_f">Femenino</option>
+								   </select> 
+								   <div class="help"><span><em></em></span></div>
+								</div> 
+							</div>
 						</div>
-
-						<div class="mb-3 chequear position-relative w-100">
-						   <label class="form-label" for="sexo">G&eacute;nero</label>
-						   <select id="genero" class="form-select" name="sexo" tabindex="6" title="Selecciona tu g&eacute;nero">
-						     	<option value="">Seleccionar g&eacute;nero</option>
-						      <option value="1" id="sexo_m">Masculino</option>
-						      <option value="0" id="sexo_f">Femenino</option>
-						   </select> 
-						   <div class="help"><span><em></em></span></div>
-						</div> 
-
-						<div class="form-checkbox chequear">
+		            <div class="form-check form-switch my-3">
 							<input type="hidden" name="response" id="response" class="g-recaptcha">
-				  			<input class="form-check-input" type="checkbox" id="terminos" tabindex="7" title="Acepta los T&eacute;rminos y Condiciones?" required>
-				  			<div class="form-icon"></div>
-				  			<label class="form-check-label" for="terminos">Acepto los <a href="{$tsConfig.url}/pages/terminos-y-condiciones/" target="_blank">T&eacute;rminos de uso</a>*</label>
+						  	<input class="form-check-input" type="checkbox" name="terminos" role="switch" id="terminos" required title="Acepta los T&eacute;rminos y Condiciones?">
+						  	<label class="form-check-label" for="terminos">Acepto los <a href="{$tsConfig.url}/pages/terminos-y-condiciones/" target="_blank">T&eacute;rminos de uso</a>*</label>
 						</div>
 						<small>Todos los campos con * son requerido</small>
 						<div class="py-3 d-flex justify-content-center align-items-center">
 							<input type="submit" class="btn btn-primary" value="Crear cuenta">
 						</div>
 						{if $tsConfig.oauth}
-						<span class="d-block mb-2 text-center fs-4">Continuar con...</span>
+						<span class="d-block text-center fs-5 my-4 text-uppercase">Continuar con...</span>
 						<div class="btn-group-socials row w-100" style="text-align: center;">
 							{foreach $tsConfig.oauth key=i item=social}
 								<div class="col-6">
@@ -110,8 +117,7 @@ var global_data = {
 	</div>
 	<br>
 {if $tsConfig.c_reg_active === '1'}
-{jsdelivr type='scripts' sources=['feather-icons'] combine=false}
-{hook name="footer" js=['script.js']}
+{jsdelivr type='scripts' sources=['vanilla-lazyload','waitme','sweetalert2'] combine=true}
 <script>
 	$(() => {
 		const publicKey = '{$tsConfig.pkey}';
@@ -126,7 +132,7 @@ var global_data = {
 	         grecaptcha.execute(publicKey, { action: 'submit' }).then(token => {
 	            // Supongo que 'response' está definido en registro.js
 	            response.value = token;
-	            $(".mensajeAviso").hide()
+	            wait('end')
 					avanzar = true;
 	         });
 	     });

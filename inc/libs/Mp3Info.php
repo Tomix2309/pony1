@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * This class extracts information about an mpeg audio. (supported mpeg versions: MPEG-1, MPEG-2)
+ * (supported mpeg audio layers: 1, 2, 3).
+ *
+ * It extracts:
+ * * All tags stored in both at the beginning and at the end of file (id3v2 and id3v1). id3v2.4.0 and id3v2.2.0 are not supported, only the most popular id3v2.3.0 is supported.
+ * * Audio parameters:
+ * * * - Total duration (in seconds)
+ * * * - BitRate (in bps)
+ * * * - SampleRate (in Hz)
+ * * * - Number of channels (stereo or not)
+ * * * - ... and other information
+ *
+ * Used sources:
+ * * {@link http://mpgedit.org/mpgedit/mpeg_format/mpeghdr.htm mpeg header description}
+ * * {@link http://id3.org/Developer%20Information id3v2 tag specifications}. Specially: {@link http://id3.org/id3v2.3.0 id3v2.3.0}, {@link http://id3.org/id3v2-00 id3v2.2.0}, {@link http://id3.org/id3v2.4.0-changes id3v2.4.0}
+ * * {@link https://multimedia.cx/mp3extensions.txt Descripion of VBR header "Xing"}
+ * * {@link http://gabriel.mp3-tech.org/mp3infotag.html Xing, Info and Lame tags specifications}
+ */
 class Mp3Info {
     const TAG1_SYNC = 'TAG';
     const TAG2_SYNC = 'ID3';
@@ -33,17 +52,17 @@ class Mp3Info {
     /**
      * @var array
      */
-    static private $_bitRateTable;
+    private static $_bitRateTable;
 
     /**
      * @var array
      */
-    static private $_sampleRateTable;
+    private static $_sampleRateTable;
 
     /**
      * @var array
      */
-    static private $_vbrOffsets = [
+    private static $_vbrOffsets = [
         self::MPEG_1 => [21, 36],
         self::MPEG_2 => [13, 21],
         self::MPEG_25 => [13, 21],
@@ -54,51 +73,57 @@ class Mp3Info {
      */
     public static $headerSeekLimit = 2048;
 
+    public static $framesCountRead = 2;
+
     /**
-     * MPEG codec version (1 or 2 or 2.5 or undefined)
-     * @var int
+     * @var int MPEG codec version (1 or 2 or 2.5 or undefined)
      */
     public $codecVersion;
 
     /**
-     * Audio layer version (1 or 2 or 3)
-     * @var int
+     * @var int Audio layer version (1 or 2 or 3)
      */
     public $layerVersion;
+
     /**
-     * Audio size in bytes. Note that this value is NOT equals file size.
-     * @var int
+     * @var int Audio size in bytes. Note that this value is NOT equals file size.
      */
     public $audioSize;
 
     /**
-     * Audio duration in seconds.microseconds (e.g. 3603.0171428571)
-     * @var float
+     * @var float Audio duration in seconds.microseconds (e.g. 3603.0171428571)
      */
     public $duration;
 
     /**
-     * Audio bit rate in bps (e.g. 128000)
+     * @var int Audio bit rate in bps (e.g. 128000)
      */
     public $bitRate;
 
     /**
-     * Audio sample rate in Hz (e.g. 44100)
-     * @var int
+     * @var int Audio sample rate in Hz (e.g. 44100)
      */
     public $sampleRate;
 
     /**
-     * Contains true if audio has variable bit rate
-     * @var boolean
+     * @var boolean Contains true if audio has variable bit rate
      */
     public $isVbr = false;
 
     /**
-     * Contains VBR properties
-     * @var array
+     * @var boolean Contains true if audio has cover
+     */
+    public $hasCover = false;
+
+    /**
+     * @var array Contains VBR properties
      */
     public $vbrProperties = [];
+
+    /**
+     * @var array Contains picture properties
+     */
+    public $coverProperties = [];
 
     /**
      * Channel mode (stereo or dual_mono or joint_stereo or mono)
@@ -112,67 +137,57 @@ class Mp3Info {
     public $tags = [];
 
     /**
-     * Audio tags ver. 1 (aka id3v1)
-     * @var array
+     * @var array Audio tags ver. 1 (aka id3v1)
      */
     public $tags1 = [];
 
     /**
-     * Audio tags ver. 2 (aka id3v2)
-     * @var array
+     * @var array Audio tags ver. 2 (aka id3v2)
      */
     public $tags2 = [];
 
     /**
-     * Major version of id3v2 tag (if id3v2  present) (2 or 3 or 4)
-     * @var int
+     * @var int Major version of id3v2 tag (if id3v2  present) (2 or 3 or 4)
      */
     public $id3v2MajorVersion;
 
     /**
-     * Minor version of id3v2 tag (if id3v2  present)
-     * @var int
+     * @var int Minor version of id3v2 tag (if id3v2 present)
      */
     public $id3v2MinorVersion;
 
     /**
-     * List of id3v2 header flags (if id3v2  present)
-     * @var array
+     * @var array List of id3v2 header flags (if id3v2 present)
      */
     public $id3v2Flags = [];
 
     /**
-     * List of id3v2 tags flags (if id3v2 present)
-     * @var array
+     * @var array List of id3v2 tags flags (if id3v2 present)
      */
     public $id3v2TagsFlags = [];
 
     /**
-     * Contains audio file name
-     * @var string
+     * @var string Contains audio file name
      */
     public $_fileName;
+
     /**
-     * Contains file size
-     * @var int
+     * @var int Contains file size
      */
     public $_fileSize;
 
     /**
-     * Number of audio frames in file
-     * @var int
+     * @var int Number of audio frames in file
      */
     public $_framesCount = 0;
 
     /**
-     * Contains time spent to read&extract audio information.
-     * @var float
+     * @var float Contains time spent to read&extract audio information.
      */
     public $_parsingTime;
 
     /**
-     * Calculated frame size for Constant Bit Rate
-     * @var int
+     * @var int Calculated frame size for Constant Bit Rate
      */
     private $_cbrFrameSize;
 
@@ -191,15 +206,47 @@ class Mp3Info {
      */
     public function __construct($filename, $parseTags = false) {
         if (self::$_bitRateTable === null)
-            self::$_bitRateTable = require TS_LIBS .'bitRateTable.php';
+            self::$_bitRateTable = require realpath(__DIR__).'/bitRateTable.php';
         if (self::$_sampleRateTable === null)
-            self::$_sampleRateTable = require TS_LIBS .'sampleRateTable.php';
+            self::$_sampleRateTable = require realpath(__DIR__).'/sampleRateTable.php';
 
-        if (!file_exists($filename))
-            throw new \Exception('File '.$filename.' is not present!');
+        $this->_fileName = $filename;
+        $isLocal = (strpos($filename, '://') === false);
+        if (!$isLocal) {
+            $this->_fileSize = static::getUrlContentLength($filename);
+        } else {
+            if (!file_exists($filename)) {
+                throw new \Exception('File ' . $filename . ' is not present!');
+            }
+            $this->_fileSize = filesize($filename);
+        }
+
+        if ($isLocal and !static::isValidAudio($filename)) {
+            throw new \Exception('File ' . $filename . ' is not mpeg/audio!');
+        }
 
         $mode = $parseTags ? self::META | self::TAGS : self::META;
-        $this->audioSize = $this->parseAudio($this->_fileName = $filename, $this->_fileSize = filesize($filename), $mode);
+        $this->audioSize = $this->parseAudio($this->_fileName, $this->_fileSize, $mode);
+    }
+    
+
+    /**
+     * @return bool|null|string
+     */
+    public function getCover()
+    {
+        if (empty($this->coverProperties)) {
+            return null;
+        }
+
+        $fp = fopen($this->_fileName, 'rb');
+        if ($fp === false) {
+            return false;
+        }
+        fseek($fp, $this->coverProperties['offset']);
+        $data = fread($fp, $this->coverProperties['size']);
+        fclose($fp);
+        return $data;
     }
 
     /**
@@ -208,15 +255,23 @@ class Mp3Info {
      * ID3V2 TAG - provides a lot of meta data. [optional]
      * MPEG AUDIO FRAMES - contains audio data. A frame consists of a frame header and a frame data. The first frame may contain extra information about mp3 (marked with "Xing" or "Info" string). Rest of frames can contain only audio data.
      * ID3V1 TAG - provides a few of meta data. [optional]
-     * @param $filename
-     * @param $fileSize
-     * @param $mode
+     * @param string $filename
+     * @param int $fileSize
+     * @param int $mode
      * @return float|int
      * @throws \Exception
      */
     private function parseAudio($filename, $fileSize, $mode) {
         $time = microtime(true);
-        $fp = fopen($filename, 'rb');
+
+        // create temp storage for media
+        if (strpos($filename, '://') !== false) {
+            $fp = fopen('php://memory', 'rwb');
+            fwrite($fp, file_get_contents($filename));
+            rewind($fp);
+        } else {
+            $fp = fopen($filename, 'rb');
+        }
 
         /** @var int Size of audio data (exclude tags size) */
         $audioSize = $fileSize;
@@ -231,7 +286,7 @@ class Mp3Info {
                 array_walk($sizeBytes, function (&$value) {
                     $value = substr(str_pad(base_convert($value, 10, 2), 8, 0, STR_PAD_LEFT), 1);
                 });
-                $size = bindec(implode(null, $sizeBytes)) + 10;
+                $size = bindec(implode($sizeBytes)) + 10;
                 $audioSize -= ($this->_id3Size = $size);
             }
         }
@@ -251,10 +306,13 @@ class Mp3Info {
         if ($mode & self::META) {
             if ($this->_id3Size !== null) fseek($fp, $this->_id3Size);
             /**
-             * First frame can lie. Need to fix in future.
+             * First frame can lie. Need to fix in the future.
              * @link https://github.com/wapmorgan/Mp3Info/issues/13#issuecomment-447470813
+             * Read first N frames
              */
-            $framesCount = $this->readMpegFrame($fp);
+            for ($i = 0; $i < self::$framesCountRead; $i++) {
+                $framesCount = $this->readMpegFrame($fp);
+            }
 
             $this->_framesCount = $framesCount !== null
                 ? $framesCount
@@ -269,9 +327,10 @@ class Mp3Info {
             // The faster way to detect audio duration:
             $samples_in_second = $this->layerVersion == 1 ? self::LAYER_1_FRAME_SIZE : self::LAYERS_23_FRAME_SIZE;
             // for VBR: adjust samples in second according to VBR quality
-            if ($this->isVbr && isset($this->vbrProperties['quality'])) {
-                $samples_in_second = floor($samples_in_second * $this->vbrProperties['quality'] / 100);
-            }
+            // disabled for now
+//            if ($this->isVbr && isset($this->vbrProperties['quality'])) {
+//                $samples_in_second = floor($samples_in_second * $this->vbrProperties['quality'] / 100);
+//            }
             // Calculate total number of audio samples (framesCount * sampleInFrameCount) / samplesInSecondCount
             $this->duration = ($this->_framesCount - 1) * $samples_in_second / $this->sampleRate;
         }
@@ -341,11 +400,11 @@ class Mp3Info {
 
             // VBR frames count presence
             if (($flagsBytes[3] & 2)) {
-                $this->vbrProperties['frames'] = implode(null, unpack('N', fread($fp, 4)));
+                $this->vbrProperties['frames'] = implode(unpack('N', fread($fp, 4)));
             }
             // VBR stream size presence
             if ($flagsBytes[3] & 4) {
-                $this->vbrProperties['bytes'] = implode(null, unpack('N', fread($fp, 4)));
+                $this->vbrProperties['bytes'] = implode(unpack('N', fread($fp, 4)));
             }
             // VBR TOC presence
             if ($flagsBytes[3] & 1) {
@@ -353,7 +412,7 @@ class Mp3Info {
             }
             // VBR quality
             if ($flagsBytes[3] & 8) {
-                $this->vbrProperties['quality'] = implode(null, unpack('N', fread($fp, 4)));
+                $this->vbrProperties['quality'] = implode(unpack('N', fread($fp, 4)));
             }
         }
 
@@ -491,7 +550,7 @@ class Mp3Info {
         array_walk($sizes, function (&$value) {
             $value = substr($value, 1);
         });
-        $size = implode("", $sizes);
+        $size = implode($sizes);
         $size = bindec($size);
 
         if ($this->id3v2MajorVersion == 2) {
@@ -512,7 +571,7 @@ class Mp3Info {
      * Parses id3v2.3.0 tag body.
      * @todo Complete.
      */
-    private function parseId3v23Body($fp, $lastByte) {
+    protected function parseId3v23Body($fp, $lastByte) {
         while (ftell($fp) < $lastByte) {
             $raw = fread($fp, 10);
             $frame_id = substr($raw, 0, 4);
@@ -548,41 +607,40 @@ class Mp3Info {
                 case 'TRCK':    # Track number/Position in set
                 case 'TIT2':    # Title/songname/content description
                 case 'TPE1':    # Lead performer(s)/Soloist(s)
+                case 'TBPM':    # BPM (beats per minute)
+                case 'TCOM':    # Composer
+                case 'TCOP':    # Copyright message
+                case 'TDAT':    # Date
+                case 'TDLY':    # Playlist delay
+                case 'TENC':    # Encoded by
+                case 'TEXT':    # Lyricist/Text writer
+                case 'TFLT':    # File type
+                case 'TIME':    # Time
+                case 'TIT1':    # Content group description
+                case 'TIT3':    # Subtitle/Description refinement
+                case 'TKEY':    # Initial key
+                case 'TLAN':    # Language(s)
+                case 'TLEN':    # Length
+                case 'TMED':    # Media type
+                case 'TOAL':    # Original album/movie/show title
+                case 'TOFN':    # Original filename
+                case 'TOLY':    # Original lyricist(s)/text writer(s)
+                case 'TOPE':    # Original artist(s)/performer(s)
+                case 'TORY':    # Original release year
+                case 'TOWN':    # File owner/licensee
+                case 'TPE2':    # Band/orchestra/accompaniment
+                case 'TPE3':    # Conductor/performer refinement
+                case 'TPE4':    # Interpreted, remixed, or otherwise modified by
+                case 'TPOS':    # Part of a set
+                case 'TPUB':    # Publisher
+                case 'TRDA':    # Recording dates
+                case 'TRSN':    # Internet radio station name
+                case 'TRSO':    # Internet radio station owner
+                case 'TSIZ':    # Size
+                case 'TSRC':    # ISRC (international standard recording code)
+                case 'TSSE':    # Software/Hardware and settings used for encoding
                     $this->tags2[$frame_id] = $this->handleTextFrame($frame_size, fread($fp, $frame_size));
                     break;
-                // case 'TBPM':    # BPM (beats per minute)
-                // case 'TCOM':    # Composer
-                // case 'TCOP':    # Copyright message
-                // case 'TDAT':    # Date
-                // case 'TDLY':    # Playlist delay
-                // case 'TENC':    # Encoded by
-                // case 'TEXT':    # Lyricist/Text writer
-                // case 'TFLT':    # File type
-                // case 'TIME':    # Time
-                // case 'TIT1':    # Content group description
-                // case 'TIT3':    # Subtitle/Description refinement
-                // case 'TKEY':    # Initial key
-                // case 'TLAN':    # Language(s)
-                // case 'TLEN':    # Length
-                // case 'TMED':    # Media type
-                // case 'TOAL':    # Original album/movie/show title
-                // case 'TOFN':    # Original filename
-                // case 'TOLY':    # Original lyricist(s)/text writer(s)
-                // case 'TOPE':    # Original artist(s)/performer(s)
-                // case 'TORY':    # Original release year
-                // case 'TOWN':    # File owner/licensee
-                // case 'TPE2':    # Band/orchestra/accompaniment
-                // case 'TPE3':    # Conductor/performer refinement
-                // case 'TPE4':    # Interpreted, remixed, or otherwise modified by
-                // case 'TPOS':    # Part of a set
-                // case 'TPUB':    # Publisher
-                // case 'TRDA':    # Recording dates
-                // case 'TRSN':    # Internet radio station name
-                // case 'TRSO':    # Internet radio station owner
-                // case 'TSIZ':    # Size
-                // case 'TSRC':    # ISRC (international standard recording code)
-                // case 'TSSE':    # Software/Hardware and settings used for encoding
-
                 ################# Text information frames
 
                 ################# URL link frames
@@ -625,7 +683,7 @@ class Mp3Info {
                     $raw = fread($fp, 4);
                     $data = unpack('C1encoding/A3language', $raw);
                     // read until \null character
-                    $short_description = null;
+                    $short_description = '';
                     $last_null = false;
                     $actual_text = false;
                     while (ftell($fp) < $dataEnd) {
@@ -657,8 +715,18 @@ class Mp3Info {
                 //     break;
                 // case 'RVRB':    # Reverb
                 //     break;
-                // case 'APIC':    # Attached picture
-                //     break;
+                 case 'APIC':    # Attached picture
+                     $this->hasCover = true;
+                     $last_byte = ftell($fp) + $frame_size;
+                     $this->coverProperties = ['text_encoding' => ord(fread($fp, 1))];
+//                     fseek($fp, $frame_size - 4, SEEK_CUR);
+                     $this->coverProperties['mime_type'] = $this->readTextUntilNull($fp, $last_byte);
+                     $this->coverProperties['picture_type'] = ord(fread($fp, 1));
+                     $this->coverProperties['description'] = $this->readTextUntilNull($fp, $last_byte);
+                     $this->coverProperties['offset'] = ftell($fp);
+                     $this->coverProperties['size'] = $last_byte - ftell($fp);
+                     fseek($fp, $last_byte);
+                     break;
                 // case 'GEOB':    # General encapsulated object
                 //     break;
                 case 'PCNT':    # Play counter
@@ -738,40 +806,40 @@ class Mp3Info {
                 case 'TRCK':    # Track number/Position in set
                 case 'TIT2':    # Title/songname/content description
                 case 'TPE1':    # Lead performer(s)/Soloist(s)
+                case 'TBPM':    # BPM (beats per minute)
+                case 'TCOM':    # Composer
+                case 'TCOP':    # Copyright message
+                case 'TDAT':    # Date
+                case 'TDLY':    # Playlist delay
+                case 'TENC':    # Encoded by
+                case 'TEXT':    # Lyricist/Text writer
+                case 'TFLT':    # File type
+                case 'TIME':    # Time
+                case 'TIT1':    # Content group description
+                case 'TIT3':    # Subtitle/Description refinement
+                case 'TKEY':    # Initial key
+                case 'TLAN':    # Language(s)
+                case 'TLEN':    # Length
+                case 'TMED':    # Media type
+                case 'TOAL':    # Original album/movie/show title
+                case 'TOFN':    # Original filename
+                case 'TOLY':    # Original lyricist(s)/text writer(s)
+                case 'TOPE':    # Original artist(s)/performer(s)
+                case 'TORY':    # Original release year
+                case 'TOWN':    # File owner/licensee
+                case 'TPE2':    # Band/orchestra/accompaniment
+                case 'TPE3':    # Conductor/performer refinement
+                case 'TPE4':    # Interpreted, remixed, or otherwise modified by
+                case 'TPOS':    # Part of a set
+                case 'TPUB':    # Publisher
+                case 'TRDA':    # Recording dates
+                case 'TRSN':    # Internet radio station name
+                case 'TRSO':    # Internet radio station owner
+                case 'TSIZ':    # Size
+                case 'TSRC':    # ISRC (international standard recording code)
+                case 'TSSE':    # Software/Hardware and settings used for encoding
                     $this->tags2[$frame_id] = $this->handleTextFrame($frame_size, fread($fp, $frame_size));
                     break;
-                // case 'TBPM':    # BPM (beats per minute)
-                // case 'TCOM':    # Composer
-                // case 'TCOP':    # Copyright message
-                // case 'TDAT':    # Date
-                // case 'TDLY':    # Playlist delay
-                // case 'TENC':    # Encoded by
-                // case 'TEXT':    # Lyricist/Text writer
-                // case 'TFLT':    # File type
-                // case 'TIME':    # Time
-                // case 'TIT1':    # Content group description
-                // case 'TIT3':    # Subtitle/Description refinement
-                // case 'TKEY':    # Initial key
-                // case 'TLAN':    # Language(s)
-                // case 'TLEN':    # Length
-                // case 'TMED':    # Media type
-                // case 'TOAL':    # Original album/movie/show title
-                // case 'TOFN':    # Original filename
-                // case 'TOLY':    # Original lyricist(s)/text writer(s)
-                // case 'TOPE':    # Original artist(s)/performer(s)
-                // case 'TORY':    # Original release year
-                // case 'TOWN':    # File owner/licensee
-                // case 'TPE2':    # Band/orchestra/accompaniment
-                // case 'TPE3':    # Conductor/performer refinement
-                // case 'TPE4':    # Interpreted, remixed, or otherwise modified by
-                // case 'TPOS':    # Part of a set
-                // case 'TPUB':    # Publisher
-                // case 'TRDA':    # Recording dates
-                // case 'TRSN':    # Internet radio station name
-                // case 'TRSO':    # Internet radio station owner
-                // case 'TSIZ':    # Size
-                // case 'TSRC':    # ISRC (international standard recording code)
-                // case 'TSSE':    # Software/Hardware and settings used for encoding
 
                 ################# Text information frames
 
@@ -847,8 +915,18 @@ class Mp3Info {
                 //     break;
                 // case 'RVRB':    # Reverb
                 //     break;
-                // case 'APIC':    # Attached picture
-                //     break;
+                case 'APIC':    # Attached picture
+                    $this->hasCover = true;
+                    $last_byte = ftell($fp) + $frame_size;
+                    $this->coverProperties = ['text_encoding' => ord(fread($fp, 1))];
+//                     fseek($fp, $frame_size - 4, SEEK_CUR);
+                    $this->coverProperties['mime_type'] = $this->readTextUntilNull($fp, $last_byte);
+                    $this->coverProperties['picture_type'] = ord(fread($fp, 1));
+                    $this->coverProperties['description'] = $this->readTextUntilNull($fp, $last_byte);
+                    $this->coverProperties['offset'] = ftell($fp);
+                    $this->coverProperties['size'] = $last_byte - ftell($fp);
+                    fseek($fp, $last_byte);
+                    break;
                 // case 'GEOB':    # General encapsulated object
                 //     break;
                 case 'PCNT':    # Play counter
@@ -885,30 +963,6 @@ class Mp3Info {
     }
 
     /**
-     * Simple function that checks mpeg-audio correctness of given file.
-     * Actually it checks that first 3 bytes of file is a id3v2 tag mark or
-     * that first 11 bits of file is a frame header sync mark or that 3 bytes on -128 position of file is id3v1 tag.
-     * To perform full test create an instance of Mp3Info with given file.
-     *
-     * @param string $filename File to be tested.
-     * @return boolean True if file looks that correct mpeg audio, False otherwise.
-     * @throws \Exception
-     */
-    public static function isValidAudio($filename) {
-        if (!file_exists($filename))
-            throw new Exception('File '.$filename.' is not present!');
-
-        $raw = file_get_contents($filename, false, null, 0, 3);
-        return $raw == self::TAG2_SYNC // id3v2 tag
-            || (self::FRAME_SYNC == (unpack('n*', $raw)[1] & self::FRAME_SYNC)) // mpeg header tag
-            || (
-                filesize($filename) > 128
-                && file_get_contents($filename, false, null, -128, 3) === self::TAG1_SYNC
-                )  // id3v1 tag
-        ;
-    }
-
-    /**
      * @param $frameSize
      * @param $raw
      *
@@ -936,6 +990,24 @@ class Mp3Info {
     }
 
     /**
+     * @param resource $fp
+     * @param int $dataEnd
+     * @return string|null
+     */
+    private function readTextUntilNull($fp, $dataEnd)
+    {
+        $text = null;
+        while (ftell($fp) < $dataEnd) {
+            $char = fgetc($fp);
+            if ($char === "\00") {
+                return $text;
+            }
+            $text .= $char;
+        }
+        return $text;
+    }
+
+    /**
      * Fills `tags` property with values id3v2 and id3v1 tags.
      */
     protected function fillTags()
@@ -956,5 +1028,50 @@ class Mp3Info {
                 ? ($id3v2_tag === 'COMM' ? current($this->tags2[$id3v2_tag])['actual'] : $this->tags2[$id3v2_tag])
                 : $this->tags1[$tag];
         }
+    }
+
+    /**
+     * Simple function that checks mpeg-audio correctness of given file.
+     * Actually it checks that first 3 bytes of file is a id3v2 tag mark or
+     * that first 11 bits of file is a frame header sync mark or that 3 bytes on -128 position of file is id3v1 tag.
+     * To perform full test create an instance of Mp3Info with given file.
+     *
+     * @param string $filename File to be tested.
+     * @return boolean True if file looks that correct mpeg audio, False otherwise.
+     * @throws \Exception
+     */
+    public static function isValidAudio($filename) {
+        if (!file_exists($filename) && strpos($filename, '://') == false) {
+            throw new Exception('File ' . $filename . ' is not present!');
+        }
+
+        $filesize = file_exists($filename) ? filesize($filename) : static::getUrlContentLength($filename);
+
+        $raw = file_get_contents($filename, false, null, 0, 3);
+        return $raw === self::TAG2_SYNC // id3v2 tag
+            || (self::FRAME_SYNC === (unpack('n*', $raw)[1] & self::FRAME_SYNC)) // mpeg header tag
+            || (
+                $filesize > 128
+                && file_get_contents($filename, false, null, -128, 3) === self::TAG1_SYNC
+            )  // id3v1 tag
+            ;
+    }
+
+    /**
+     * @param string $url
+     * @return int|mixed|string
+     */
+    public static function getUrlContentLength($url) {
+        $context = stream_context_create(['http' => ['method' => 'HEAD']]);
+        $head = array_change_key_case(get_headers($url, true, $context));
+        // content-length of download (in bytes), read from Content-Length: field
+        $clen = isset($head['content-length']) ? $head['content-length'] : 0;
+
+        // cannot retrieve file size, return "-1"
+        if (!$clen) {
+            return -1;
+        }
+
+        return $clen; // return size in bytes
     }
 }

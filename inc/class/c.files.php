@@ -1,862 +1,528 @@
 <?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+
 /**
  * @name    c.files.php
  * @author  Kmario19
  * @upgrade Miguel92
- * @copyright 2020
+ * @copyright 2020-2024
 */
 
 class tsFiles {
-	/*
-		BUSCAR EL TIPO DE ARCHIVO EN SU NOMBRE: NO HAY DE OTRA -YAO
-	*/	
-	function ext_archivo($nombre = NULL) {		
-		// Separamos las palabras
-		$palabras = explode('.',$nombre);
-		// Despues del punto es la extension
-		$sep = safe_count($palabras)-1;
-		// Sacamos la extension :D
-		$ext = $palabras[$sep];
-		//
-		return $ext;
-	}
-	
-	/*
-		SACAR NOMBRE SIN EXTENSION
+
+	private $tipos_carpetas = [
+		1 => 'documentos',
+		2 => 'imagenes',
+		3 => 'musica',
+		4 => 'privada',
+		5 => 'protegido',
+		6 => 'publico',
+		7 => 'videos'
+	];
+
+	/**
+	 * @access private
+    * @uses Obtenemos información del archivo extension, nombre, etc.
+	 * @param string
+	 * @param string extension | filename | basename
+	 * @return string
 	*/
-	function nombre_archivo($name, $ext) {
-		// Separar .xxx del nombre del archivo
-		$file = explode('.'.$ext,$name);
-		// El nombre es el primero e,e
-		$nombre = $file[0];
-		//		
-		return $nombre;
+	private function getInfoFile(string $file = '', string $type = 'extension'):string {
+		$params = [
+			'extension' => PATHINFO_EXTENSION,
+			'basename' => PATHINFO_BASENAME,
+			'filename' => PATHINFO_FILENAME
+		];
+		return pathinfo($file, $params[$type]);
 	}
-	
-	/*
-		SIMPLE CONVERSION DE UNIDADES: KB, MB, GB
+
+	/**
+	 * @access private
+    * @uses Obtenemos los iconos para usar
+    * @param string
+	 * @return array
 	*/
-	function peso_archivo($size = NULL) {
-		// Menores de 1Kb para Kb con maximo de 3 decimales
-		if($size <= 1024) {
-			$total = $size/1024;
-			$total = number_format($total, 3);
-			$total = $total.'KB';
-		// Menores de 1Mb para Kb con un decimal	
-		}elseif($size >= 1024 && $size <= 1048576) {
-			$total = $size/1024;
-			$total = number_format($total, 1);
-			$total = $total.'KB';		
-		// Menores de 1Gb para Mb con un decimal
-		}elseif($size >= 1048576 && $size <= 1073741824) {
-			$total = $size/1048576;
-			$total = number_format($total, 1);
-			$total = $total.'MB';
-		// Si es mayor de 1Gb (poco probable) que muestre en Gb con dos decimales
-		}elseif($size >= 1073741824) {
-			$total = $size/1073741824;
-			$total = number_format($total, 2);
-			$total = $total.'GB';
+	private function getIcons(string $extension = '') {
+		$icons = array_filter(glob(TS_TEMA_ACT . 'images/files/*'), 'is_file');
+		foreach ($icons as $key => $icon) {
+			$filename = self::getInfoFile($icon, 'filename');
+			if (!preg_match('/^carpeta-/', $filename)) {
+				$extensiones[$filename] = $filename;
+				if($filename == 'doc') $extensiones[$filename] = 'docx';
+				if($filename == 'xls') $extensiones[$filename] = 'xlsx';
+				if($filename == 'mdb') $extensiones[$filename] = 'accdb';
+			}
 		}
-		//	
-    	return $total;
+		if(!in_array($extension, $extensiones)) $extensiones[$extension] = 'archivo';
+		return $extensiones[$extension];		
 	}
-	
-	/*
-		SUBIR NUEVO ARCHIVO
+
+	/**
+	 * @access private
+    * @uses Comprobamos si es administrador!
+	 * @return string
 	*/
-	function newFile() {
-		global $tsCore, $tsUser;
-		//
-		if(!empty($_FILES['archivo']['name'])) {
-			// PESA MAS DE LO PERMITIDO?
-			if($tsCore->settings['c_max_upload'] >= 0 || $_FILES['archivo']['size'] <= $tsCore->settings['c_max_upload']*1073741824) {
-				// OBTENEMOS DATOS
-				$archivo = $_FILES['archivo'];			
-				$privado = empty($_POST['privado']) ? 0 : 1;
-				// DESDE UNA CARPETA?
-				$folder = empty($_GET['folderid']) ? 0 : intval($_GET['folderid']);
-				// SOLO EXTENSION
-				$ext = $this->ext_archivo($archivo['name']);
+	private function getAdmin(string $fix = '', string $add = '') {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+      // Solo si esta la vista de moderacion activa
+      $isAdmod = "AND {$fix}user_activo = 1 AND {$fix}user_baneado = 0" . (!empty($add) ? " $add" : '');
+      if($tsUser->is_admod AND (int)$tsCore->settings['c_see_mod'] === 1) $isAdmod = '';
+      //
+      return $isAdmod;
+   }
+
+	/**
+	 * @access private
+    * @uses Obtenemos todos los mime
+	 * @return string
+	*/
+	private function MIME(string $ext = ''):string {
+		// Texto
+		$txts = ['css', 'html', 'js', 'json', 'txt'];
+		foreach($txts as $txt) $mime[$txt] = 'txt/' . ($txt == 'js' ? 'javascript' : $txt);
+		// Imagenes
+		$imgs = ['gif', 'jpeg', 'jpg', 'png', 'webp', 'svg'];
+		foreach($imgs as $img) $mime[$img] = "image/$img" . ($img == 'svg' ? '+xml' : '');
+		// Audio
+		$auds = ['mpeg', 'ogg', 'wav', 'mp3'];
+		foreach($auds as $aud) $mime[$aud] = "audio/$aud";
+		// Video
+		$vids = ['mp4', 'ogg', 'webm'];
+		foreach($vids as $vid) $mime[$vid] = "video/$vid";
+		// Fuentes
+		$fonts = ['otf', 'ttf', 'woff', 'woff2'];
+		foreach($fonts as $font) $mime[$font] = "font/$font";
+		$mime = [
+			// Aplicacion
+			'docx' => 'application/msword',
+			'pdf' => 'application/pdf',
+			'ppt' => 'application/vnd.ms-powerpoint',
+			'xlsx' => 'application/vnd.ms-excel',
+			'xml' => 'application/xml',
+			'zip' => 'application/zip',
+		];
+		// En caso que no este, enviamos el normal
+		$rsp = ($mime[$ext] == NULL) ? 'application/octet-stream' : $mime[$ext];
+		return $rsp;
+	}
+
+	/**
+	 * @access private
+    * @uses Convertimos los segundos a minutos
+	 * @return string
+	*/
+	private function convertirms($segundos) {
+   	$minutos = floor($segundos / 60);
+   	$segundos = $segundos % 60;
+   	return sprintf("%02d:%02d", $minutos, $segundos);
+	}
+
+	/**
+	 * @access public
+    * @uses Obtenemos información del archivo a descargar
+    * @param string
+	 * @return array
+	*/
+	public function getData(string $code = ''):array {
+		return db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT arc_name, arc_code, arc_ext, arc_private FROM files_archivos WHERE arc_code = '$code' LIMIT 1"));
+	}
+
+	/**
+	 * @access public
+    * @uses Obtenemos el peso del archivo en bytes, kb, mb, gb, etc.
+	 * @param string
+	 * @param int 
+	 * @return string
+	*/
+	public function formatBytes($size = NULL, int $decimals = 2):string {
+	   if ($size === NULL) return '0 Bytes';
+	   $k = 1024;
+	   $sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+	   $i = floor(log($size, $k));
+	   //$formattedSize = number_format($size / pow($k, $i), $decimals);
+	   $formattedSize = number_format($size / pow($k, $i), ($i < 2) ? 0 : $decimals);
+	   return $formattedSize . $sizes[$i];
+	}
+
+	/**
+	 * @access public
+    * @uses Obtenemos la información del archivo
+	 * @return Object json
+	*/
+	public function getOnlyInfo() {
+		# Obtenemos el archivo de $_FILES
+		if(isset($_FILES['archivo']) OR isset($_GET['id'])) {
+			if(isset($_GET['id'])) {
+				$id = (int)$_GET['id'];
+				$data = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT arc_id, arc_user, arc_name, arc_code, arc_weight, arc_type, arc_ext, arc_downloads, arc_comments, arc_private, user_id, user_name FROM files_archivos LEFT JOIN u_miembros ON user_id = arc_user WHERE arc_id = $id"));
+				$data = [
+					'user' => $data['user_name'],
+					'ext' => $data['arc_ext'],
+					'format' => $data['arc_type'],
+					'name' => $data['arc_name'],
+					'weight' => $data['arc_weight'],
+					'downloads' => $data['arc_downloads'],
+					'private' => $data['arc_private'] ? 'Privado' : 'Publico',
+					'icon' => self::getIcons($data['arc_ext'])
+				];
+			} else {
+				$archivo = $_FILES['archivo'];
+				// Si esta vacio.
+				if(empty($archivo['name'])) return '0: No has seleccionado ning&uacute;n archivo.';
+				$extension = self::getInfoFile($archivo['name'], 'extension');
+				$data = [
+					'ext' => $extension,
+					'format' => $archivo['type'],
+					'name' => self::getInfoFile($archivo['name'], 'filename'),
+					'weight' => self::formatBytes($archivo['size']),
+					'icon' => self::getIcons($extension)
+				];
+			}
+			return json_encode($data);
+		}
+	}
+
+	/**
+	 * @access public
+    * @uses Subimos el archivo y generamos nuevo nombre
+	 * @return string
+	*/
+	public function fileUpload() {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		$OneGB = 1048576; // 1GB
+		# Obtenemos el archivo de $_FILES
+		if(isset($_FILES['archivo'])) {
+			$archivo = $_FILES['archivo'];
+			// Si esta vacio.
+			if(empty($archivo['name'])) return '0: No has seleccionado ning&uacute;n archivo.';
+
+			if((int)$tsCore->settings['c_max_upload'] >= 0 || $archivo['size'] <= (int)$tsCore->settings['c_max_upload'] * $OneGB) {
 				// PERMISOS Y RESTRICCIONES
 				switch($tsCore->settings['c_files_type']) {
 					case 1:
 						$ext_perm = explode(',',$tsCore->settings['c_files_ext']);
-						if(!in_array($ext, $ext_perm)) return 'Solo se permiten archivos con extensi&oacute;n <b>'.$tsCore->settings['c_files_ext'].'</b>';
+						if(!in_array($ext, $ext_perm)) return "0: Solo se permiten archivos con extensi&oacute;n <strong>'.{$tsCore->settings['c_files_ext']}.'</strong>";
 					break;
 					case 2:				
 						$ext_perm = explode(',',$tsCore->settings['c_files_ext']);
-						if(in_array($ext, $ext_perm)) return 'No se permiten archivos con extensi&oacute;n <b>'.$tsCore->settings['c_files_ext'].'</b>';
+						if(in_array($ext, $ext_perm)) return "0: No se permiten archivos con extensi&oacute;n <strong>{$tsCore->settings['c_files_ext']}</strong>";
 					break;
 					case 3:
-						return 'No se permite la subida de archivos.';
+						return "0: No se permite la subida de archivos.";
 					break;
 				}
-				// FORMATO
+				$privado = isset($_POST['privado']) ? 1 : 0;
+				// Subimos archivo a una carpeta, o de adentro de una carpeta
+				$carpeta = isset($_POST['carpeta_id']) ? (int)$_POST['carpeta_id'] : (int)$_POST['carpeta'];
+				// Información del archivo
+				$extension = self::getInfoFile($archivo['name'], 'extension');
 				$formato = $archivo['type'];
-				// SOLO NOMBRE
-				$nombre = substr($archivo['name'], 0, strripos($archivo['name'], '.'.$ext));
-				$peso = $this->peso_archivo($archivo['size']);
+				$nombre = self::getInfoFile($archivo['name'], 'filename');
+				$peso = self::formatBytes($archivo['size']);
 				// PARA EL DIRECTORIO
-				$url = $tsUser->uid.'_'.md5($archivo['name'].rand(0,100)).'.'.$ext;
-				$destino = TS_FILES.'archivos/'.$url;
+				$nuevo_nombre = 'sl2' . md5(uniqid($nombre));
+				$destino = TS_ARCHIVOS . "$nuevo_nombre.$extension";
+				$tiempo = time();
 				// SI HAY PROBLEMAS CON LA SUBIDA, NO CONTINUAMOS
-				if ($archivo["error"] > 0) { die("0: Error: ".$_FILES["file"]["error"]); }
+				if ($archivo["error"] > 0) return "0: Error: ".$_FILES["file"]["error"];
 				// ALMACENAMOS EL ARCHIVO
 				else move_uploaded_file($archivo['tmp_name'], $destino);
 				// INSERTAMOS
-				$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-				if(!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) { die('0: Su ip no se pudo validar.'); }
-				if(db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `a_files` (f_nombre, f_url, f_fecha, f_peso, f_ext, f_tipo, f_user, f_privado, f_estado, f_folder, f_ip) VALUES (\''.$nombre.'\', \''.$url.'\', \''.time().'\', \''.$peso.'\', \''.$ext.'\', \''.$formato.'\', \''.$tsUser->uid.'\', \''.$privado.'\', \'1\', \''.(int)$folder.'\', \''.$_SERVER['REMOTE_ADDR'].'\')')) {
-					//
-					return '1: <a href="'.$tsCore->settings['url'].'/files/'.db_exec('insert_id').'/'.$tsCore->setSEO($nombre).'"><b>'.$archivo['name'].'</b></a> subido exitosamente.';
+				$ip = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+				if(!filter_var($ip, FILTER_VALIDATE_IP)) return '0: Su ip no se pudo validar.';
+				if(db_exec([__FILE__, __LINE__], 'query', "INSERT INTO files_archivos (arc_user, arc_name, arc_code, arc_weight, arc_type, arc_ext, arc_private, arc_status, arc_folder, arc_date, arc_ip) VALUES ({$tsUser->uid}, '$nombre', '$nuevo_nombre', '$peso', '$formato', '$extension', $privado, 1, $carpeta, $tiempo, '$ip')")) {					//
+					return "1: <a href=\"{$tsCore->settings['url']}/files/archivos/$nuevo_nombre\"><strong>{$archivo['name']}</strong></a> subido exitosamente.";
 				} else return '0: Ocurri&oacute; un error al subir el archivo, int&eacute;ntalo m&aacute;s tarde';
-			} else return '0: El archivo que intentas subir excede los <b>'.$tsCore->settings['c_max_upload'].'Mb</b> permitidos.';
-		} else return '0: No has seleccionado ning&uacute;n archivo.';
-		
-	}
-	
-	/* 
-		BORRAR ARCHIVO
-	*/
-	function deleteFile(){
-		global $tsCore, $tsUser, $tsMonitor;
-		//
-		$file = $tsCore->setSecure($_POST['fileid']);
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_user, f_estado, f_ext, f_nombre, f_user FROM a_files WHERE file_id = \''.(int)$file.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// ES MIO O TIENE PERMISOS
-		if($data['f_user'] == $tsUser->uid){
-			// BORRAR ARCHIVO DEL SERVIDOR		
-			$root = TS_FILES.'archivos/'.$data['f_url'];
-       	unlink($root);
-			// BORRAR DATOS ADICIONALES
-			$file = (int)$file;
-			db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_files WHERE file_id = " . $file);
-			db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_favoritos WHERE fav_file = " . $file);
-			db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_descargas WHERE d_file = " . $file);
-			db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_comentarios WHERE com_file = " . $file);
-            return '1: Se elimino el archivo correctamente.';				
-		} elseif (!empty($tsUser->is_admod)) {
-			// YA LO HABIA DESABILITADO?
-			if($data['f_estado'] == 1) {
-				db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_estado = \'0\' WHERE file_id = \''.(int)$file.'\'');
-				// MANDAR AVISO AL USUARIO
-				$aviso = 'Hola <b>'.$tsUser->getUserName($data['f_user'])."</b>\n\n Te informo que tu archivo <b>".$data['f_nombre'].".".$data['f_ext']."</b> ha sido desactivado temporalmente por <a href=\"#\" class=\"hovercard\" uid=\"".$tsUser->uid."\">".$tsUser->nick."</a>\n\n Estar&aacute; en revisi&oacute;n por incumplir con el protocolo de archivos.\n\nTe recomendamos estar al tanto de este reglamento para no tener este inconveniente de nuevo.\n\n Muchas gracias por entender!";
-				$tsMonitor->setAviso($data['f_user'], 'Archivo eliminado', $aviso, 1);
-				return '2: El archivo fue removido para su revision.<br /><br /> Borrar permanentemente desde la administraci&oacute;n o recarga esta p&aacute;gina.';
-			} else return '0: El archivo ya est&aacute; desabilitado.';
-		} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-	}
-	
-	/* 
-		BORRAR ARCHIVO DEFINITIVO POR UN ADMINISTRADOR
-	*/
-	function admindeleteFile(){
-		global $tsCore, $tsUser, $tsMonitor;
-		//
-		$fileid = $tsCore->setSecure($_POST['fileid']);
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_nombre, f_ext, f_user, f_url FROM a_files WHERE file_id = \''.(int)$fileid.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// EXISTE EL ARCHIVO?
-		if(!empty($data['file_id'])) {
-			// ES MIO O TIENE PERMISOS
-			if(!empty($tsUser->is_admod)){
-				// MANDAR AVISO AL USUARIO ANTES DE BORRAR LOS DATOS
-				$aviso = 'Hola <b>'.$tsUser->getUserName($data['f_user'])."</b>\n\n Te informo que tu archivo <b>".$data['f_nombre'].".".$data['f_ext']."</b> ha sido eliminado permanentemente por <a href=\"#\" class=\"hovercard\" uid=\"".$tsUser->uid."\">".$tsUser->nick."</a> por incumplir con el protocolo de archivos.\n\nTe recomendamos estar al tanto de este reglamento para no tener este inconveniente de nuevo.\n\n Muchas gracias por entender!";
-				$tsMonitor->setAviso($data['f_user'], 'Archivo eliminado permanentemente', $aviso, 3);
-				// BORRAR ARCHIVO DEL HOST			
-				$root = TS_FILES.'archivos/'.$data['f_url'];
-				unlink($root);
-				// BORRAR DATOS ADICIONALES
-				$fileid = (int)$fileid;
-				db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_files WHERE file_id = {$fileid}");
-				db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_favoritos WHERE fav_file = {$fileid}");
-				db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_descargas WHERE d_file = {$fileid}");
-				db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_comentarios WHERE com_file = {$fileid}");			
-				//
-				return '1: El archivo se ha eliminado correctamente.';				
-			} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-		} else return '0: El archivo no existe o ya fu&eacute; eliminado permanentemente.';
-	}
-	/* 
-		BORRAR ARCHIVOS SELECCIONADOS
-	*/
-	function delFiles(){
-		global $tsCore, $tsUser, $tsMonitor;
-		$elmts = explode(',', $_POST['files']);
-		foreach($elmts as $file) {
-			$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_url FROM a_files WHERE file_id = \''.(int)$file.'\' AND f_user = \''.$tsUser->uid.'\'');
-			$dato = db_exec('fetch_assoc', $query);
-			if($dato['file_id']>0) {
-				// BORRAR ARCHIVO DEL SERVIDOR		
-				$root = TS_FILES.'archivos/'.$dato['f_url'];
-				unlink($root);
-				// BORRAR DATOS ADICIONALES
-				$file = (int)$file;
-				db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_files WHERE file_id = " . $file);
-				db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_favoritos WHERE fav_file = " . $file);
-				db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_favoritos WHERE fav_file = " . $file);
-				db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_descargas WHERE d_file = " . $file);
-				db_exec(array(__FILE__, __LINE__), 'query', "DELETE FROM a_comentarios WHERE com_file = " . $file);
-			}
-		}
-		return '1: Se han eliminado los archivos correctamente.';
-	}
-	/* 
-		REACTIVAR ARCHIVO
-	*/
-	function reactivarFile(){
-		global $tsCore, $tsUser, $tsMonitor;
-		//
-		$fileid = $tsCore->setSecure($_POST['fileid']);
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_estado, f_user, f_nombre, f_ext FROM a_files WHERE file_id = \''.(int)$fileid.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// ES MIO O TIENE PERMISOS
-		if(!empty($tsUser->is_admod)){	
-			if($data['f_estado'] == 0) {	
-				if(db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_estado = \'1\' WHERE file_id = \''.$fileid.'\'')) {
-					// MANDAR AVISO AL USUARIO
-					$aviso = 'Hola <b>'.$tsUser->getUserName($data['f_user'])."</b>\n\n Te informo que tu archivo <a href=".$tsCore->settings['url'].'/files/archivos/'.$data['file_id'].'/'.$tsCore->setSEO($data['f_nombre'])."><b>".$data['f_nombre'].".".$data['f_ext']."</b></a> ha sido reactivado por <a href=\"#\" class=\"hovercard\" uid=\"".$tsUser->uid."\">".$tsUser->nick."</a>.\n\n Disculpe las molestias!";
-					$tsMonitor->setAviso($data['f_user'], 'Archivo reactivado', $aviso, 2);
-					return '1: El archivo ha sido reactivado exitosamente.';
-				} else return '0: Hubo un error al intentar procesar lo solicitado.';
-			} else return '0: Este archivo ya est&aacute; activo.';
-		} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-	}
-	
-	/* 
-		EDITAR ARCHIVO
-	*/
-	function editFile(){
-		global $tsCore, $tsUser;
-		//
-		$fileid = $tsCore->setSecure($_POST['fileid']);
-		$name = $tsCore->setSecure($_POST['nombre']);
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_url, f_user FROM a_files WHERE file_id = \''.$fileid.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// ES MIO O TIENE PERMISOS
-		if(!empty($data['file_id'])){
-			if($data['f_user'] == $tsUser->uid || !empty($tsUser->is_admod)) {			
-				if(db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_nombre = \''.$name.'\' WHERE file_id = \''.$fileid.'\'')) {
-					return '1: Cambio de nombre exitoso.';
-				} else return '0: Hubo un error al intentar procesar lo solicitado.';					
-			} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-		} else return '0: El archivo no existe.';
-	}
-	
-	/*
-		CAMBIAR PRIVACIDAD
-	*/
-	function cambioPrivado() {
-		global $tsCore, $tsUser;
-		//
-		$fileid = $tsCore->setSecure($_POST['fileid']);
-		$privado = $tsCore->setSecure($_POST['privado']);		
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_url, f_user FROM a_files WHERE file_id = \''.$fileid.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// ES MIO O TIENE PERMISOS
-		if(!empty($data['file_id'])){
-			if($data['f_user'] == $tsUser->uid || !empty($tsUser->is_admod)) {
-				if(db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_privado = '.$privado.' WHERE file_id = '.$fileid))
-					return "1: Cambio de privacidad exitoso.";
-				else return '0: Hubo un error al intentar procesar lo solicitado.';		
-			} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-		} else return '0: El archivo no existe.';
-	}
-	
-	/*
-		VER ARCHIVO
-	*/
-	function verArchivo() {
-		global $tsCore, $tsUser;
-		$fileid = $tsCore->setSecure($_GET['fileid']);
-		// EL ARCHIVO EXISTE?
-		$q = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(a.file_id) FROM a_files AS a LEFT JOIN u_miembros AS u ON u.user_id = a.f_user WHERE a.file_id = '.$fileid.' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND a.f_estado = \'1\' AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' LIMIT 1'));
-		if($q[0] == 1) {
-			$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT a.*, u.user_id, u.user_name FROM a_files AS a LEFT JOIN u_miembros AS u ON u.user_id = a.f_user WHERE a.file_id = \''.(int)$fileid.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' LIMIT 1');	
-			$data['data'] = db_exec('fetch_assoc', $query);
-			// ES PRIVADO?
-			if($data['data']['f_privado'] != 1 and $data['data']['f_user'] != $tsUser->uid or $tsUser->is_admod or $data['data']['f_user'] == $tsUser->uid) {
-				// QUIENES HAN DESCARGADO
-				$q1 = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT a.d_fecha, a.d_user, a.d_total, u.user_name FROM a_descargas AS a LEFT JOIN u_miembros AS u ON u.user_id = a.d_user WHERE a.d_file = '.$fileid.' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY a.d_fecha DESC LIMIT 15');
-				$data['users'] = result_array($q1);				
-				// FAVORITOS
-				$q2 = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT a.fav_user, a.fav_fecha, u.user_name FROM a_favoritos AS a LEFT JOIN u_miembros AS u ON u.user_id = a.fav_user WHERE a.fav_file = '.$fileid.' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY a.fav_fecha DESC LIMIT 15');
-				$data['favoritos'] = result_array($q2);
-				$data['total']['favoritos'] = db_exec('num_rows', $q2);
-				// YA LO AGREGUE A FAVORITOS?
-				$q3 = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT fav_id FROM a_favoritos WHERE fav_file = '.$fileid.' AND fav_user ='.$tsUser->uid);
-				$data['mifav'] = db_exec('fetch_assoc', $q3);
-				if(db_exec('num_rows', $q3) == 1) $data['mifav']['act'] = 1;
-				else $data['mifav']['act'] = 0;
-				//
-				return $data;
-			} else return 'Este archivo es privado y no puedes descargarlo.';
-		} else return 'El archivo no existe o ha sido eliminado.';
-	}
-	
-	/*
-		OBTENEMOS DATOS DEL ARCHIVO PARA FORZAR DESCARGA
-	*/
-	function bajarArchivo() {
-		global $tsCore;
-		//
-		$fileid = $tsCore->setSecure($_GET['fileid']);
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT f_url, f_ext, f_tipo, f_privado, f_nombre FROM a_files WHERE file_id = \''.(int)$fileid.'\'');		
-		$data = db_exec('fetch_assoc', $query);
-		if(!empty($data['f_nombre'])) {
-			if($data['f_privado'] == 0) {
-				return $data;
-			} else return '0: Este archivo es privado y no puedes descargarlo.';
-		} else return '0: El archivo no existe.';
-	}
-	/*
-		ARCHIVOS POR USER
-	*/
-	function filesUser($userid = NULL, $folderid = NULL) {
-		global $tsCore, $tsUser;
-		// ES MIO O TIENE PERMISOS?
-		if($tsUser->is_admod) $where = ($tsCore->settings['c_see_mod'] == 1) ? '' : ' AND u.user_activo = \'1\' && u.user_baneado = \'0\' AND a.f_estado = \'1\'';
-		else $where = ($userid == $tsUser->uid) ? ' AND a.f_estado = \'1\'' : ' AND a.f_estado = \'1\' AND a.f_privado = \'0\'';	
-		// ORDEN
-		if(!empty($_GET['o'])) $order = 'a.f_'.$_GET['o'];
-		else $order = 'a.f_fecha';
-		if(!empty($_GET['f']) && $_GET['f'] == 'a') $forma = 'ASC';
-		else $forma = 'DESC';
-		$data['o'] = empty($_GET['o']) ? 'fecha' : $_GET['o'];
-		$data['f'] = empty($_GET['f']) ? 'd' : $_GET['f'];
-		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(a.file_id) FROM a_files AS a LEFT JOIN u_miembros AS u ON u.user_id = a.f_user WHERE a.f_user = '.$userid.$where.' AND a.f_folder = \''.$folderid.'\' ORDER BY '.$order.' '.$forma.'');
-		list ($total) = db_exec('fetch_row', $query);
-		// ESTAN EN FOLDER Y ES PUBLICO?
-		if($folderid > 0) {
-			$folder = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', "SELECT folder_priv FROM a_folder_files WHERE folder_id = ". $folderid));
-		}
-		// PAGINAR
-		$max = 20; // MAXIMO A MOSTRAR
-		$limit =$tsCore->setPageLimit($max,false,$total);
-		$data['pages'] = $tsCore->getPagination($total, $max);		
-		// HAY ARCHIVOS?
-		if($total > 0 || $userid == $tsUser->uid || !empty($tsUser->is_admod) || $folder['folder_priv'] == 0) {
-			// MOSTRAR ARCHIVOS		
-			$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT a.*, u.user_id, u.user_name FROM a_files AS a LEFT JOIN u_miembros AS u ON u.user_id = a.f_user WHERE a.f_user = '.$userid . $where.' AND a.f_folder =  \''.$folderid.'\' ORDER BY '.$order.' '.$forma.' LIMIT '.$limit);
-			$data['data'] = result_array($query);
-			$data['total'] = $total;
-			// DATOS DEL AUTOR (?
-			$data['user_name'] = $tsUser->getUserName($userid);
-			$data['user_id'] = $userid;
-			// SI SOY YO, QUE MUESTRE MIS FAVORITOS :NOFA:
-			if($userid == $tsUser->uid) {
-				$q = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT a.file_id, a.f_estado, a.f_nombre, a.f_user, a.f_ext, u.user_name FROM a_favoritos AS f LEFT JOIN a_files AS a ON a.file_id = f.fav_file LEFT JOIN u_miembros AS u ON u.user_id = a.f_user WHERE f.fav_user = '.$userid.$where.' ORDER BY f.fav_fecha DESC LIMIT 5');
-				$data['favoritos'] = result_array($q);
-				// TOTAL FAVORITOS
-				$q2 = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(fav_id) FROM a_favoritos WHERE fav_user = \''.$tsUser->uid.'\''));
-				$data['total_favs'] = $q2[0];
-			}
-			return $data;				
-		} else return 'El usuario no ha subido archivos o no son p&uacute;blicos.';
-	}
-	/*
-      ULTIMOS ARCHIVOS SUBIDOS [PUBLICOS]
-   */
-   function getLastFiles(){
-		global $tsCore, $tsUser;
-		//
-		$max = 6; // MAXIMO A MOSTRAR
-		// PAGINAS
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(a.file_id) FROM a_files AS a LEFT JOIN u_miembros AS u ON u.user_id = a.f_user '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'WHERE a.f_estado = \'1\' AND u.user_activo = \'1\' && u.user_baneado = \'0\''));
-		list ($total) = db_exec('fetch_row', $query);
-		$start = $tsCore->setPageLimit($max, false, $total);
-		$data['pages'] = $tsCore->getPages($total, $max);
-		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT a.file_id, a.f_nombre, a.f_ext, a.f_fecha, a.f_peso, a.f_comentarios, a.f_estado, u.user_name, u.user_activo, u.user_baneado FROM a_files AS a LEFT JOIN u_miembros AS u ON u.user_id = a.f_user WHERE a.f_user != \''.$tsUser->uid.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND a.f_estado = \'1\' AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY a.file_id DESC LIMIT '.$start);
-		$data['data'] = result_array($query);
-		//
-		return $data;
-   }
-	/*
-		DESCARGAR ARCHIVO
-	*/
-	function descargaFile() {
-		global $tsCore, $tsUser;
-		$fileid = $tsCore->setSecure($_POST['fileid']);		
-		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_user, f_descargas, f_url, f_ext FROM a_files WHERE file_id = \''.(int)$fileid.'\'');		
-		$data = db_exec('fetch_assoc', $query);
-		//
-		if(!empty($data['file_id'])) {
-			//			
-			if($this->userDescarga($fileid, $data['f_user'], $data['f_descargas']+1)) return '1: Descarga exitosa';
-			else return '0: Ocurri&oacute; un error al intentar procesar lo solicitado.';
-		} else return '0: El archivo no existe.';
-	}
-	
-	/*
-		USUARIO QUE DESCARGA
-	*/
-	function userDescarga($fileid = NULL, $userid = NULL, $total = NULL) {
-		global $tsUser;
-		// SI ES SU PROPIO ARCHIVO QUE NO CUENTE LA DESCARGA
-		if($tsUser->uid != $userid) {		
-			$q = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(descarga_id) FROM a_descargas WHERE d_user = '.$tsUser->uid.' AND d_file = '.$fileid));
-			if ($q[0] == 0 && $tsUser->is_member) {
-				$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-				if(!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) { die('0: Su ip no se pudo validar.'); }
-				db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `a_descargas` (d_file, d_user, d_autor, d_total, d_fecha, d_ip) VALUES (\''.$fileid.'\', \''.$tsUser->uid.'\', \''.$userid.'\', \'1\', \''.time().'\', \''.$_SERVER['REMOTE_ADDR'].'\')');			
-			} else {
-				$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT d_user, d_file, d_total FROM a_descargas WHERE d_autor = '.$userid.' AND d_file = '.$fileid);
-				$data = db_exec('fetch_assoc', $query);
-				// SI YA DESCARGO ANTES, SE SUMA UNA MAS EN SU HISTORIAL
-				db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_descargas SET d_total = '.$data['d_total'].'+1, d_fecha = '.time().' WHERE d_user = '.$tsUser->uid.' AND d_file = \''.(int)$fileid.'\'');	
-			}
-			// SUMA LA NUEVA DESCARGA AL ARCHIVO
-			db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_descargas = '.$total.' WHERE file_id = \''.(int)$fileid.'\'');
-		}
-		
-		return true;
-	}
-	
-	/*
-		AGREGAR A FAVORITOS
-	*/
-	function favoritFile() {
-		global $tsCore, $tsUser, $tsMonitor, $tsActividad;
-		$fileid = $tsCore->setSecure($_POST['fileid']);
-		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_user, f_nombre, f_descargas, f_url, f_ext FROM a_files WHERE file_id = \''.(int)$fileid.'\'');		
-		$data = db_exec('fetch_assoc', $query);
-		//
-		if(!empty($data['file_id'])) {
-			if($data['f_user'] != $tsUser->uid) {
-				$q = db_exec('fetch_row', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(fav_id) FROM a_favoritos WHERE fav_file = \''.(int)$fileid.'\' AND fav_user ='.$tsUser->uid));
-				if($q[0] == 0) {
-					if(db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `a_favoritos` (fav_file, fav_user, fav_fecha) VALUES (\''.$fileid.'\', \''.$tsUser->uid.'\', \''.time().'\')')) {
-						return '1: <b>'.$data['f_nombre'].'.'.$data['f_ext'].'</b> a&ntilde;adido a tus favoritos correctamente.';
-						$tsMonitor->setFollowNotificacion(20, 2, $tsUser->uid, $fileid);
-		            // REGISTRAR MI ACTIVIDAD
-		            $tsActividad->setActividad(13, $fileid);
-					} else return '0: Ocurri&oacute; un error al intentar procesar lo solicitado.';
-				} else return '0: Ya has agregado este archivo a favoritos.';
-			} else return '0: No puedes agregar tu propio archivo a favoritos.';
-		} else return '0: El archivo no existe.';
-	}
-	
-	/* 
-		BORRAR FAVORITOS [SOLO EL AUTOR]
-	*/
-	function delfavFile(){
-		global $tsCore, $tsUser;
-		//
-		$favid = $tsCore->setSecure($_POST['favid']);
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT fav_id, fav_user FROM a_favoritos WHERE fav_id = \''.(int)$favid.'\' AND fav_user = \''.$tsUser->uid.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// ES MIO O TIENE PERMISOS
-		if(!empty($data['fav_id'])){
-			if($data['fav_user'] == $tsUser->uid) {
-				if(db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM a_favoritos WHERE fav_id = \''.(int)$favid.'\'')) {
-					return '1: Favorito removido con exito.';
-				} else return '0: Ocurri&oacute; un error al intentar procesar lo solicitado.';
-			} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-		} else return '0: El favorito no existe o ya lo eliminaste.';
-	}
-	
-	/*
-		FAVORITOS DEL AUTOR
-	*/
-	function favFiles() {
-		global $tsCore, $tsUser;		
-		// EXISTE EL USUARIO?
-		if ($tsUser->uid > 0) {
-			// PUEDO VER TODOS LOS ARHIVOS?
-			if($tsUser->is_admod) {
-				if($tsCore->settings['c_see_mod'] == 1) {
-					$where = '';
-				} else $where = ' AND u.user_activo = \'1\' && u.user_baneado = \'0\' AND a.f_estado = \'1\'';
-			} else {
-				$where = ' AND a.f_estado = \'1\' AND a.f_privado = \'0\'';
-			}
-			$q = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT COUNT(f.fav_id) FROM a_favoritos AS f LEFT JOIN a_files AS a ON file_id = fav_file LEFT JOIN u_miembros AS u ON u.user_id = a.f_user WHERE f.fav_user = '.$tsUser->uid.$where);
-			list ($total) = db_exec('fetch_row', $q);
-			//		
-			$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT a.*, f.*, u.user_id, u.user_name FROM a_favoritos AS f LEFT JOIN a_files AS a ON file_id = fav_file LEFT JOIN u_miembros AS u ON u.user_id = a.f_user WHERE f.fav_user = '.$tsUser->uid.$where.' ORDER BY f.fav_fecha DESC');
-			$data['data'] = result_array($query);
-			$data['total'] = db_exec('num_rows', $query);
-			//			
-			return $data;
-		} else return 'Debes registrarte para guardar archivos en favoritos.';
-	}
-	/*
-		ULTIMOS COMENTARIOS
-	*/
-	function getLastcom() {
-		global $tsCore, $tsUser;
-		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT a.com_user, a.com_fecha, f.file_id, f.f_nombre, f.f_estado, f.f_ext, u.user_name FROM a_comentarios AS a LEFT JOIN a_files AS f ON a.com_file = f.file_id LEFT JOIN u_miembros AS u ON u.user_id = a.com_user '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND f.f_estado = \'1\' AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY a.com_fecha DESC LIMIT 10');
-		$data = result_array($query);
-		//
-		return $data;
-	}
-	
-	/*
-		VER COMENTARIOS DEL ARCHIVO
-	*/
-	function getComentarios() {
-		global $tsCore, $tsUser;
-		$fileid = $tsCore->setSecure($_GET['fileid']);
-		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT a.*, f.f_estado, u.user_name FROM a_comentarios AS a LEFT JOIN a_files AS f ON a.com_file = f.file_id LEFT JOIN u_miembros AS u ON u.user_id = a.com_user WHERE a.com_file = \''.(int)$fileid.'\' '.($tsUser->is_admod && $tsCore->settings['c_see_mod'] == 1 ? '' : 'AND f.f_estado = \'1\' AND u.user_activo = \'1\' && u.user_baneado = \'0\'').' ORDER BY a.com_fecha ASC');
-		$data['total'] = db_exec('num_rows', $query);
-		
-		$com = result_array($query);
-		$i = 0;
-		foreach($com as $cm){
-			$data['com'][$i] = $cm;
-			$data['com'][$i]['com_body_source'] = $cm['com_body'];
-			$data['com'][$i]['com_body'] = $tsCore->parseBadWords($tsCore->parseBBCode($cm['com_body'], 'files'), true);
-			$i++;
-		}
-		//
-		return $data;
-	}
-	
-	/*
-		AGREGAR NUEVO COMENTARIO
-	*/
-	function newcomFile() {
-		global $tsCore, $tsUser, $tsMonitor, $tsActividad;
-		// OBTENEMOS DATOS
-		$fileid = $tsCore->setSecure($_POST['fileid']);
-		$body = substr($_POST['body'],0,1500);
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_privado, f_estado, f_comentarios, f_user FROM a_files WHERE file_id = \''.(int)$fileid.'\' LIMIT 1');
-		$data = db_exec('fetch_assoc', $query);
-		// EXISTE EL ARCHIVO?
-		if(!empty($data['file_id'])) {
-			// ESTA DESABILITADO?
-			if($data['f_estado'] != 0 || $tsUser->is_admod) {
-				// ES PRIVADO?
-				if($data['f_privado'] != 1 || $data['f_user'] == $tsUser->uid || $tsUser->is_admod) {
-					// ANTI FLOOD
-					$tsCore->antiFlood();
-					$_SERVER['REMOTE_ADDR'] = $_SERVER['X_FORWARDED_FOR'] ? $_SERVER['X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-					if(!filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) { die('0: Su ip no se pudo validar.'); }
-						if(db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `a_comentarios` (`com_file`, `com_user`, `com_body`, `com_fecha`, `com_ip`) VALUES (\''.(int)$fileid.'\', \''.$tsUser->uid.'\', \''.$body.'\', \''.time().'\', \''.$_SERVER['REMOTE_ADDR'].'\')')) {
-							$cid = db_exec('insert_id');	
-							// SUMAMOS ESTADISTICAS :D
-							db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_comentarios = '.$data['f_comentarios'].'+1 WHERE file_id = \''.(int)$fileid.'\'');
-							// NOTIFICAR SI FUE CITADO Y AL AUTOR DEL ARCHIVO
-                    	$this->quoteNoti($fileid, $data['f_user'], $cid, $body);
-               		$tsMonitor->setFollowNotificacion(18, 1, $tsUser->uid, $fileid);
-		               // REGISTRAR MI ACTIVIDAD
-		               $tsActividad->setActividad(12, $fileid);
-							// PARSEAMOS BBCODE
-							$body = $tsCore->parseBadWords($tsCore->parseBBCode($body, 'files'), true);
-							return array($body, $tsUser->uid, $tsUser->nick, time(), (int)$cid, $fileid);
-						} else return '0: Ocurri&oacute; un error al al agregar el comentario, intentalo m&aacute;s tarde.';
-				} else return '0: El archivo es privado y no puedes comentarlo.';
-			} else return '0: El archivo est&aacute; en revisi&oacute;n y no puedes comentarlo.';
-		} else return '0: El archivo no existe o ha sido eliminado.';
-	}
-	
-	/*
-		RESPUESTA A COMENTARIO?
-	*/
-	function quoteNoti($fileid = NULL, $file_user = NULL, $cid = NULL, $comentario = NULL){
-      global $tsCore, $tsUser, $tsMonitor;
-      $ids = array();
-      $total = 0;
-      //
-      preg_match_all('/\B@([a-zA-Z0-9_-]{4,16}+)\b/', $comentario, $users);
-      //
-      if(!empty($users[1])) {
-         foreach($users[1] as $user){
-            # DATOS
-            $udata = explode('|',$user);
-              	if(!is_array($udata)) {
-                  $user = $user;   
-                  $lcid = $cid;
-               } else {
-                  $user = $udata[0];
-                  $lcid = (int) $udata[1];
-               }
-               # COMPROBAR
-               if($user != $tsUser->nick){
-                  $uid = $tsUser->getUserID($tsCore->setSecure($user));
-                  if(!empty($uid) && $uid != $tsUser->uid && !in_array($uid, $ids)){
-                     $ids[] = $uid;
-                     $tsMonitor->setNotificacion(19, $uid, $tsUser->uid, $fileid, $lcid);
-                  }
-                  ++$total;
-              	}
-            }
-			// MANDAMOS NOTIFICACION AL AUTOR
-			//$tsMonitor->setNotificacion(19, $file_user, $tsUser->uid, $fileid, $cid);
-      }		
-		return true;
-	}
-	
-	/* 
-		BORRAR COMENTARIOS
-	*/
-	function delcomFile(){
-		global $tsCore, $tsUser;
-		//
-		$comid = $tsCore->setSecure($_POST['comid']);
-		$fileid = $tsCore->setSecure($_POST['fileid']);
-		// CONSULTAR
-		$q = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT com_id, com_user FROM a_comentarios WHERE com_id = \''.(int)$comid.'\'');
-		$dato = db_exec('fetch_assoc', $q);
-		//
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_comentarios, f_estado, f_user FROM a_files WHERE file_id = \''.(int)$fileid.'\' LIMIT 1');
-		$data = db_exec('fetch_assoc', $query);
-		// EXISTE EL ARCHIVO?
-		if(!empty($data['file_id'])) {
-			// ESTA DESABILITADO?
-			if($data['f_estado'] != 0) {
-				// EXISTE EL COMENTARIO?
-				if(!empty($dato['com_id'])){
-					// ES MIO O TIENE PERMISOS
-					if($dato['com_user'] == $tsUser->uid || !empty($tsUser->is_admod)) {
-						if(db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM a_comentarios WHERE com_id = \''.(int)$comid.'\'')) {
-							// DESCONTAMOS EL COMENTARIO DE LAS ESTADISTICAS DEL ARCHIVO
-							db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_comentarios = '.$data['f_comentarios'].'-1 WHERE file_id = \''.(int)$fileid.'\'');
-							return '1: Comentario Eliminado Exitosamente.';
-						} else return '0: Ocurri&oacute; un error al intentar procesar lo solicitado.';
-					} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-				} else return '0: El comentario no existe.';
-			} else return '0: El archivo est&aacute; en revisi&oacute;n, hasta entonces no podras borrar el comentario.';
-		} else return '0: El archivo no existe o fue eliminado.';
-	}
-	/* 
-		MOSTRAR CARPETAS
-	*/
-	function folderUser($folderid = NULL, $userid = NULL){
-		global $tsUser;
-		//
-		if(empty($folderid)) {
-			// SON MIS CARPETAS?
-			if($userid != $tsUser->uid) $and = 'AND folder_priv = \'0\'';
-			else $and = '';
-			//
-			$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT * FROM a_folder_files WHERE folder_user = \''.(int)$userid.'\' '.$and.'');
-			$data['data'] = result_array($query);
-			$data['total'] = db_exec('num_rows', $query);
-			$data['fid'] = 0;
-			//
-			return $data;
-		} else {
-			$dato = db_exec('fetch_assoc', db_exec(array(__FILE__, __LINE__), 'query', 'SELECT folder_name, folder_id FROM a_folder_files WHERE folder_id = \''.$folderid.'\''));
-			$data['data'] = false;
-			// NOMBRE DE LA CARPETA
-			$data['nombre'] = '> '.$dato['folder_name'];
-			$data['fid'] = $dato['folder_id'];
-			return $data;
+			} else return "0: El archivo que intentas subir excede los <strong>".self::formatBytes($tsCore->settings['c_max_upload'])."</strong> permitidos.";
 		}
 	}
-	
-	/* 
-		CREAR CARPETA
-	*/
-	function newFolder(){
-		global $tsCore, $tsUser;
-		//
-		$name = $_POST['nombre'];
-		if(!empty($name)){
-			if(!empty($tsUser->uid)) {			
-				if(db_exec(array(__FILE__, __LINE__), 'query', 'INSERT INTO `a_folder_files` (folder_name, folder_user, folder_seo, folder_fecha, folder_priv) VALUES (\''.$name.'\', \''.$tsUser->uid.'\', \''.$tsCore->setSEO($name).'\', \''.time().'\', \'1\')')) {
-					return array($name, db_exec('insert_id'));
-				} else return '0: Hubo un error al intentar procesar lo solicitado.';					
-			} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-		} else return '0: Debes escribir un nombre primero.';
-	}
-	
-	/* 
-		EDITAR NOMBRE CARPETA
-	*/
-	function editFolder(){
-		global $tsCore, $tsUser;
-		//
-		$folderid = $tsCore->setSecure($_POST['folderid']);
-		$name = $_POST['nombre'];
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT folder_id, folder_user FROM a_folder_files WHERE folder_id = \''.$folderid.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// NOMBRE VACIO?
-		if(!empty($name)) {
-			// ES MIO?
-			if(!empty($data['folder_id'])){
-				if($data['folder_user'] == $tsUser->uid) {			
-					if(db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_folder_files SET folder_name = \''.$name.'\' WHERE folder_id = \''.(int)$folderid.'\'')) {
-						return '1: Cambio de nombre exitoso.';
-					} else return '0: Hubo un error al intentar procesar lo solicitado.';					
-				} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-			} else return '0: La carpeta no existe.';
-		} else return '0: Escribe un nombre primero.';
-	}
-	
-	/*
-		CAMBIAR PRIVACIDAD FOLDER
-	*/
-	function privFolder() {
-		global $tsCore, $tsUser;
-		//
-		$folderid = $tsCore->setSecure($_POST['folderid']);
-		$privado = $tsCore->setSecure($_POST['privado']);		
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT folder_id, folder_user FROM a_folder_files WHERE folder_id = \''.$folderid.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// EXISTE?
-		if(!empty($data['folder_id'])){
-			// ES MIO?
-			if($data['folder_user'] == $tsUser->uid) {
-				if(db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_folder_files SET folder_priv = '.(int)$privado.' WHERE folder_id = '.(int)$folderid)) {
-				db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_privado = '.(int)$privado.' WHERE f_folder = '.(int)$folderid);
-					return '1: Cambio de privacidad exitoso.';
-				} else return '0: Hubo un error al intentar procesar lo solicitado.';		
-			} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-		} else return '0: La carpeta no existe.';
-	}
-	
-	/* 
-		BORRAR FOLDER
-	*/
-	function delFolder(){
-		global $tsCore, $tsUser;
-		//
-		$folderid = $tsCore->setSecure($_POST['folderid']);
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT folder_id, folder_user FROM a_folder_files WHERE folder_id = \''.(int)$folderid.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// EXISTE?
-		if(!empty($data['folder_id'])){
-			// ES MIO?
-			if($data['folder_user'] == $tsUser->uid) {
-				// DEVOLVEMOS LOS ARCHIVOS A LA RAIZ
-				db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_folder =  \'0\' WHERE f_folder = '.(int)$folderid);
-				// BORRAR CARPETA DE LA BD
-				db_exec(array(__FILE__, __LINE__), 'query', 'DELETE FROM a_folder_files WHERE folder_id = \''.(int)$folderid.'\'');
-				//
-				return '1: Carpeta eliminada.';
-			} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-		} else return '0: La carpeta no existe.';
-	}
-	
-	/*
-		VER CARPETAS
-	*/
-    function verFolders() {
-		global $tsUser;
-      $query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT folder_id, folder_name FROM a_folder_files WHERE folder_user = '.(int)$tsUser->uid.'');
-      $data = result_array($query);     
-		$data['total'] = safe_count($data['data']);
 
-      //
-      if(empty($data)) return array('folders' => 0, 'data' => 'No has creado carpetas a&uacute;n.');
-      else return array('folders' => 1, 'data' => $data);
-   }
-	
-	/*
-		MOVER ARCHIVO A CARPETA
+	/**
+	 * @access public
+    * @uses Creamos la una nueva carpeta.
+	 * @return string
 	*/
-	function moverFile() {
-		global $tsUser;
-		//
-		$folderid = intval($_POST['folderid']);
-		$fileid = intval($_POST['fileid']);		
-		// CONSULTAR
-		$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_user, f_folder FROM a_files WHERE file_id = \''.(int)$fileid.'\'');
-		$data = db_exec('fetch_assoc', $query);
-		// EXISTE?
-		if(!empty($data['file_id'])){
-			if(!$data['f_folder'] == $folderid) {
-				if($data['f_user'] == $tsUser->uid) {
-					if(db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_folder = '.(int)$folderid.' WHERE file_id = '.(int)$fileid))
-						return '1: Movimiento exitoso.';
-					else return '0: Hubo un error al intentar procesar lo solicitado.';		
-				} else return '0: Lo que intentas hacer no est&aacute; permitido.';
-			} else return '0: No puedes mover el archivo al mismo lugar.';
-		} else return '0: El archivo no existe.';
+	public function createNewFolder() {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		// Comprobamos que tenga un titulo
+		if(empty($_POST['car_name'])) return ['type' => 0, 'msg' => 'La carpeta debe tener un nombre.'];
+		// Almacenamos algunos datos para verificar antes de añadir
+		$name = $tsCore->setSecure($_POST['car_name']);
+		$seo = strtolower($tsCore->setSEO($name));
+		$private = (isset($_POST['car_private']) OR $_POST´['car_private'] != NULL) ? 1 : 0;
+		$type = (int)$_POST['carpeta'];
+		$uid = $tsUser->uid;
+		$time = time();
+		// Crearemos la contraseña más segura
+		$pass = !empty($_POST['car_pass']) ? $tsCore->passwordSL2($seo, $tsCore->setSecure($_POST['car_pass'])) : '';
+		// Preguntamos si existe la carpeta
+		$check = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT car_name FROM files_carpeta WHERE car_name = '$name' LIMIT 1"))[0];
+		if(!empty($check)) return ['type' => 0, 'msg' => 'Esta carpeta ya existe!'];
+		// Si no existe, la crearemos
+		if(db_exec([__FILE__, __LINE__], 'query', "INSERT INTO files_carpeta (car_user, car_name, car_seo, car_pass, car_date, car_type, car_private, car_status) VALUES($uid, '$name', '$seo', '$pass', $time, $type, $private, 1)")) {
+			return ['type' => 1, 'msg' => 'La carpeta se creo.', 'data' => [
+				'name' => $name, 
+				'seo' => $seo, 
+				'img' => (empty($pass) ? $this->tipos_carpetas[$type] : ($private == 1 ? 'privada' : 'protegido')),
+				'enc' => !empty($pass)
+			]];
+		} else return ['type' => 0, 'msg' => 'No se pudo crear la carpeta'];
 	}
-	/* 
-		MOVER ARCHIVOS SELECCIONADOS
+
+	/**
+	 * @access public
+    * @uses Obtenemos los tipos de carpetas
+	 * @return array
 	*/
-	function moverFiles(){
-		global $tsUser, $tsMonitor;
-		$folderid = intval($_POST['folderid']);
-		$elmts = split(',', $_POST['files']);
-		if(count($elmts) == 0) return '0: Seleccione un archivo por lo menos.';
-		$files = 0;
-		foreach($elmts as $file) {
-			// CONSULTAR
-			$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT file_id, f_user, f_folder FROM a_files WHERE file_id = \''.(int)$file.'\'');
-			$data = db_exec('fetch_assoc', $query);
-			// EXISTE?
-			if(!empty($data['file_id'])){
-				if($data['f_folder'] != $folderid) {
-					if($data['f_user'] == $tsUser->uid) {
-						if(db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE a_files SET f_folder = '.(int)$folderid.' WHERE file_id = '.(int)$file)) {
-							$files++;
-						}
-					}
+	public function getTypeOfFolders(string $action = ''):array {
+		$tsUser = new tsUser;
+		if((int)$tsUser->is_member) {
+			// Sin contraseña - car_pass
+			$typeof = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT ct_id, ct_name FROM files_carpeta_tipos"));
+			if($action === 'crear') {
+				foreach ($typeof as $key => $type) {
+					if(!in_array($type['ct_name'], ['privada', 'protegido'])) $nwrtn[$key] = $type;
 				}
 			}
-		}
-		if($files == 0) return '0: No se movio ningun archivo, intente de nuevo.';
-		else return '1: Se han movido <b>'.$files.'</b> archivos correctamente.';
-	}
-	
-	/*
-		BUSCAR ARCHIVOS
-	*/
-	function searchFile() {
-		global $tsUser, $tsCore;
-		//
-		$userid = intval($_POST['userid']);
-		$folderid = intval($_POST['folderid']);
-		$data['text'] = $tsCore->setSecure($_POST['text']);
-		//
-		if(strlen($data['text']) >= 3) {
-			$query = db_exec(array(__FILE__, __LINE__), 'query', 'SELECT f.*, u.user_name FROM a_files AS f LEFT JOIN u_miembros AS u ON f.f_user = u.user_id WHERE f.f_user = \''.(int)$userid.'\' AND f.f_folder = \''.(int)$folderid.'\' AND f.f_nombre LIKE \'%'.$data['text'].'%\' '.($tsUser->uid == $userid ? '' : 'AND f.f_privado = \'0\'').' OR f.f_user = \''.(int)$userid.'\' AND f.f_folder = \''.(int)$folderid.'\' AND f.f_ext LIKE \'%'.$data['text'].'%\' ORDER BY f.f_fecha DESC');
-			$data['data'] = result_array($query);
-			$data['total'] = safe_count($data['data']);
-			//
-			return $data;
+			return ($action === 'crear') ? $nwrtn : $typeof;
 		}
 	}
 
-	/*
-		Función para extraer información del audio
+	/**
+	 * @access public
+    * @uses Obtenemos todas las carpetas del usuario
+	 * @return array
 	*/
-	function getMp3Info($archivo = NULL, $default = true) {
-		global $tsCore;
-		include TS_LIBS.'Mp3Info.php';
+	public function getFolders():array {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		//if((int)$tsUser->is_member) {
+			$uid = (int)$tsUser->uid;
+			// 
+			$folders = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT car_id, car_user, car_name, car_seo, car_date, car_pass, car_private, car_type, car_status, user_id, user_name, ct_id, ct_name FROM files_carpeta LEFT JOIN u_miembros ON car_user = user_id LEFT JOIN files_carpeta_tipos ON ct_id = car_type WHERE car_user = $uid AND car_status = 1"));
+			foreach($folders as $id => $folder) {
+				// Contamos la cantidad de archivos por carpeta
+				$folders[$id]['arc_total'] = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(arc_id) FROM files_archivos WHERE arc_folder = {$folder['car_id']}"))[0];
+				$folders[$id]['ct_name'] = ($folder['car_type'] === 0) ? 'publico' : (!empty($folder['car_pass']) ? 'protegido' : ((int)$folder['car_private'] == 1 ? 'privada' : $folder['ct_name']));
+			}
+			return $folders;
+		//}
+	}
 
-		$ruta_archivo = TS_FILES. 'archivos/';
-		$audio = new Mp3Info($ruta_archivo . $archivo, $default );
-		$informacion = array(
-			$audio->tags2['TIT2'], 
-			$tsCore->convertirms($audio->duration), 
-			$audio->bitRate/1000, 
-			$audio->channel
-		);
+	/**
+	 * @access public
+    * @uses Obtenemos la carpeta del usuario
+	 * @return array
+	*/
+	public function getFolder() {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		$tipo = $tsCore->setSecure($_GET['action']);
+		$carpeta = $tsCore->setSecure($_GET['file']);
+		// Preguntamos si es su carpeta
+		$miCarpeta = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT car_name, car_status, car_type, car_pass FROM files_carpeta WHERE car_seo = '$carpeta'"));
+		// Carpeta privada
+		if((int)$miCarpeta['car_status'] == 1) return [
+			'titulo' => 'Opps!', 
+			'mensaje' => 'Esta carpeta es privada, no tienes acceso.'
+		];
+		// Carpeta protegida
+		if(!empty($miCarpeta['car_pass'])) return [
+			'titulo' => 'Opps!', 
+			'mensaje' => 'Esta carpeta esta protegido con contraseña y no tienes acceso.'
+		];
+		if($miCarpeta['car_type'] !== 6) return [
+			'titulo' => 'Lo siento', 
+			'mensaje' => 'Solo se pueden ver las carpetas públicas.'
+		];
+		$admin = self::getAdmin();
+		// Limitamos
+	    $max = 12; // MAXIMO A MOSTRAR
+	    $limit = $tsCore->setPageLimit($max, true);
+		$data['nombre'] = $miCarpeta;
+		$data['archivos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT car_name, car_seo, car_pass, car_date, car_type, car_private, car_status, arc_id, arc_name, arc_code, arc_ext, arc_weight, arc_comments, arc_downloads, arc_private, arc_status, arc_date, arc_ip, user_name, user_activo, user_baneado FROM files_carpeta LEFT JOIN files_archivos ON arc_folder = car_id LEFT JOIN u_miembros ON arc_user = user_id WHERE car_seo = '$carpeta' $admin LIMIT $limit"));
+		// PAGINAS
+	    list($total) = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(arc_id) FROM files_archivos LEFT JOIN files_carpeta ON car_id = arc_folder WHERE car_seo = '$carpeta' AND arc_status = 1"));
+	    $data['pages'] = $tsCore->pageIndex("{$tsCore->settings['url']}/files/$tipo/$carpeta?ver", $_GET['s'], $total, $max);
+		return $data;
+	}
+
+	/**
+	 * @access public
+    * @uses Obtenemos todos los archivos subidos
+	 * @return array
+	*/
+	public function getFilesUploaded() {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		// Filtrar u Ordenar
+		$order = isset($_GET['o']) ? "file.arc_{$_GET['o']}" : ($_GET['o'] == 'folder' ? 'folder.car_name' : 'file.arc_date');
+		$mode = !isset($_GET['m']) ? 'DESC' : ($_GET['m'] === 'a' ? 'ASC' : 'DESC');
+		$all = !isset($_GET['a']) ? '' : ($_GET['a'] === 'all' ? '' : " AND u.user_id = {$tsUser->uid}");
+		$admin = self::getAdmin('u.');
+		// Limitamos
+      $max = 10; // MAXIMO A MOSTRAR
+      $limit = $tsCore->setPageLimit($max, true);
+		// Realizamos la consulta
+		$data['files'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT file.arc_id, file.arc_user, file.arc_name, file.arc_code, file.arc_ext, file.arc_downloads, file.arc_private, file.arc_status, file.arc_date, file.arc_ip, folder.car_user, folder.car_name, folder.car_seo, folder.car_pass, folder.car_date, folder.car_private, folder.car_status, u.user_id, u.user_name FROM files_archivos AS file LEFT JOIN files_carpeta AS folder ON folder.car_id = file.arc_folder LEFT JOIN u_miembros AS u ON u.user_id = file.arc_user WHERE file.arc_status = 1 $admin$all ORDER BY $order $mode LIMIT $limit"));
+		foreach ($data['files'] as $key => $file) {
+			$data['files'][$key]['arc_ico'] = self::getIcons($file['arc_ext']);
+		}
+		// PAGINAS
+      list($total) = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(*) FROM files_archivos WHERE arc_status = 1'));
+      $o = empty($_GET['o']) ? 'date' : $_GET['o'];
+      $m = empty($_GET['m']) ? 'd' : $_GET['m'];
+      $a = empty($_GET['a']) ? 'all' : $_GET['a'];
+      $data['pages'] = $tsCore->pageIndex("{$tsCore->settings['url']}/files/?o=$o&m=$m&a=$a", $_GET['s'], $total, $max);
+		return $data;
+	}
+
+	/**
+	 * @access public
+    * @uses Obtenemos el archivo subido
+	 * @return array
+	*/
+	public function getFileUploaded() {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		// En caso que sea privado
+		$archivo = $tsCore->setSecure($_GET['file']);
+		//if($tsUser->is_member) $data['error'] 'Debes iniciar sesión, para ver el archivo.';
+		$data['data'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT f.arc_id, f.arc_user, f.arc_name, f.arc_code, f.arc_ext, f.arc_downloads, f.arc_private, f.arc_status, f.arc_date, f.arc_weight, f.arc_ip, c.car_user, c.car_name, c.car_seo, c.car_pass, c.car_date, c.car_private, c.car_status, u.user_id FROM files_archivos AS f LEFT JOIN files_carpeta AS c ON c.car_id = f.arc_folder LEFT JOIN u_miembros AS u ON u.user_id = f.arc_user WHERE f.arc_status = 1 AND f.arc_code = '$archivo'"));
+		$data['data']['url_file'] = $tsCore->settings['files'] . "/archivos/{$data['data']['arc_code']}.{$data['data']['arc_ext']}";
+		$data['author'] = self::getDataAuthor($data['data']['user_id']);
+		$data['fav'] = self::getFavourites($data['data']['user_id'], $data['data']['arc_id']);
+		return $data;
+	}
+
+	/**
+	 * @access public
+    * @uses Obtenemos información del autor
+	 * @return array
+	*/
+	public function getDataAuthor(int $uid = 0) {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		//
+		$admin = self::getAdmin('u.');
+		$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT u.user_name, u.user_email, u.user_activo, u.user_baneado, r.r_name, r.r_color FROM u_miembros AS u LEFT JOIN u_rangos AS r ON u.user_rango = r.rango_id WHERE u.user_id = $uid $admin"));
+		$sql['user_avatar'] = $tsCore->getAvatar($uid);
+		return $sql;
+	}
+
+	/**
+	 * @access public
+    * @uses Obtenemos el archivo subido
+	 * @return array
+	*/
+	public function getFavourites(int $uid = 0, int $fid = 0) {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		$sql['total'] = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(fav_file) AS total FROM files_favoritos LEFT JOIN u_miembros ON fav_user = user_id WHERE fav_file = $fid"))['total'];
+		//
+		$sql['data'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT user_id, user_name, fav_date, arc_name FROM u_miembros LEFT JOIN files_favoritos ON fav_user = user_id LEFT JOIN files_archivos ON fav_file = arc_id WHERE fav_file = $fid ORDER BY fav_date DESC LIMIT 8"));
+		foreach ($sql['data'] as $key => $a) {
+			$sql['data'][$key]['user_avatar'] = $tsCore->getAvatar($a['user_id']);
+		}
+		return $sql;
+	}
+
+	public function fileFavourite() {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		//
+		$uid = (int)$tsUser->uid;
+		$fid = (int)$_POST['arc_id'];
+		$time = time();
+		// Compobamos que no lo tenga agregado
+		$fav = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', "SELECT fav_id FROM files_favoritos WHERE fav_user = $uid AND fav_file = $fid"));
+		if($fav !== 0) return '0: Ya lo tienes en favoritos.';
+		if(db_exec([__FILE__, __LINE__], 'query', "INSERT INTO files_favoritos (fav_file, fav_user, fav_date) VALUES ($fid, $uid, $time)")) {
+			return '1: Agregados a favoritos.';
+		}
+	}
+
+	/**
+	 * @access public
+    * @uses Obtenemos todos los mime
+	 * @return string
+	*/
+	public function getMp3Info(string $archivo = '', bool $default = true) {
+		$tsCore = new tsCore;
+		include TS_LIBS . 'Mp3Info.php';
+		
+		$archivo = self::getInfoFile($archivo, 'basename');
+		$audio = new Mp3Info(TS_ARCHIVOS . $archivo, $default );
+		//
+		$informacion = [
+			'title' => $audio->tags2['TIT2'], 
+			'duration' => floor($audio->duration / 60).'min '.floor($audio->duration % 60). 'sec', 
+			'kbps' => $audio->bitRate/1000, 
+			'channel' => $audio->channel,
+		];
 		return $informacion;
 	}
-	/*
-		Función para extraer contenido de un archivo
-	*/
-	function getTxtPhp($archivo = NULL, $tipo = 'r') {
 
-		$ruta_archivo = TS_FILES. 'archivos/';
-		$archivo = $ruta_archivo . $archivo;
-		$aCadena = file($archivo);
+	/**
+	 * @access public
+    * @uses Obtenemos información del archivo
+	 * @return string
+	*/
+	public function getTxtPhp($filename = NULL) {
+		$filename = self::getInfoFile($filename, 'basename');
+		$archivo = TS_ARCHIVOS . $filename;
+		$aCadena = file_get_contents($archivo);
     	return $aCadena;
 
 	}
-    
+
+	/**
+	 * @access public
+    * @uses Descargamos el archivo!
+	*/
+	public function DownloadFile() {
+		$tsCore = new tsCore;
+		$tsUser = new tsUser;
+		//
+		$nombre = $tsCore->setSecure($_GET['file']);
+		$data = self::getData($nombre);
+		if(!$tsUser->is_member OR (int)$data['arc_private'] == 1) return false;
+		$ext = $data['arc_ext'];
+		$archivo = TS_ARCHIVOS . "$nombre." . $ext ;
+		$nuevo_nombre = $data['arc_name'] . ".$ext";
+		if (file_exists($archivo)) {
+			// Configurar encabezados para la descarga
+			header('Content-Description: File Transfer');
+			header('Content-Type: ' . self::MIME($ext));
+			header('Content-Disposition: attachment; filename=SL2_'  . $nuevo_nombre);
+			header('Expires: 0');
+			header('Cache-Control: must-revalidate');
+			header('Pragma: public');
+			header('Content-Length: ' . filesize($archivo));
+			// Leer el archivo y enviar su contenido al navegador
+			if(readfile($archivo)) {
+				// Contamos la descargas
+				db_exec([__FILE__, __LINE__], 'query', "UPDATE files_archivos SET arc_downloads = arc_downloads + 1 WHERE arc_code = '$nombre'");
+				header("Location: {$tsCore->settings['url']}/files/");
+			}
+			exit;
+		// En caso que no exista mostrarémos este mensaje!
+		} else echo 'El archivo no existe.';
+	}
+
+	public function moveFile() {
+		$tsUser = new tsUser;
+		//
+		$aid = (int)$_POST['arc_id'];
+		$fid = (int)$_POST['arc_folder'];
+		// Buscamos el archivo
+		$sql = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT arc_id, arc_user, arc_folder FROM files_archivos WHERE arc_id = $aid"));
+		if(empty($sql['arc_id'])) return '0: El archivo no existe';
+		if((int)$sql['arc_folder'] === $fid) return '0: No puedes mover a la misma carpeta.';
+		if((int)$tsUser->uid != (int)$sql['arc_user']) return '0: Solo puedes mover tus archivos.';
+		//
+		if(db_exec([__FILE__, __LINE__], 'query', "UPDATE files_archivos SET arc_folder = $fid WHERE arc_id = $aid")) return '1: El archivo se movió con exito.';		
+	}
 }

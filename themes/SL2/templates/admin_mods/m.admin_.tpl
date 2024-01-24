@@ -9,39 +9,52 @@
    <hr class="separator" />
    <div class="row">
       <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12">
+         <!-- INFOMACIÓN DEL ÚLTIMO COMMIT -->
+         <div class="panel-info last-commit card mb-3">
+            <h5 class="card-header">Último commit en Github</h5>
+            <div id="lastCommit" class="card-body">
+               <div class="phpostAlfa">Cargando...</div>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center"></div>
+         </div>
+
          <div class="phpost">
-            <h3 class="h5 m-0 p-2 bg-light">{$tsConfig.titulo} en directo</h3>
-            <ul id="ulitmas_noticias" class="pp_list">
-               <div class="hero hero-info text-center hero-lg">
-                  <div class="hero-body">
-                     <h3>Cargando...</h3>
-                  </div>
-               </div>
+            <h3 class="h5 mb-2 p-2 bg-dark-subtle">{$tsConfig.titulo} en directo</h3>
+            <ul id="ulitmas_noticias" class="pp_list list-unstyled">
+               <div class="emptyData">Cargando...</div>
             </ul>
          </div>
       </div>
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
          <div class="phpost version">
-            <h3 class="h5 m-0 mt-2 p-2 bg-light">{$tsConfig.titulo}</h3>
-            <ul id="ultima_version" class="pp_list">
-               <li class="list-clone ms-2 mb-3">
+            <h3 class="h5 mb-2 mt-2 p-2 bg-dark-subtle">{$tsConfig.titulo}</h3>
+            <ul id="ultima_version" class="pp_list list-unstyled list-group-flush">
+               <li class="list-clone ms-2 mb-3 px-2 py-1">
                   <div class="title fw-bold">Versi&oacute;n instalada</div>
                   <div class="body text-secondary small">{$tsConfig.version}</div>
                </li>
             </ul>
-            <h3 class="h5 m-0 mt-2 p-2 bg-light">Administradores</h3>
-            <ul class="pp_list">                                    
+            <h3 class="h5 mb-2 mt-2 p-2 bg-dark-subtle">Administradores</h3>
+            <ul class="pp_list list-unstyled">                                    
                {foreach from=$tsAdmins item=admin}
-                  <li><div class="title"><a href="{$tsConfig.url}/perfil/{$admin.user_name}" data-vcard="{$admin.user_id}">{$admin.user_name}</a></div></li>                                    
+                  <li><a class="badge bg-success-subtle text-success-emphasis" rel="internal" href="{$tsConfig.url}/perfil/{$admin.user_name}">{$admin.user_name}</a></li>
                {/foreach}
             </ul>
-            <h3 class="h5 m-0 mt-2 p-2 bg-light">Instalaciones</h3>
-            <ul class="pp_list">
-			      <li class="px-1 py-2">Fundaci&oacute;n<span class="float-end small badge badge-info" title="{$tsInst.0|fecha}">{$tsInst.0|hace:true}</span></li>
-			      <li class="px-1 py-2">Actualizado<span class="float-end small badge badge-info" title="{$tsInst.1|fecha}">{$tsInst.1|hace:true}</span></li>
+            <h3 class="h5 mb-2 mt-2 p-2 bg-dark-subtle">Instalaciones</h3>
+            <ul class="pp_list list-group list-group-flush">
+               <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">Fundaci&oacute;n</div>
+                  <span class="badge bg-primary rounded-pill">{$tsInst.0|hace:true}</span>
+              </li>
+               <li class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">Actualizado</div>
+                  <span class="badge bg-primary rounded-pill">{$tsInst.1|hace:true}</span>
+              </li>
 	        </ul>
          </div>
       </div>
    </div>
 </div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-toolkit/extras/css/joypixels.min.css">
+<script src="https://cdn.jsdelivr.net/combine/npm/timeago,npm/emoji-toolkit"></script>
 <script src="{$tsConfig.js}/versiones.js?{$smarty.now}"></script>

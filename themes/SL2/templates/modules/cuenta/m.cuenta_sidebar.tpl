@@ -8,8 +8,10 @@
          <img alt="Avatar" src="{$tsPerfil.avatar}" class="avatar-big" id="avatar-img"/>
       </div>
    </div>
-   <a class="btn btn-block btn-info" id="cambiar" href="{$tsConfig.url}/cuenta/avatar">Cambiar avatar</a>
+   <a class="btn btn-block m-3 d-block btn-info" id="cambiar" href="{$tsConfig.url}/cuenta/avatar">Cambiar avatar</a>
    <br>
+</div>
+<div id="prueba"></div>
    <div class="btn-group-socials">
       {foreach $tsConfig.oauth key=i item=social}
          {if $tsPerfil.socials.$i}
@@ -19,5 +21,3 @@
          {/if}
       {/foreach}
    </div>
-</div>
-<div id="prueba"></div>

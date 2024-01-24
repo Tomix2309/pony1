@@ -1,6 +1,6 @@
 cache/
 PullIn/
-settings/config-*.json
+settings/config-*.*
 settings/settings.json
 # Archivos base
 !settings/config-example-settings.json
@@ -21,3 +21,4 @@ config.inc.php
 # Solo el theme SyntaxisLite2
 themes/*
 !themes/SL2
+themes/SL2/js/files_.js

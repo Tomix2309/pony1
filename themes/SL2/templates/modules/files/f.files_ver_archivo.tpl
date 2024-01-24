@@ -1,75 +1,79 @@
-{if $tsFile.data.f_ext == 'jpg' || $tsFile.data.f_ext == 'gif' || $tsFile.data.f_ext == 'png' || $tsFile.data.f_ext == 'bmp' || $tsFile.data.f_ext == 'mp3' || $tsFile.data.f_ext == 'mp4' || $tsFile.data.f_ext == 'avi' || $tsFile.data.f_ext == 'wmv' || $tsFile.data.f_ext == 'flv' || $tsFile.data.f_ext == 'mkv' || $tsFile.data.f_ext == 'mpg' || $tsFile.data.f_ext == '3gp' || $tsFile.data.f_ext == 'txt' || $tsFile.data.f_ext == 'pdf' || $tsFile.data.f_ext == 'swf' || $tsFile.data.f_ext == 'html'}
+<script src="https://cdn.jsdelivr.net/npm/code-prettify@0.1.0/loader/run_prettify.min.js"></script>
+<link rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/atelier-estuary-dark.min.css">
+{if $permitidos}
 	
    <!-- IMAGENES -->
-   {if $tsFile.data.f_ext == 'jpg' || $tsFile.data.f_ext == 'gif' || $tsFile.data.f_ext == 'png' || $tsFile.data.f_ext == 'bmp'}
-   <div class="text-center">
-      <img src="{$tsConfig.url}/files/archivos/{$tsFile.data.f_url}" style="max-width:100%;min-width:20%;margin:10px auto;" />
-   </div>
+   {if in_array($tsArchivo.data.arc_ext, $tsDatos.images)}
+      <div class="text-center">
+         <img src="{$tsArchivo.data.url_file}" style="max-width:100%;min-width:20%;margin:10px auto;" />
+      </div>
    <!-- MUSICA -->
-   {elseif $tsFile.data.f_ext == 'mp3'}
+   {elseif $tsArchivo.data.arc_ext == 'mp3'}
       <div class="mb-2">
-         <span class="d-block">Titulo original: <b>{$tsMp3Info.0}</b></span>
-         <span class="d-block">Duración: <b>{$tsMp3Info.1}</b></span>
-         <span class="d-block">KBPS: <b>{$tsMp3Info.2}</b>kb/s</span>
-         <span class="d-block">Channel: <b>{$tsMp3Info.3}</b></span>
-      </div>   
-      <audio controls class="w-100 m-2">
-         <source src="{$tsConfig.url}/files/archivos/{$tsFile.data.f_url}" type="audio/mp3">
-         Su navegador no es compatible con el elemento de audio.
-      </audio>      
+         <audio controls style="width: 100%;" class="p-2">
+            <source src="{$tsArchivo.data.url_file}" type="audio/{$tsArchivo.data.arc_ext}">
+            Tu navegador no soporta audio HTML5.
+         </audio>
+         <div class="d-block p-2">Titulo original: <strong class="d-block h3">{if empty($tsMp3Info.title)}{$tsArchivo.data.arc_name}{else}{$tsMp3Info.title}{/if}</strong></div>
+         <div class="row">
+            <div class="col">
+               <div class="p-2">Duración: <strong class="d-block h3">{$tsMp3Info.duration}</strong></div>
+            </div>
+            <div class="col">
+               <div class="p-2">KBPS: <strong class="d-block h3">{$tsMp3Info.kbps}kb/s</strong></div>
+            </div>
+            <div class="col">
+               <div class="p-2">Canal: <strong class="d-block h3">{$tsMp3Info.channel}</strong></div>
+            </div>
+            <div class="col">
+               <div class="p-2">Peso: <strong class="d-block h3">{$tsArchivo.data.arc_weight}</strong></div>
+            </div>
+         </div>
+      </div>  
    <!-- VIDEO -->
-   {elseif $tsFile.data.f_ext == 'mp4' || $tsFile.data.f_ext == 'avi' || $tsFile.data.f_ext == 'wmv' || $tsFile.data.f_ext == 'flv' || $tsFile.data.f_ext == 'mkv' || $tsFile.data.f_ext == 'mpg' || $tsFile.data.f_ext == '3gp'}
-      <video controls="controls" src="{$tsConfig.url}/files/archivos/{$tsFile.data.f_url}" type="video/mp4" style="width: 650px;"></video>
+   {elseif in_array($tsArchivo.data.arc_ext, $tsDatos.videos)}
+      <video controls="controls" src="{$tsArchivo.data.url_file}" type="video/{$mime}" style="width: 650px;"></video>
    <!-- SWF -->
-   {elseif $tsFile.data.f_ext == 'swf'}
+   {elseif $tsArchivo.data.arc_ext == 'swf'}
       <object width="650" height="450">
-         <param name="movie" id="movie" value="{$tsConfig.url}/files/archivos/{$tsFile.data.f_url}">
+         <param name="movie" id="movie" value="{$tsArchivo.data.url_file}">
          <param name="quality" value="high">
-         <embed src="{$tsConfig.url}/files/archivos/{$tsFile.data.f_url}" quality="high" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="650" height="450"></embed>
+         <embed src="{$tsArchivo.data.url_file}" quality="high" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="650" height="450"></embed>
        </object>
    <!-- TEXTOS -->
-   {elseif $tsFile.data.f_ext == 'pdf'}
-      <embed src="{$tsConfig.url}/files/archivos/{$tsFile.data.f_url}#toolbar=0&view=fitH,100" type="application/{$tsFile.data.f_ext}" width="100%" class="w-100 my-2" height="600px" />
+   {elseif $tsArchivo.data.arc_ext == 'pdf'}
+      <embed src="{$tsArchivo.data.url_file}" type="application/pdf" width="100%" height="600px">
    <!-- TEXTOS -->
-   {elseif $tsFile.data.f_ext == 'txt'}
-      <div class="p-2" style="height:500px;">
-         {foreach $tsInfoFile item=txt key=i}
-            {$txt}<br>
-         {/foreach}
-      </div>
+   {elseif in_array($tsArchivo.data.arc_ext, $tsDatos.text)}
+      <pre class="prettyprint">
+         <code class="language-{$tsArchivo.data.arc_ext}">{$tsInfoFile}</code>
+      </pre>
    <!-- DOCUMENTOS MICROSOFT WINDOWS -->
-   {elseif $tsFile.data.f_ext == 'html'}
-      <iframe src="{$tsConfig.url}/files/archivos/{$tsFile.data.f_url}" class="w-100" id="iframeID" style="border:0" height="600px"></iframe>
+   {elseif $tsArchivo.data.arc_ext == 'html'}
+      <iframe src="{$tsArchivo.data.url_file}" class="w-100" id="iframeID" style="border:0" height="600px"></iframe>
       <script> $('#iframeID').contents().find('body').html(); </script>
    {/if}
 
    <!-- SI NO SE CONOCE EL ARCHIVO  -->  
 {else}
-   <div class="File_format d-flex justify-content-center align-items-center">
-      <i data-feather="file"></i>
-      <span>{$tsFile.data.f_ext}</span>
+   <div class="File_format mx-auto my-3 d-flex justify-content-center align-items-center flex-column">
+      <i data-feather="file-text"></i>
+      <span class="fw-bold text-uppercase fs-3 text-center d-block">.{$tsArchivo.data.arc_ext}</span>
    </div>    
 {/if}
 <style>
 .File_format {
+   --size: 240px;
    position: relative;
-   width: 220px;
-   height: 220px;
-   margin: 10px auto;
+   width: var(--size);
 }
 .File_format .featherIcons {
-   width: 220px;
-   height: 220px;
-   stroke: #222;
+   width: var(--size);
+   height: var(--size);
+   stroke: var(--bs-dark-text-emphasis);
    stroke-width: 1px; 
 }
 .File_format span {
-   position: absolute;
-   font-size: 30px;
-   font-weight: 700;
-   text-transform: uppercase;
-   color: #444;
-   right: 55px;
-   bottom: 28px;
+   color: var(--bs-dark-text-emphasis);
 }
 </style>

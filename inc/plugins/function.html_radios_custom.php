@@ -183,7 +183,7 @@ function smarty_function_html_radios_output($name, $value, $output, $selected, $
 		$_id .= smarty_function_escape_special_chars($newTxt);
 		$_for .= ' for="' . $_id . '"';
 	} else $_for .= '';
-	$_output .= '<label class="form-radio"'.$_for.'> ' . $output;
+	$_output .= '<label class="form-check"'.$_for.'> ' . $output;
 	//}
 	$_output .= '<input type="radio" class="form-check-input" name="' . $name . '" value="' . $value . '"';
 	if ($labels && $label_ids) $_output .= ' id="' . $_id . '"';

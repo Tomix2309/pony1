@@ -76,10 +76,9 @@ class tsJson {
 	 * @param string
 	 * @param string
 	 * @param object => stdClass
-	 * @param string
 	 * @return string
 	*/
-	public function generateImage(string $nombre = '', string $ruta = '', $json = null, string $where = '') {
+	public function generateImage(string $nombre = '', string $ruta = '', $json = null) {
 		$tsCore = new tsCore;
 		$tsUser = new tsUser;
 		if ($json instanceof stdClass) {
@@ -103,6 +102,10 @@ class tsJson {
 				'w' => $json->$cover->width
 			];
 			if($pagina === 'unplash') $url .= "/{$json->$cover->width}x{$json->$cover->height}";
+			if(!$tsUser->is_member) {
+				// Actualizar la URL que se devuelve
+				$response = "{$tsCore->settings['downloads']}/$nombre";
+			} 
 			// Existe la imagen
 			if(file_exists($ruta)) {
 				# No existe entoces, la descargaremos y solo si es 1er usuario o admin
@@ -113,16 +116,16 @@ class tsJson {
 						// Y descargaremos la portada otra vez
 						self::filePut($ruta, $url, $sizes);
 						// Actualizar la URL que se devuelve
-						$response = "{$tsCore->settings[$where]}/$nombre?asds" . time();
+						$response = "{$tsCore->settings['downloads']}/$nombre?" . time();
 					// Si son iguales, simplemente devolvemos la url
-					} else $response = "{$tsCore->settings[$where]}/$nombre?" . time();
-				}
+					} else $response = "{$tsCore->settings['downloads']}/$nombre?" . time();
+				} else $response = "{$tsCore->settings['downloads']}/$nombre";
 			} else {
 				// Descargar y reemplazar la portada
 				self::filePut($ruta, $url, $sizes);
 				// Actualizar la URL que se devuelve
-				$response = "{$tsCore->settings[$where]}/$nombre?" . time();
-			}
+				$response = "{$tsCore->settings['downloads']}/$nombre?" . time();
+			} 
 			return $response;
 		} else {
 		  // Manejar el caso en el que el objeto JSON no es válido
@@ -178,13 +181,11 @@ class tsJson {
 			$style .= "background-$k: {$json->background->$k}!important;";
 		}
 		# Para retornar datos armados
-		$data['url'] = self::generateImage($backgroundname, $backgroundroute, $json, 'downloads');
+		$data['url'] = self::generateImage($backgroundname, $backgroundroute, $json);
 		$data['css'] = $style;
 		# Retornamos
 		return $data;
 	}
-
-
 
 	/** 
 	 * @access public 
@@ -206,6 +207,37 @@ class tsJson {
 		# Insertamos los datos al archivo json, y retornamos
 		$rsp = (file_put_contents(TS_SETTINGS . "settings.json", json_encode($admin, JSON_PRETTY_PRINT))) ? '1: Los cambios fuerón aplicados!' :  '0: Los datos no se guardaron.';
 		return $rsp;
+	}
+
+	/** 
+	 * @access public 
+	 * @name save_mode
+	 * @use Guardamos el tipo dar/light
+	 * @return array
+	*/
+	public function save_mode() {
+		$file = isset($_POST['uid']) ? 'config' : 'settings';
+		# Buscamos el archivo
+  		$admin = (array)self::getContentJson($file, (int)$_POST['uid']);
+  		$admin['mode'] = isset($_POST['mode']) ? $_POST['mode'] : 'light';
+		# Insertamos los datos al archivo json, y retornamos
+		$in = isset($_POST['uid']) ? $file.'-'.(int)$_POST['uid'] : $file; 
+		$rsp = (file_put_contents(TS_SETTINGS . "$in.json", json_encode($admin, JSON_PRETTY_PRINT))) ? '1: Los cambios fuerón aplicados!' :  '0: Los datos no se guardaron.';
+		return $rsp;
+	}
+
+	/** 
+	 * @access public 
+	 * @name getMode
+	 * @use Obtenemos el modo dark/light
+	 * @return array
+	*/
+	public function getMode() {
+		$tsUser = new tsUser;
+		$file = ($tsUser->is_member) ? 'config' : 'settings';
+		$uid = ($tsUser->is_member) ? (int)$tsUser->uid : 0;
+		# Retornamos
+		return self::getContentJson($file, $uid)->mode;
 	}
 
 	/** 
@@ -300,9 +332,9 @@ class tsJson {
 			}
 			# Para retornar datos armados
 			$backgroundname = "{$_POST['sitio']}{$json->portada->id}-$id.jpg";
-			$backgroundroute = TS_UPLOADS . $backgroundname;
+			$backgroundroute = TS_DOWNLOADS . $backgroundname;
 			unlink($backgroundroute);
-			$res['url'] = self::generateImage($backgroundname, $backgroundroute, $json, 'uploads');
+			$res['url'] = self::generateImage($backgroundname, $backgroundroute, $json);
 
 			return json_encode(['msg' => '1: Los cambios fueron aplicados!', 'obj' => $res]);
 		} else return json_encode(['msg' => '0: Tu ID no es válido.']);

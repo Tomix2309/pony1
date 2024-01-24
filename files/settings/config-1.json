@@ -1,17 +1,12 @@
 {
+    "mode": "dark",
     "portada": {
         "height": 300,
-        "id": "Q1p7bh3SHj8",
+        "id": "418831",
         "position": "center center",
         "repeat": "no-repeat",
-        "type": "unplash",
+        "type": "pexels",
         "width": 1200
-    },
-    "unplash": {
-        "url": "https:\/\/source.unsplash.com\/IMAGEID"
-    },
-    "pexels": {
-        "url": "https:\/\/images.pexels.com\/photos\/IMAGEID\/pexels-photo-IMAGEID.jpeg"
     },
     "params": {
         "auto": "compress",

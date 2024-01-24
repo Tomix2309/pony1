@@ -131,7 +131,7 @@ var favoritos = {
 	eliminados_force_order: false,
 	eliminados: new Array(), //Guardo los favoritos eliminados, por si quiere reactivar alguno
 	eliminar: function(fav_id, obj){
-	   $('#loading').fadeIn(250);
+	   SL2.start();
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/favoritos-borrar.php',
@@ -173,11 +173,11 @@ var favoritos = {
 						favoritos.printCounts();
 						break;
 				}
-                $('#loading').fadeOut(350);
+                SL2.stop();
 			},
 			error: function(){	
 				mydialog.alert('Error', 'Hubo un error al intentar procesar lo solicitado');
-                $('#loading').fadeOut(350);
+                SL2.stop();
 			}
 		});
 	},
@@ -194,7 +194,7 @@ var favoritos = {
 		if(i==s)
 			return false; //No encontrado
         
-        $('#loading').fadeIn(250);
+        SL2.start();
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/favoritos-agregar.php',
@@ -243,11 +243,11 @@ var favoritos = {
 						break;
 				}
                 
-                $('#loading').fadeOut(350);
+                SL2.stop();
 			},
 			error: function(){	
 				mydialog.alert('Error', 'Hubo un error al intentar procesar lo solicitado');
-                $('#loading').fadeOut(350);
+                SL2.stop();
 			}
 		});
 	}

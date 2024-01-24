@@ -10,7 +10,7 @@
  * -------------------------------------------------------------------
  *  Validamos que mostrar home/mi
  * -------------------------------------------------------------------
- */
+*/
 
 // Incluimos header
 require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . 'header.php';

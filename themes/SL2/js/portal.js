@@ -28,7 +28,7 @@ var portal = {
             if($(this).prop('checked')) cat_ids += $(this).val() + ',';
 		});
         //
-        $('#loading').fadeIn(250);
+        SL2.start();
         $.ajax({
         	type: 'POST',
         	url: global_data.url + '/portal-posTS_SETTINGSig.php',
@@ -43,7 +43,7 @@ var portal = {
                         portal.posts_page('posts',1, false);
         				break;
         		}
-                $('#loading').fadeOut(350);
+                SL2.stop();
         	}
         });                
     },
@@ -53,7 +53,7 @@ var portal = {
         //
   		if(scroll == true) window.scrollTo('#cuerpocontainer', 250);
         if(typeof portal.cache[type + '_' + page] == 'undefined'){
-            $('#loading').fadeIn(250);
+            SL2.start();
     		$.ajax({
     			type: 'GET',
     			url: global_data.url + '/portal-' + type + '_pages.php?page=' + page,
@@ -64,7 +64,7 @@ var portal = {
                     // CARGAMOS
    				    $('#portal_' + type + '_content').html(h);
                     // OCULTAMOS MENSAJE CARGA
-                    $('#loading').fadeOut(350);
+                    SL2.stop();
     			}
     		});
         } else {

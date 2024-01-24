@@ -13,28 +13,31 @@
 
 	// NIVELES DE ACCESO Y PLANTILLAS DE CADA ACCIÓN
 	$files = array(
-		'files-subir' => array('n' => 2, 'p' => ''),
-		'files-borrar' =>  array('n' => 2, 'p' => ''),
-		'files-admin-borrar' =>  array('n' => 2, 'p' => ''),
-		'files-borrar_admin' =>  array('n' => 4, 'p' => ''),
-		'files-editar' =>  array('n' => 2, 'p' => ''),
-		'files-privado' =>  array('n' => 2, 'p' => ''),
-		'files-descargar' =>  array('n' => 0, 'p' => ''),
-		'files-favorito' =>  array('n' => 2, 'p' => ''),
-		'files-delfav' =>  array('n' => 2, 'p' => ''),
-		'files-reactivar' =>  array('n' => 3, 'p' => ''),
-		'files-newcom' =>  array('n' => 2, 'p' => 'newcom'),
-		'files-delcom' =>  array('n' => 2, 'p' => ''),
-		'files-newfolder' =>  array('n' => 2, 'p' => 'folder'),
-		'files-editfolder' =>  array('n' => 2, 'p' => ''),
-		'files-privfolder' =>  array('n' => 2, 'p' => ''),
-		'files-delfolder' =>  array('n' => 2, 'p' => ''),
-		'files-verfolders' =>  array('n' => 2, 'p' => ''),
-		'files-moverfile' =>  array('n' => 2, 'p' => ''),
-		'files-search' =>  array('n' => 2, 'p' => 'search'),
-		'files-last-files' =>  array('n' => 2, 'p' => 'last-files'),
-		'files-borrar_select' =>  array('n' => 2, 'p' => ''),
-		'files-mover_select' =>  array('n' => 2, 'p' => ''),
+		'files-subir' => ['n' => 2, 'p' => ''],
+		'files-borrar' =>  ['n' => 2, 'p' => ''],
+		'files-admin-borrar' =>  ['n' => 2, 'p' => ''],
+		'files-borrar_admin' =>  ['n' => 4, 'p' => ''],
+		'files-editar' =>  ['n' => 2, 'p' => ''],
+		'files-privado' =>  ['n' => 2, 'p' => ''],
+		'files-favorito' =>  ['n' => 2, 'p' => ''],
+		'files-delfav' =>  ['n' => 2, 'p' => ''],
+		'files-reactivar' =>  ['n' => 3, 'p' => ''],
+		'files-newcom' =>  ['n' => 2, 'p' => 'newcom'],
+		'files-delcom' =>  ['n' => 2, 'p' => ''],
+		// CARPETAS
+		'files-crear-carpeta' =>  ['n' => 2, 'p' => 'crear-carpeta'],
+		'files-new-folder' =>  ['n' => 2, 'p' => ''],
+		'files-editfolder' =>  ['n' => 2, 'p' => ''],
+		'files-privfolder' =>  ['n' => 2, 'p' => ''],
+		'files-delfolder' =>  ['n' => 2, 'p' => ''],
+		'files-verfolders' =>  ['n' => 2, 'p' => ''],
+		//
+		'files-info' =>  ['n' => 2, 'p' => ''],
+		'files-mover-archivo' =>  ['n' => 2, 'p' => ''],
+		'files-mover-seleccion' =>  ['n' => 2, 'p' => ''],
+		'files-search' =>  ['n' => 2, 'p' => 'search'],
+		'files-last-files' =>  ['n' => 2, 'p' => 'last-files'],
+		'files-borrar_select' =>  ['n' => 2, 'p' => ''],
 	);
 
 /**********************************\
@@ -58,15 +61,22 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
 	// CLASE
-	require('../class/c.files.php');
-	$tsFiles = new tsFiles();
+	require_once TS_CLASS . 'c.files.php';
+	$tsFiles = new tsFiles();	
 	// CODIGO
 	switch($action){
+		case 'files-info':
+			//<--
+			echo $tsFiles->getOnlyInfo();
+			//-->
+		break;
 		case 'files-subir':
 			//<--
-			$file = $tsFiles->newFile();
-			echo $file;
+			echo $tsFiles->fileUpload();
 			//-->
+		break;
+		case 'files-crear-carpeta':
+			$smarty->assign("tsTypeOf", $tsFiles->getTypeOfFolders('crear'));
 		break;
 		case 'files-borrar':
 			//<--
@@ -88,14 +98,9 @@
 			echo $tsFiles->cambioPrivado();
 			//-->
 		break;
-		case 'files-descargar':
-			//<--
-			echo $tsFiles->descargaFile();
-			//-->
-		break;
 		case 'files-favorito':
 			//<--
-			echo $tsFiles->favoritFile();
+			echo $tsFiles->fileFavourite();
 			//-->
 		break;
 		case 'files-delfav':
@@ -120,11 +125,9 @@
 			echo $tsFiles->delcomFile();
 			//-->
 		break;
-		case 'files-newfolder':
+		case 'files-new-folder':
 			//<--
-			$folder = $tsFiles->newFolder();
-			if(is_array($folder)) $smarty->assign("folder",$folder);
-    		else die($folder);
+			echo json_encode($tsFiles->createNewFolder());
 			//-->
 		break;
 		case 'files-editfolder':
@@ -147,9 +150,14 @@
 			echo $tsCore->setJSON($tsFiles->verFolders());
 			//-->
 		break;
-		case 'files-moverfile':
+		case 'files-mover-archivo':
 			//<--
-			echo $tsFiles->moverFile();
+			echo (isset($_POST['move']) AND $_POST['move'] == 'true') ? json_encode($tsFiles->getFolders()) : $tsFiles->getFolders();
+			//-->
+		break;
+		case 'files-mover-seleccion':
+			//<--
+          echo $tsFiles->moveFile();
 			//-->
 		break;
 		case 'files-search':
@@ -165,11 +173,6 @@
 		case 'files-borrar_select':
 			//<--
          echo $tsFiles->delFiles();
-			//-->
-		break;
-		case 'files-mover_select':
-			//<--
-          echo $tsFiles->moverFiles();
 			//-->
 		break;
 	}

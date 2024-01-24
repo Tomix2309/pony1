@@ -87,7 +87,7 @@ var fotos = {
     	}
       // ENVIAMOS
       var auser = $('input[name=auser_post]').val();
-      $('#loading').fadeIn(250); 
+      SL2.start(); 
        $.ajax({
     		type: 'POST',
     		url: global_data.url + '/comentario-agregar.php?ts=true&do=fotos',
@@ -109,7 +109,7 @@ var fotos = {
                   $('.noComments').remove();
     				break;
     			}
-            $('#loading').fadeOut(250); 
+            SL2.stop(); 
     		}
       });
    },
@@ -121,7 +121,7 @@ var fotos = {
     	var total_votos = parseInt($('#votos_total_' + voto).text());
       total_votos = (isNaN(total_votos)) ? 0 : total_votos;
       //
-      $('#loading').fadeIn(250); 
+      SL2.start(); 
     	$.ajax({
     		type: 'POST',
     		url: global_data.url + '/comentario-votar.php?do=fotos',
@@ -136,7 +136,7 @@ var fotos = {
     					$('#votos_total_' + voto).text(total_votos);
     				break;
     			}
-            $('#loading').fadeOut(250); 
+            SL2.stop(); 
     		}
         });
     },
@@ -155,7 +155,7 @@ var fotos = {
     },
     // ELIMINAR COMENTARIO
     del_comentario: function(cid){
-        $('#loading').fadeIn(250); 
+        SL2.start(); 
     	$.ajax({
     		type: 'POST',
     		url: global_data.url + '/comentario-borrar.php?do=fotos',
@@ -176,13 +176,13 @@ var fotos = {
                         //
     					break;
     			}
-                $('#loading').fadeOut(250); 
+                SL2.stop(); 
     		}
         });
     },
     // ELIMINAR FOTO
     del_foto: function(fid){
-        $('#loading').fadeIn(250); 
+        SL2.start(); 
     	$.ajax({
     		type: 'POST',
     		url: global_data.url + '/fotos/borrar.php',
@@ -198,7 +198,7 @@ var fotos = {
                         //
     					break;
     			}
-                $('#loading').fadeOut(250); 
+                SL2.stop(); 
     		}
         });
     }
@@ -237,7 +237,7 @@ $(function(){
 });
 //PAGINACION DE FOTOS
 function last_files(page) {
-   $('#loading').fadeIn(250);
+   SL2.start();
    $('.nofio').css('opacity', 0.5);
    $('#com_gif').show(100);
    $.ajax({
@@ -248,12 +248,12 @@ function last_files(page) {
          $('.nofio').css('opacity', 1);
          $('#com_gif').hide(100);
          $('.nofio').html(h);
-         $('#loading').fadeOut(350);
+         SL2.stop();
       },
       error: function() {
          $('.nofio').show;
          $('#com_gif').hide(100);
-         $('#loading').fadeOut(350);
+         SL2.stop();
       }
    });
 }

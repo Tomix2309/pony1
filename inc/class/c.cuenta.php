@@ -5,42 +5,16 @@
  * @name    c.cuenta.php
  * @author  PHPost Team
  */
+require_once TS_EXTRA . "datos.php";
 class tsCuenta {
 
-	# Redes sociales disponibles
-	/**
-	  * Si van a agregar más debe ser así 'nombre_minuscula => 'nombre_inicial_mayuscula',
-	*/
-	var $redes = [
-		'facebook' => [
-			'icono' => 'facebook',
-			'nombre' => 'Facebook', 
-			'url' => 'https://facebook.com'
-		],
-		'twitter' => [
-			'icono' => 'twitter',
-			'nombre' => 'Twitter', 
-			'url' => 'https://x.com'
-		],
-		'instagram' => [
-			'icono' => 'instagram',
-			'nombre' => 'Instagram',
-			'url' => 'https://instagram.com'
-		],
-		'youtube' => [
-			'icono' => 'youtube',
-			'nombre' => 'Youtube',
-			'url' => 'https://youtube.com'
-		]
-	];
-
-    /**
-     * @name loadPerfil()
-     * @access public
-     * @uses Cargamos el perfil de un usuario
-     * @param int
-     * @return array
-     */
+   /**
+    * @name loadPerfil()
+    * @access public
+    * @uses Cargamos el perfil de un usuario
+    * @param int
+    * @return array
+    */
 	public function loadPerfil($user_id = 0){
 		global $tsUser, $tsCore;
 		//
@@ -61,13 +35,13 @@ class tsCuenta {
         loadExtras()
     */
     private function unData($data){
+    	global $redes;
       //
       $d = ['p_gustos', 'p_tengo', 'p_idiomas', 'p_configs'];
       foreach ($d as $v) $data[$v] = unserialize($data[$v]);
 		// Redes sociales
-      $data["redes"] = $this->redes;
-		$data['p_socials'] = json_decode($data['p_socials'], true);
-		foreach ($this->redes as $name => $valor) $data['p_socials'][$name];
+      $data["redes"] = $redes;
+		$data['p_socials'] = (array)json_decode($data['p_socials'], true);
       //
       return $data;
     }
@@ -83,7 +57,7 @@ class tsCuenta {
       $data['user_avatar'] = $tsCore->getAvatar($user_id);
         //
       $data['p_nombre'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_nombre']), true);
-      $data['p_mensaje'] = $tsCore->setSecure($tsCore->parseBadWords($data['p_mensaje']), true);
+      $data['p_mensaje'] = $tsCore->parseBBCode($tsCore->setSecure($tsCore->parseBadWords($data['p_mensaje']), true));
       // Redes Sociales
 		if(!empty($data['p_socials'])) {
 			$data['p_socials'] = json_decode($data['p_socials'], true);
@@ -420,8 +394,7 @@ class tsCuenta {
 				}
 			break;
 		}
-		$thisAccount = (in_array($save, ['', 'privacidad', 'perfil']));
-		if($thisAccount) {
+		if($save == '') {
 			db_exec([__FILE__, __LINE__], "query", "UPDATE u_miembros SET user_email = '{$perfilData['email']}' WHERE user_id = {$tsUser->uid}");
 			if($save === '') array_splice($perfilData, 0, 1);
 		}

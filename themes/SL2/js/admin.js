@@ -8,13 +8,13 @@ const redes = {
          mydialog.buttons(true, true, 'S&iacute;', 'redes.borrar(' + id + ', 1)', true, false, true, 'No', 'close', true, true);
          mydialog.center();
       } else {
-         $('#loading').fadeIn(250);
+         SL2.start();
          $.post(global_data.url + '/admin-red-borrar.php', { id }, a => {
             console.log(a)
             //mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
             //mydialog.center();
             //success: if (a.charAt(0) == '1') $('#red' + aid).fadeOut().remove;
-            //$('#loading').fadeOut(350);
+            //SL2.stop();
          });
       }
    }
@@ -29,17 +29,17 @@ var admin = {
             mydialog.buttons(true, true, 'S&iacute;', 'admin.afs.borrar(' + aid + ', 1)', true, false, true, 'No', 'close', true, true);
             mydialog.center();
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/afiliado-borrar.php', 'afid=' + aid, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: if (a.charAt(0) == '1') $('#few_' + aid).fadeOut().remove;
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
       },
       accion: function(aid) {
-         $('#loading').fadeIn(250);
+         SL2.start();
          $.ajax({
             type: 'POST',
             url: global_data.url + '/afiliado-setactive.php',
@@ -58,14 +58,14 @@ var admin = {
                      $('#status_afiliado_' + aid).html('<font color="purple">Inactivo</font>');
                      break;
                }
-               $('#loading').fadeOut(250);
+               SL2.stop();
             }
          });
       },
    },
    news: {
       accion: function(nid) {
-         $('#loading').fadeIn(250);
+         SL2.start();
          $.ajax({
             type: 'POST',
             url: global_data.url + '/admin-noticias-setInActive.php',
@@ -84,7 +84,7 @@ var admin = {
                      $('#status_noticia_' + nid).html('<font color="purple">Inactiva</font>');
                      break;
                }
-               $('#loading').fadeOut(350);
+               SL2.stop();
             }
          });
       },
@@ -98,12 +98,12 @@ var admin = {
             mydialog.buttons(true, true, 'S&iacute;', "admin.nicks.accion(" + nid + ",'" + accion + "' ,true)", true, false, true, 'No', 'close', true, false);
             mydialog.center();
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/admin-nicks-change.php', 'nid=' + nid + '&accion=' + accion, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: if (a.charAt(0) == '1') $('#nick_' + nid).fadeOut();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
       },
@@ -117,12 +117,12 @@ var admin = {
             mydialog.buttons(true, true, 'S&iacute;', "admin.sesiones.borrar('" + sid + "', true)", true, false, true, 'No', 'close', true, true);
             mydialog.center();
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/admin-sesiones-borrar.php', 'sesion_id=' + sid, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: if (a.charAt(0) == '1') $('#sesion_' + sid).fadeOut();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
       },
@@ -136,12 +136,12 @@ var admin = {
             mydialog.buttons(true, true, 'S&iacute;', 'admin.posts.borrar(' + pid + ', 1)', true, false, true, 'No', 'close', true, true);
             mydialog.center();
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/posts-admin-borrar.php', 'postid=' + pid, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: if (a.charAt(0) == '1') $('#post_' + pid).fadeOut();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
       },
@@ -155,12 +155,12 @@ var admin = {
             mydialog.buttons(true, true, 'S&iacute;', 'admin.file.borrar(' + pid + ', 1)', true, false, true, 'No', 'close', true, true);
             mydialog.center();
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/files-admin-borrar.php', 'fileid=' + pid, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: if (a.charAt(0) == '1') $('#file_' + pid).fadeOut();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
       },
@@ -174,12 +174,12 @@ var admin = {
             mydialog.buttons(true, true, 'S&iacute;', 'admin.blacklist.borrar(' + id + ', true)', true, false, true, 'No', 'close', true, true);
             mydialog.center();
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/admin-blacklist-delete.php', 'bid=' + id, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: if (a.charAt(0) == '1') $('#block_' + id).fadeOut();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
       },
@@ -193,12 +193,12 @@ var admin = {
             mydialog.buttons(true, true, 'S&iacute;', 'admin.badwords.borrar(' + wid + ', true)', true, false, true, 'No', 'close', true, true);
             mydialog.center();
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/admin-badwords-delete.php', 'wid=' + wid, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: if (a.charAt(0) == '1') $('#wid_' + wid).fadeOut();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
       },
@@ -212,17 +212,17 @@ var admin = {
             mydialog.buttons(true, true, 'S&iacute;', 'admin.fotos.borrar(' + fid + ', 1)', true, false, true, 'No', 'close', true, true);
             mydialog.center();
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/admin-foto-borrar.php', 'foto_id=' + fid, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: $('#foto_' + fid).fadeOut();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
       },
       setOpenClosed: function(fid) {
-         $('#loading').fadeIn(250);
+         SL2.start();
          $.ajax({
             type: 'POST',
             url: global_data.url + '/admin-foto-setOpenClosed.php',
@@ -241,12 +241,12 @@ var admin = {
                      $('#comments_foto_' + fid).html('<font color="green">Abiertos</font>');
                      break;
                }
-               $('#loading').fadeOut(350);
+               SL2.stop();
             }
          });
       },
       setShowHide: function(fid) {
-         $('#loading').fadeIn(250);
+         SL2.start();
          $.ajax({
             type: 'POST',
             url: global_data.url + '/admin-foto-setShowHide.php',
@@ -265,7 +265,7 @@ var admin = {
                      $('#status_foto_' + fid).html('<font color="green">Visible</font>');
                      break;
                }
-               $('#loading').fadeOut(350);
+               SL2.stop();
             }
          });
       },
@@ -281,12 +281,12 @@ var admin = {
             mydialog.body('Si borra la medalla, los usuarios que tengan esta medalla la perder&aacute;n, &#191;seguro que quiere continuar?');
             mydialog.buttons(true, true, 'S&iacute;', 'admin.medallas.borrar(' + mid + ', 3)', true, false, true, 'No', 'close', true, true);
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/admin-medalla-borrar.php', 'medal_id=' + mid, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: $('#medal_id_' + mid).fadeOut();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
          mydialog.center();
@@ -299,12 +299,12 @@ var admin = {
             mydialog.buttons(true, true, 'S&iacute;', 'admin.medallas.borrar_asignacion(' + aid + ',' + mid + ', true)', true, false, true, 'No', 'close', true, true);
             mydialog.center();
          } else {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/admin-medallas-borrar-asignacion.php', 'aid=' + aid + '&mid=' + mid, function(a) {
                mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), a.substring(3), false);
                mydialog.center();
                success: $('#assign_id_' + aid).fadeOut();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             });
          }
       },
@@ -334,13 +334,13 @@ var admin = {
             var m_usuario = $('#m_usuario').val();
             var m_post = $('#m_post').val();
             var m_foto = $('#m_foto').val();
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.post(global_data.url + '/admin-medalla-asignar.php', 'mid=' + mid + '&m_usuario=' + m_usuario + '&pid=' + m_post + '&fid=' + m_foto, function(c) {
                mydialog.alert((c.charAt(0) == '0' ? 'Opps!' : 'Hecho'), '<div class="dialog_box">' + c.substring(3) + '</div>', false);
                success: if (c.charAt(0) != '0') {
                   var nmeds = parseInt($('#total_med_assig_' + mid).text());
                   $('#total_med_assig_' + mid).text(nmeds + 1);
-                  $('#loading').fadeOut(350);
+                  SL2.stop();
                }
                mydialog.center();
             });
@@ -349,7 +349,7 @@ var admin = {
    },
    users: {
       setInActive: function(uid) {
-         $('#loading').fadeIn(250);
+         SL2.start();
          $.ajax({
             type: 'POST',
             url: global_data.url + '/admin-users-InActivo.php',
@@ -368,7 +368,7 @@ var admin = {
                      $('#status_user_' + uid).html('<font color="purple">Inactivo</font>');
                      break;
                }
-               $('#loading').fadeOut(350);
+               SL2.stop();
             }
          });
       },

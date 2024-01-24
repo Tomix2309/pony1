@@ -1,3 +1,5 @@
+![GitHub repo size](https://img.shields.io/github/repo-size/PHPostApp/SyntaxisLite)
+
 # Syntaxis Lite 2024
 
 | <!-- -->   | <!-- -->  | <!-- -->  |

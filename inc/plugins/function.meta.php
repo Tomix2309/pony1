@@ -60,10 +60,11 @@ function smarty_function_meta($params, &$smarty) {
 	// Etiquetas por defecto
 	foreach ($tags as $tag) $sl2html .= "<meta name=\"$tag\" content=\"".$$tag."\" />\n";
 	$sl2html .= "<meta name=\"application-name\" content=\"{$json['titulo']}\">\n";
-	$sl2html .= "<meta name=\"msapplication-TileImage\" content=\"{$json['favicon']}\">\n";
 	$sl2html .= "<meta name=\"msapplication-TileColor\" content=\"{$json['color']}\">\n";
-	$sl2html .= "<meta name=\"theme-color\" media=\"(prefers-color-scheme: light)\" content=\"#5599DE\">\n";
+	$sl2html .= "<meta name=\"msapplication-TileImage\" content=\"{$json['favicon']}\">\n";
 	$sl2html .= "<meta name=\"theme-color\" media=\"(prefers-color-scheme: dark)\"  content=\"#343232\">\n";
+	$sl2html .= "<meta name=\"theme-color\" media=\"(prefers-color-scheme: light)\" content=\"#5599DE\">\n";
+	$sl2html .= "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n";
 
 	# Robots | Rastreadores
 	if((int)$json['robots']) {

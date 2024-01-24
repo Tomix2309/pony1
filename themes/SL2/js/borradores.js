@@ -8,7 +8,7 @@ var borradores = {
 			mydialog.buttons(true, true, 'SI', 'borradores.eliminar(' + id + ', false)', true, false, true, 'NO', 'close', true, true);
 			mydialog.center();
 		}else{
-		  $('#loading').fadeIn(250);
+		  SL2.start();
 			$.ajax({
 				type: 'POST',
 				url: global_data.url + '/borradores-eliminar.php',
@@ -20,11 +20,11 @@ var borradores = {
 						case '1':
 						break;
 					}
-               $('#loading').fadeOut(350);
+               SL2.stop();
 				},
 				error: function(){	
 					mydialog.alert('Error', 'Hubo un error al intentar procesar lo solicitado');
-               $('#loading').fadeOut(350);
+               SL2.stop();
 				}
 			});
 		}

@@ -177,7 +177,7 @@ class tsCore {
 				if($msg) {
 					$mensaje = '<i class="icon_svg icon_svg_2 d-block"></i>';
 					$mensaje .= '<p class="text-uppercase font-weight-bolder h4 pt-2 pb-4 d-block text-center">Para poder ver esta pagina debes iniciar sesi&oacute;n.</p>';
-				} else $this->redirectTo('/login/?r='.$this->currentUrl());
+				} else $this->redirectTo('/login/?redirect='.$this->currentUrl());
 			}
 		} elseif($tsLevel == 3) { # SOLO MODERADORES
 			if($tsUser->is_admod || $tsUser->permisos['moacp']) return true;
@@ -185,7 +185,7 @@ class tsCore {
 				if($msg) {
 					$mensaje = '<i class="icon_svg icon_svg_3 d-block"></i>';
 					$mensaje .= '<p class="text-uppercase font-weight-bolder h4 pt-2 pb-4 d-block text-center">Estas en un area restringida solo para moderadores.</p>';
-				} else $this->redirectTo('/login/?r='.$this->currentUrl());
+				} else $this->redirectTo('/login/?redirect='.$this->currentUrl());
 			}
 		} elseif($tsLevel == 4) { #SOLO ADMIN
 			if($tsUser->is_admod == 1) return true;
@@ -193,7 +193,7 @@ class tsCore {
 				if($msg) {
 					$mensaje = '<i class="icon_svg icon_svg_4 d-block"></i>';
 					$mensaje .= '<p class="text-uppercase font-weight-bolder h4 pt-2 pb-4 d-block text-center">Estas intentando algo no permitido.</p>';
-				} else $this->redirectTo('/login/?r='.$this->currentUrl());
+				} else $this->redirectTo('/login/?redirect='.$this->currentUrl());
 			}
 		}
 		//
@@ -303,7 +303,7 @@ class tsCore {
 	   $start = max(0, (int) $start);
 	   $start = $start - ($start % $num_per_page);
 	   // Generate the link format based on whether flexible_start is enabled or not
-	   $base_link = '<a class="navPages" href="' . ($flexible_start ? $base_url : $base_url . '&s=%d') . '">%s</a> ';
+	   $base_link = '<li class="page-item"><a class="page-link" href="' . ($flexible_start ? $base_url : $base_url . '&s=%d') . '">%s</a></li> ';
 	   // Calculate the number of contiguous page links to show
 	   $PageContiguous = 2;
 	   // Initialize the page index string
@@ -315,26 +315,23 @@ class tsCore {
 	   // Add the link to the first page if necessary
 	   if ($start > $num_per_page * $PageContiguous) $pageindex .= $generatePageLink(0) . ' ';
 	   // Add '...' before the first page link if necessary
-	   if ($start > $num_per_page * ($PageContiguous + 1)) $pageindex .= '<b> ... </b>';
+	   if ($start > $num_per_page * ($PageContiguous + 1)) $pageindex .= '<li class="page-item"><a class="page-link"> ... </a></li>';
 	   // Add page links before the current page
 	   for ($i = $PageContiguous; $i >= 1; $i--) {
 	      $pageNumber = $start / $num_per_page - $i;
 	      if ($pageNumber >= 0) $pageindex .= $generatePageLink($pageNumber);
 	   }
 	   // Add the link to the current page
-	   $pageindex .= '[<b>' . ($start / $num_per_page + 1) . '</b>] ';
+	   $currentPageNumber = $start / $num_per_page + 1;
+		$pageindex .= '<li class="page-item disabled"><a class="page-link">' . $currentPageNumber . '</a></li> ';
 	   // Add page links after the current page
 	   for ($i = 1; $i <= $PageContiguous; $i++) {
-	      $pageNumber = $start / $num_per_page + $i;
-	      if ($pageNumber * $num_per_page < $max_value) $pageindex .= $generatePageLink($pageNumber);
-	   }
+   		$pageNumber = $start / $num_per_page + $i;
+   		if ($pageNumber * $num_per_page < $max_value) $pageindex .= $generatePageLink($pageNumber);
+		}
 	   // Add '...' near the end if necessary
-	   if ($start + $num_per_page * ($PageContiguous + 1) < $max_value) $pageindex .= '<b> ... </b>';
-	   // Add the link to the last page if necessary
-	   if ($start + $num_per_page * $PageContiguous < $max_value) {
-	      $pageNumber = (int) (($max_value - 1) / $num_per_page);
-	      $pageindex .= $generatePageLink($pageNumber);
-	   }
+	   if ($start + $num_per_page * ($PageContiguous + 1) < $max_value) $pageindex .= '<li class="page-item"><a class="page-link"> ... </a></li>';
+	 
 	   return $pageindex;
 	}
 	/**
@@ -566,7 +563,7 @@ class tsCore {
 	*/
 	public function getAvatar(int $uid = 0):string {
 		$user = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT m.user_id, m.user_avatar, p.p_avatar FROM u_miembros AS m LEFT JOIN u_perfil AS p ON p.user_id = m.user_id WHERE m.user_id = $uid"));
-		$ensamble = ((int)$user['p_avatar'] === 1) ? "{$user['user_id']}.{$user['user_avatar']}" : "avatar";
+		$ensamble = ((int)$user['p_avatar'] === 1) ? $user['user_id'] : "avatar";
 		return "{$this->settings['avatar']}/$ensamble.webp?" . time();
 	}
 	/**
@@ -614,11 +611,6 @@ class tsCore {
 	public function timeseo($time = '') {
 		$time = date('Y-m-d\TH:i:s\Z', $time);
 		return $time;
-	}
-	public function convertirms($segundos) {
-   	$minutos = floor($segundos / 60);
-   	$segundos = $segundos % 60;
-   	return sprintf("%02d:%02d", $minutos, $segundos);
 	}
 
 }

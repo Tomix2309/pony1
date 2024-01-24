@@ -149,7 +149,7 @@ form fieldset dl dd input[type=text]{
 	width:80%;
 	padding:10px;
 	box-sizing: border-box;
-	color:#888
+	color:#EEE
 }
 form fieldset dl dd select:focus,
 form fieldset dl dd input[type=email]:focus,
@@ -158,6 +158,12 @@ form fieldset dl dd input[type=text]:focus{color:#fff;background-color:transpare
 form fieldset dl dd select option {
 	background-color: #333;
 	padding: 6px;
+}
+form fieldset dl dd select::placeholder,
+form fieldset dl dd input[type=email]::placeholder,
+form fieldset dl dd input[type=password]::placeholder,
+form fieldset dl dd input[type=text]::placeholder {
+	color:#888
 }
 @media (min-width: 768px) {
 	.page-wrapper{

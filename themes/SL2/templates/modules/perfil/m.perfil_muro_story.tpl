@@ -1,9 +1,9 @@
 {foreach from=$tsMuro.data item=p}
-<div class="Story bg-white rounded mb-3" id="pub_{$p.pub_id}">
+<div class="Story bg-light-subtle rounded mb-3" id="pub_{$p.pub_id}">
 
    <!-- Avatar | Nombre del usuario -->
    <a href="{$tsConfig.url}/perfil/{$p.user_name}" title="{if $tsUser->is_admod}{$p.p_ip}{else}{$p.user_name}{/if}" class="Story_Pic d-block text-center">
-      <img class="shadow rounded w-100" alt="{$p.user_name}" src="{$p.user_avatar}"/>
+      <img class="shadow rounded w-100 image object-fit-cover" alt="{$p.user_name}" src="{$tsConfig.images}/loadImage.gif" data-src="{$p.user_avatar}"/>
    </a>
 
    <!-- La publicación del usuario -->
@@ -21,22 +21,24 @@
          {if $p.p_type != 1}
             <div class="mvm clearfix">
                {if $p.p_type == 2}
-                  <a href="#" onclick="muro.load_atta('foto', '{$p.a_url}', this); return false" class="uiPhoto"><img src="{$p.a_img}"/></a>
+                  <a href="javascript:muro.load_atta('foto', '{$p.a_url}', this)" class="uiPhoto mx-auto"><img class="image rounded" loading="lazy" src="{$tsConfig.images}/loadImage.gif" data-src="{$p.a_img}"/></a>
                {elseif $p.p_type == 3}
-                  <div class="uiLink">
-                     <strong class="d-block h4"><a href="{$p.a_url}" target="_blank" class="text-dark">{$p.a_title}</a></strong>
-                     <span class="desc">{$p.a_url}</span>
+                  <div class="uiLink rounded d-grid">
+                     <img src="{$tsConfig.images}/loadImage.gif" data-src="{$p.a_img}" class="object-fit-cover rounded image">
+                     <div class="p-2">
+                        <a href="{$p.a_url}" target="_blank" class="d-block fw-bolder">{$p.a_title}</a>
+                        <small class="d-block">{$p.a_desc}</small>
+                     </div>
                   </div>
                {elseif $p.p_type == 4}
-                  <div class="uiVideo">
-                     <a href="#" onclick="muro.load_atta('video','{$p.a_url}', this); return false;"class="uiVideoThumb">
-                        <img class="w-100" alt="{$p.a_title}" src="http://img.youtube.com/vi/{$p.a_url}/0.jpg"/>
-                        <i data-feather="play"></i>
-                     </a>
+                  <div class="vContent">
+                     <lite-youtube videoid="{$p.a_url}" style="background-image: url('https://i.ytimg.com/vi/{$p.a_url}/maxresdefault.jpg');">
+                        <a href="https://youtube.com/watch?v={$p.a_url}" class="lty-playbtn" title="Play Video"><span class="lyt-visually-hidden">{$p.a_title}</span></a>
+                     </lite-youtube>
                      <div class="videoDesc">
-                        <a href="http://www.youtube.com/watch?v={$p.a_url}" target="_blank" class="fw-bolder">{$p.a_title}</a>
+                        <strong><a href="http://www.youtube.com/watch?v={$p.a_url}" target="_blank" class="a_blue">{$p.a_title}</a></strong>
                         <div style="margin-top:5px">{$p.a_desc}</div>
-                    </div>
+                     </div>
                   </div>
                {/if}
             </div>

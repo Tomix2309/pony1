@@ -229,29 +229,17 @@ class tsAdmin {
       }
 
    }
-   /*
-   saveAds()
-    */
-   public function saveAds()
-   {
+   # ===================================================
+   # PUBLICIDADES
+   # * saveAds() :: Guardamos las publicidades
+   # ===================================================
+   public function saveAds() {
       global $tsCore;
-      // D: Podria ser un riesgo de seguridad no limpiar estas variables? no lo creo pues cuando definimos el nivel de acceso solo pueden entrar
-      // administradores. Cualquier fallo sera culpa de ellos Dx
-      $a = array(
-         'ad300' => html_entity_decode($_POST['ad300']),
-         'ad468' => html_entity_decode($_POST['ad468']),
-         'ad160' => html_entity_decode($_POST['ad160']),
-         'ad728' => html_entity_decode($_POST['ad728']),
-         'sid'   => $_POST['adSearch']);
-      //
-      if (db_exec(array(__FILE__, __LINE__), 'query', 'UPDATE `w_configuracion` SET ads_300 = \'' . $tsCore->
-         setSecure($a['ad300']) . '\', ads_468 = \'' . $tsCore->setSecure($a['ad468']) .
-         '\', ads_160 = \'' . $tsCore->setSecure($a['ad160']) . '\', ads_728 = \'' . $tsCore->
-         setSecure($a['ad728']) . '\', ads_search = \'' . $tsCore->setSecure($a['sid']) .
-         '\' WHERE tscript_id = \'1\'')) {
-         return true;
+      $ads = array_splice($_POST, 0, -1);
+      foreach ($ads as $key => $value) {
+         $ads[$key] = ($key === 'ads_search') ? $value : html_entity_decode($value);
       }
-
+      if(db_exec([__FILE__, __LINE__], 'query', "UPDATE w_ads SET {$tsCore->getIUP($ads)} WHERE asd_id = 1")) return true;
    }
    /*
       saveOrden() : GUARDA EL ORDEN DE LAS CAT Y SUBCAT

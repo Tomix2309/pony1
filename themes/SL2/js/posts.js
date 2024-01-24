@@ -2,7 +2,7 @@
 var mod = {
    posts: {
       view: function(pid) {
-         $('#loading').fadeIn(250);
+         SL2.start();
          $.ajax({
             type: 'post',
             url: global_data.url + '/moderacion-posts.php?do=view',
@@ -14,7 +14,7 @@ var mod = {
                mydialog.body(r);
                mydialog.buttons(true, true, 'Cerrar', 'close', true, false);
                mydialog.center();
-               $('#loading').fadeOut(350);
+               SL2.stop();
             }
          });
       },
@@ -38,7 +38,7 @@ var mod = {
       // BORRAR
       borrar: function(pid, redirect, aceptar) {
          if (!aceptar) {
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.ajax({
                type: 'POST',
                url: global_data.url + '/moderacion-posts.php?do=borrar',
@@ -49,7 +49,7 @@ var mod = {
                   mydialog.buttons(true, true, 'Borrar', 'mod.posts.borrar(' + pid + ", '" + redirect + "', 1);", true, false, true, 'Cancelar', 'close', true, true);
                   $('#modalBody').css('padding', '20px 10px 0');
                   mydialog.center();
-                  $('#loading').fadeOut(350);
+                  SL2.stop();
                   return;
                }
             });
@@ -61,7 +61,7 @@ var mod = {
             if ($('#send_b').attr('checked')) {
                var send_b = 'yes';
             }
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.ajax({
                type: 'POST',
                url: global_data.url + '/moderacion-posts.php?do=borrar',
@@ -82,18 +82,18 @@ var mod = {
                         }
                         break;
                   }
-                  $('#loading').fadeOut(350);
+                  SL2.stop();
                },
                complete: function() {
                   mydialog.procesando_fin();
-                  $('#loading').fadeOut(350);
+                  SL2.stop();
                }
             });
          }
       },
    },
    reboot: function(id, type, hdo, redirect) {
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'post',
          url: global_data.url + '/moderacion-' + type + '.php?do=' + hdo,
@@ -111,7 +111,7 @@ var mod = {
                      else $('#report_' + id).slideUp();
                   break;
             }
-            $('#loading').fadeOut(350);
+            SL2.stop();
          }
       });
    },
@@ -132,7 +132,7 @@ function borrar_com(comid, autor, postid, gew) {
       mydialog.buttons(true, true, 'S&iacute;', 'borrar_com(' + comid + ', ' + autor + ', ' + postid + ', 1)', true, false, true, 'No', 'close', true, true);
       mydialog.center();
    } else {
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'POST',
          url: global_data.url + '/comentario-borrar.php',
@@ -151,13 +151,13 @@ function borrar_com(comid, autor, postid, gew) {
                   $('#div_cmnt_' + comid).slideUp('normal', function() {
                      $(this).remove();
                   });
-                  $('#loading').fadeOut(350);
+                  SL2.stop();
                   break;
             }
          },
          error: function() {
             mydialog.error_500("borrar_com('" + comid + "')");
-            $('#loading').fadeOut(350);
+            SL2.stop();
          }
       });
    }
@@ -165,7 +165,7 @@ function borrar_com(comid, autor, postid, gew) {
 /* Ocultar Comentario */
 function ocultar_com(comid, autor, postid) {
    mydialog.close();
-   $('#loading').fadeIn(250);
+   SL2.start();
    $.ajax({
       type: 'POST',
       url: global_data.url + '/comentario-ocultar.php',
@@ -184,7 +184,7 @@ function ocultar_com(comid, autor, postid) {
                $('#pp_' + comid).css('opacity', 1);
                break;
          }
-         $('#loading').fadeOut(350);
+         SL2.stop();
       },
       error: function() {
          mydialog.error_500("borrar_com('" + comid + "')");
@@ -209,7 +209,7 @@ function borrar_post(aceptar) {
       return;
    }
    mydialog.procesando_inicio('Eliminando...', 'Borrar Post');
-   $('#loading').fadeIn(250);
+   SL2.start();
    $.ajax({
       type: 'POST',
       url: global_data.url + '/posts-borrar.php',
@@ -223,21 +223,21 @@ function borrar_post(aceptar) {
                mydialog.alert('Post Borrado', h.substring(3), true);
                break;
          }
-         $('#loading').fadeOut(350);
+         SL2.stop();
       },
       error: function() {
          mydialog.error_500("borrar_post(2)");
-         $('#loading').fadeOut(350);
+         SL2.stop();
       },
       complete: function() {
          mydialog.procesando_fin();
-         $('#loading').fadeOut(350);
+         SL2.stop();
       }
    });
 }
 /* Votar post */
 function votar_post(puntos) {
-   $('#loading').fadeIn(250);
+   SL2.start();
    $.ajax({
       type: 'POST',
       //url: global_data.url + '/posts-votar.php',
@@ -253,11 +253,11 @@ function votar_post(puntos) {
                $('.calificacion-foot .total').html(num);
             break;
          }
-         $('#loading').fadeOut(350);
+         SL2.stop();
       },
       error: function() {
          mydialog.error_500("votar_post('" + puntos + "')");
-         $('#loading').fadeOut(350);
+         SL2.stop();
       }
    });
 }
@@ -271,7 +271,7 @@ function add_favoritos() {
       return;
    }
    add_favoritos_agregado = true;
-   $('#loading').fadeIn(250);
+   SL2.start();
    $.ajax({
       type: 'POST',
       url: global_data.url + '/favoritos-agregar.php',
@@ -286,12 +286,12 @@ function add_favoritos() {
                $('.favoritos_post').html(number_format(parseInt($('.favoritos_post').html().replace(".", "")) + 1, 0, ',', '.'));
                break;
          }
-         $('#loading').fadeOut(350);
+         SL2.stop();
       },
       error: function() {
          add_favoritos_agregado = false;
          mydialog.error_500("add_favoritos()");
-         $('#loading').fadeOut(250);
+         SL2.stop();
       }
    });
 }
@@ -323,7 +323,7 @@ var comentario = {
       $('div#comentarios').css('opacity', 0.4)
       // COMPRVAMOS CACHE
       if (typeof comentario.cache['c_' + page] == 'undefined') {
-         $('#loading').fadeIn(250);
+         SL2.start();
          $.ajax({
             type: 'POST',
             url: global_data.url + '/comentario-ajax.php?page=' + page,
@@ -332,7 +332,7 @@ var comentario = {
                comentario.cache['c_' + page] = h;
                $('#comentarios').html(h);
                comentario.set_pages(postid, page, autor);
-               $('#loading').fadeOut(350);
+               SL2.stop();
             }
          });
       } else {
@@ -345,7 +345,7 @@ var comentario = {
    set_pages: function(postid, page, autor) {
       var total = parseInt($('#ncomments').text());
       //
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'POST',
          url: global_data.url + '/comentario-pages.php?page=' + page,
@@ -355,7 +355,7 @@ var comentario = {
             $('.paginadorCom').html(h);
             $('#com_gif').hide();
             $('div#comentarios').css('opacity', 1);
-            $('#loading').fadeOut(350);
+            SL2.stop();
          }
       });
    },
@@ -382,7 +382,7 @@ var comentario = {
       // IMAGEN
       $('.miComentario #gif_cargando').show();
       var auser = $('#auser_post').val();
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'POST',
          url: global_data.url + '/comentario-agregar.php',
@@ -405,7 +405,7 @@ var comentario = {
                   $('#ncomments').text(ncomments + 1);
                   break;
             }
-            $('#loading').fadeOut(350);
+            SL2.stop();
             //
             $('.miComentario #gif_cargando').hide();
             mydialog.close();
@@ -435,7 +435,7 @@ var comentario = {
       mydialog.body('Cargando vista previa....<div class="loading loading-lg success"></div>');
       mydialog.center();
       //
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'POST',
          url: global_data.url + '/comentario-preview.php?type=' + type,
@@ -459,7 +459,7 @@ var comentario = {
                   $('.miComentario .error').html('');
                   break;
             }
-            $('#loading').fadeOut(350);
+            SL2.stop();
             mydialog.center();
          }
       });
@@ -472,7 +472,7 @@ var comentario = {
       // FIX
       voto = (voto == 1) ? 1 : -1;
       //
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'POST',
          url: global_data.url + '/comentario-votar.php',
@@ -493,7 +493,7 @@ var comentario = {
                   $('#ul_cmt_' + cid).find('.icon-thumb-up, .icon-thumb-down').hide();
                   break;
             }
-            $('#loading').fadeOut(350);
+            SL2.stop();
          }
       });
    },
@@ -515,7 +515,7 @@ var comentario = {
          case 'send':
             var cid = $('#edit-cid-' + id).val()
             var comment = $('#edit-comment-' + id).val();
-            $('#loading').fadeIn(250);
+            SL2.start();
             $.ajax({
                type: 'POST',
                url: global_data.url + '/comentario-editar.php',
@@ -531,7 +531,7 @@ var comentario = {
                         $('#citar_comm_' + id).html(bbcode)
                         break;
                   }
-                  $('#loading').fadeOut(350);
+                  SL2.stop();
                   //
                   mydialog.close();
                }
@@ -563,7 +563,7 @@ var postsee = {
          data: 'type=' + variable,
          success: function(response) {
             $('#moresee').html(response);
-            $('#loading').fadeOut(350);
+            SL2.stop();
          }
       });
    }
@@ -576,8 +576,3 @@ function spoiler(obj) {
 function RedSocial(url) {
    window.open(url, 'nuevo', 'directories=no, location=no, menubar=no, scrollbars=yes, statusbar=no, tittlebar=no, width=700, height=400, left=300, top=150');
 }
-document.addEventListener('DOMContentLoaded', (event) => {
-   document.querySelectorAll('pre.code').forEach((block) => {
-      hljs.highlightBlock(block);
-   });
-});

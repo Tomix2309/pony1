@@ -81,18 +81,18 @@ var live = {
     },
     // UPDATE
     update: function(){
-        $('#loading').fadeIn(250);
+        SL2.start();
 		$.ajax({
 			type: 'POST',
 			url: global_data.url + '/live-stream.php',
             data: 'nots=' + live.status['nots'] + '&mps=' + live.status['mps'],
 			success: function(h){
                 live.print(h);
-                $('#loading').fadeOut(350);
+                SL2.stop();
 			},
 			complete: function(){
 				setTimeout(function(){ live.update(); }, live.update_time);
-                $('#loading').fadeOut(350);
+                SL2.stop();
 			}
 		});
     },

@@ -15,8 +15,6 @@
 	$files = array(
 		'live-stream' => array('n' => 2, 'p' => 'stream'),
       'live-vcard' => array('n' => 0, 'p' => 'vcard'),
-      'live-header' => array('n' => 0, 'p' => ''),
-      'live-seo' => array('n' => 0, 'p' => ''),
 	);
 
 /**********************************\
@@ -62,20 +60,6 @@
          # PROCESOS
          $smarty->assign("tsData", $tsUser->getVCard($user_id));
 			//--->
-		break;
-		case 'live-header':
-			# Obtiene la lista de archivos .webp en la carpeta
-			$where = isset($_POST['type']) ? htmlspecialchars($_POST) : '';
-			if(!empty($where)) {
-				$carpeta = ($where === 'uploads') ? TS_UPLOADS : TS_DOWNLOADS;
-				$archivosWebp = glob($carpeta . '/*.webp');
-				// Elimina cada archivo
-				foreach ($archivosWebp as $archivo) unlink($archivo);
-			}			
-			echo $tsJson->save_json('background');
-		break;
-		case 'live-seo':
-			echo $tsJson->save_json('seo');
 		break;
       default:
          die('0: Este archivo no existe.');

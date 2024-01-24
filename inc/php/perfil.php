@@ -66,7 +66,7 @@
 \*********************************/
 
 	
-	include('../ext/datos.php');
+	include TS_EXTRA . 'datos.php';
 	$tsInfo = $tsCuenta->loadHeadInfo($usuario['user_id']);
    $tsInfo['uid'] = $usuario['user_id'];
 
@@ -95,7 +95,7 @@
 
    // MANDAR A PLANTILLA
 	$smarty->assign("tsInfo",$tsInfo);
-	$smarty->assign("tsRedes", $tsCuenta->redes);
+	$smarty->assign("tsRedes", $redes);
 	$smarty->assign("tsGeneral",$tsGeneral);
     // MURO
     include("../class/c.muro.php");

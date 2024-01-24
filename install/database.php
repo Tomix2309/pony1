@@ -674,62 +674,74 @@ PRIMARY KEY (`zone_id`),
 
 $syntaxis_lite[] = "INSERT INTO `w_timezone` VALUES (NULL,'America/Adak'),(NULL,'America/Anchorage'),(NULL,'America/Anguilla'),(NULL,'America/Antigua'),(NULL,'America/Araguaina'),(NULL,'America/Argentina/Buenos_Aires'),(NULL,'America/Argentina/Catamarca'),(NULL,'America/Argentina/Cordoba'),(NULL,'America/Argentina/Jujuy'),(NULL,'America/Argentina/La_Rioja'),(NULL,'America/Argentina/Mendoza'),(NULL,'America/Argentina/Rio_Gallegos'),(NULL,'America/Argentina/Salta'),(NULL,'America/Argentina/San_Juan'),(NULL,'America/Argentina/San_Luis'),(NULL,'America/Argentina/Tucuman'),(NULL,'America/Argentina/Ushuaia'),(NULL,'America/Aruba'),(NULL,'America/Asuncion'),(NULL,'America/Atikokan'),(NULL,'America/Bahia'),(NULL,'America/Bahia_Banderas'),(NULL,'America/Barbados'),(NULL,'America/Belem'),(NULL,'America/Belize'),(NULL,'America/Blanc-Sablon'),(NULL,'America/Boa_Vista'),(NULL,'America/Bogota'),(NULL,'America/Boise'),(NULL,'America/Cambridge_Bay'),(NULL,'America/Campo_Grande'),(NULL,'America/Cancun'),(NULL,'America/Caracas'),(NULL,'America/Cayenne'),(NULL,'America/Cayman'),(NULL,'America/Chicago'),(NULL,'America/Chihuahua'),(NULL,'America/Costa_Rica'),(NULL,'America/Creston'),(NULL,'America/Cuiaba'),(NULL,'America/Curacao'),(NULL,'America/Danmarkshavn'),(NULL,'America/Dawson'),(NULL,'America/Dawson_Creek'),(NULL,'America/Denver'),(NULL,'America/Detroit'),(NULL,'America/Dominica'),(NULL,'America/Edmonton'),(NULL,'America/Eirunepe'),(NULL,'America/El_Salvador'),(NULL,'America/Fort_Nelson'),(NULL,'America/Fortaleza'),(NULL,'America/Glace_Bay'),(NULL,'America/Godthab'),(NULL,'America/Goose_Bay'),(NULL,'America/Grand_Turk'),(NULL,'America/Grenada'),(NULL,'America/Guadeloupe'),(NULL,'America/Guatemala'),(NULL,'America/Guayaquil'),(NULL,'America/Guyana'),(NULL,'America/Halifax'),(NULL,'America/Havana'),(NULL,'America/Hermosillo'),(NULL,'America/Indiana/Indianapolis'),(NULL,'America/Indiana/Knox'),(NULL,'America/Indiana/Marengo'),(NULL,'America/Indiana/Petersburg'),(NULL,'America/Indiana/Tell_City'),(NULL,'America/Indiana/Vevay'),(NULL,'America/Indiana/Vincennes'),(NULL,'America/Indiana/Winamac'),(NULL,'America/Inuvik'),(NULL,'America/Iqaluit'),(NULL,'America/Jamaica'),(NULL,'America/Juneau'),(NULL,'America/Kentucky/Louisville'),(NULL,'America/Kentucky/Monticello'),(NULL,'America/Kralendijk'),(NULL,'America/La_Paz'),(NULL,'America/Lima'),(NULL,'America/Los_Angeles'),(NULL,'America/Lower_Princes'),(NULL,'America/Maceio'),(NULL,'America/Managua'),(NULL,'America/Manaus'),(NULL,'America/Marigot'),(NULL,'America/Martinique'),(NULL,'America/Matamoros'),(NULL,'America/Mazatlan'),(NULL,'America/Menominee'),(NULL,'America/Merida'),(NULL,'America/Metlakatla'),(NULL,'America/Mexico_City'),(NULL,'America/Miquelon'),(NULL,'America/Moncton'),(NULL,'America/Monterrey'),(NULL,'America/Montevideo'),(NULL,'America/Montserrat'),(NULL,'America/Nassau'),(NULL,'America/New_York'),(NULL,'America/Nipigon'),(NULL,'America/Nome'),(NULL,'America/Noronha'),(NULL,'America/North_Dakota/Beulah'),(NULL,'America/North_Dakota/Center'),(NULL,'America/North_Dakota/New_Salem'),(NULL,'America/Ojinaga'),(NULL,'America/Panama'),(NULL,'America/Pangnirtung'),(NULL,'America/Paramaribo'),(NULL,'America/Phoenix'),(NULL,'America/Port-au-Prince'),(NULL,'America/Port_of_Spain'),(NULL,'America/Porto_Velho'),(NULL,'America/Puerto_Rico'),(NULL,'America/Punta_Arenas'),(NULL,'America/Rainy_River'),(NULL,'America/Rankin_Inlet'),(NULL,'America/Recife'),(NULL,'America/Regina'),(NULL,'America/Resolute'),(NULL,'America/Rio_Branco'),(NULL,'America/Santarem'),(NULL,'America/Santiago'),(NULL,'America/Santo_Domingo'),(NULL,'America/Sao_Paulo'),(NULL,'America/Scoresbysund'),(NULL,'America/Sitka'),(NULL,'America/St_Barthelemy'),(NULL,'America/St_Johns'),(NULL,'America/St_Kitts'),(NULL,'America/St_Lucia'),(NULL,'America/St_Thomas'),(NULL,'America/St_Vincent'),(NULL,'America/Swift_Current'),(NULL,'America/Tegucigalpa'),(NULL,'America/Thule'),(NULL,'America/Thunder_Bay'),(NULL,'America/Tijuana'),(NULL,'America/Toronto'),(NULL,'America/Tortola'),(NULL,'America/Vancouver'),(NULL,'America/Whitehorse'),(NULL,'America/Winnipeg'),(NULL,'America/Yakutat'),(NULL,'America/Yellowknife'),(NULL,'Europe/Amsterdam'),(NULL,'Europe/Andorra'),(NULL,'Europe/Astrakhan'),(NULL,'Europe/Athens'),(NULL,'Europe/Belgrade'),(NULL,'Europe/Berlin'),(NULL,'Europe/Bratislava'),(NULL,'Europe/Brussels'),(NULL,'Europe/Bucharest'),(NULL,'Europe/Budapest'),(NULL,'Europe/Busingen'),(NULL,'Europe/Chisinau'),(NULL,'Europe/Copenhagen'),(NULL,'Europe/Dublin'),(NULL,'Europe/Gibraltar'),(NULL,'Europe/Guernsey'),(NULL,'Europe/Helsinki'),(NULL,'Europe/Isle_of_Man'),(NULL,'Europe/Istanbul'),(NULL,'Europe/Jersey'),(NULL,'Europe/Kaliningrad'),(NULL,'Europe/Kiev'),(NULL,'Europe/Kirov'),(NULL,'Europe/Lisbon'),(NULL,'Europe/Ljubljana'),(NULL,'Europe/London'),(NULL,'Europe/Luxembourg'),(NULL,'Europe/Madrid'),(NULL,'Europe/Malta'),(NULL,'Europe/Mariehamn'),(NULL,'Europe/Minsk'),(NULL,'Europe/Monaco'),(NULL,'Europe/Moscow'),(NULL,'Europe/Oslo'),(NULL,'Europe/Paris'),(NULL,'Europe/Podgorica'),(NULL,'Europe/Prague'),(NULL,'Europe/Riga'),(NULL,'Europe/Rome'),(NULL,'Europe/Samara'),(NULL,'Europe/San_Marino'),(NULL,'Europe/Sarajevo'),(NULL,'Europe/Saratov'),(NULL,'Europe/Simferopol'),(NULL,'Europe/Skopje'),(NULL,'Europe/Sofia'),(NULL,'Europe/Stockholm'),(NULL,'Europe/Tallinn'),(NULL,'Europe/Tirane'),(NULL,'Europe/Ulyanovsk'),(NULL,'Europe/Uzhgorod'),(NULL,'Europe/Vaduz'),(NULL,'Europe/Vatican'),(NULL,'Europe/Vienna'),(NULL,'Europe/Vilnius'),(NULL,'Europe/Volgograd'),(NULL,'Europe/Warsaw'),(NULL,'Europe/Zagreb'),(NULL,'Europe/Zaporozhye'),(NULL,'Europe/Zurich');";
 
-$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `a_comentarios` (
+$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_comentarios` (
   `com_id` int(11) NOT NULL AUTO_INCREMENT,
   `com_file` int(11) NOT NULL DEFAULT 0,
   `com_user` int(11) NOT NULL DEFAULT 0,
   `com_body` text NOT NULL,
-  `com_fecha` int(10) NOT NULL DEFAULT 0,
+  `com_date` int(10) NOT NULL DEFAULT 0,
+  `com_status` int(1) NOT NULL DEFAULT 0,
   `com_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`com_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
 
-$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `a_descargas` (
-  `descarga_id` int(11) NOT NULL AUTO_INCREMENT,
-  `d_file` int(11) NOT NULL DEFAULT 0,
-  `d_user` int(11) NOT NULL DEFAULT 0,
-  `d_autor` int(11) NOT NULL DEFAULT 0,
-  `d_total` int(11) NOT NULL DEFAULT 0,
-  `d_fecha` int(10) NOT NULL DEFAULT 0,
-  `d_ip` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`descarga_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_descargas` (
+  `des_id` int(11) NOT NULL AUTO_INCREMENT,
+  `des_file` int(11) NOT NULL DEFAULT 0,
+  `des_user` int(11) NOT NULL DEFAULT 0,
+  `des_author` int(11) NOT NULL DEFAULT 0,
+  `des_total` int(11) NOT NULL DEFAULT 0,
+  `des_date` int(10) NOT NULL DEFAULT 0,
+  `des_ip` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`des_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
 
-$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `a_favoritos` (
+$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_favoritos` (
   `fav_id` int(11) NOT NULL AUTO_INCREMENT,
   `fav_file` int(11) NOT NULL DEFAULT 0,
   `fav_user` int(11) NOT NULL DEFAULT 0,
-  `fav_fecha` int(10) NOT NULL DEFAULT 0,
+  `fav_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`fav_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+
+$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_archivos` (
+  `arc_id` int(11) NOT NULL AUTO_INCREMENT,
+  `arc_user` int(11) NOT NULL DEFAULT 0,
+  `arc_name` varchar(50) NOT NULL DEFAULT '',
+  `arc_code` tinytext NOT NULL DEFAULT '',
+  `arc_weight` varchar(10) NOT NULL DEFAULT '',
+  `arc_type` varchar(100) NOT NULL DEFAULT '',
+  `arc_ext` varchar(10) NOT NULL DEFAULT '',
+  `arc_downloads` int(11) NOT NULL DEFAULT 0,
+  `arc_comments` int(11) NOT NULL DEFAULT 0,
+  `arc_private` int(1) NOT NULL DEFAULT 0,
+  `arc_status` int(1) NOT NULL DEFAULT 0,
+  `arc_folder` int(11) NOT NULL DEFAULT 0,
+  `arc_date` int(10) NOT NULL DEFAULT 0,
+  `arc_ip` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`arc_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+
+$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_carpeta` (
+  `car_id` int(11) NOT NULL AUTO_INCREMENT,
+  `car_user` int(11) NOT NULL DEFAULT 0,
+  `car_name` tinytext NOT NULL DEFAULT '',
+  `car_seo` tinytext NOT NULL DEFAULT '',
+  `car_pass` tinytext NOT NULL DEFAULT '',
+  `car_date` int(10) NOT NULL DEFAULT 0,
+  `car_type` int(1) NOT NULL DEFAULT 0,
+  `car_private` int(1) NOT NULL DEFAULT 0,
+  `car_status` int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`car_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+
+$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_carpeta_tipos` (
+  `ct_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ct_name` tinytext NOT NULL DEFAULT '',
+  PRIMARY KEY (`ct_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
 
-$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `a_files` (
-  `file_id` int(11) NOT NULL AUTO_INCREMENT,
-  `f_nombre` varchar(250) NOT NULL DEFAULT '',
-  `f_url` varchar(250) NOT NULL DEFAULT '',
-  `f_fecha` int(10) NOT NULL DEFAULT 0,
-  `f_peso` varchar(10) NOT NULL DEFAULT '',
-  `f_tipo` varchar(100) NOT NULL DEFAULT '',
-  `f_ext` varchar(10) NOT NULL DEFAULT '',
-  `f_user` int(11) NOT NULL DEFAULT 0,
-  `f_descargas` int(11) NOT NULL DEFAULT 0,
-  `f_comentarios` int(11) NOT NULL DEFAULT 0,
-  `f_privado` int(1) NOT NULL DEFAULT 0,
-  `f_estado` int(1) NOT NULL DEFAULT 0,
-  `f_folder` int(11) NOT NULL DEFAULT 0,
-  `f_ip` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`file_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
-
-$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `a_folder_files` (
-  `folder_id` int(11) NOT NULL AUTO_INCREMENT,
-  `folder_name` varchar(200) NOT NULL DEFAULT '',
-  `folder_user` int(11) NOT NULL DEFAULT 0,
-  `folder_seo` varchar(200) NOT NULL DEFAULT '',
-  `folder_fecha` int(10) NOT NULL DEFAULT 0,
-  `folder_priv` int(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`folder_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+$syntaxis_lite[] = "INSERT INTO `files_carpeta_tipos` (`ct_id`, `ct_name`) VALUES (1, 'documentos'), (2, 'imagenes'), (3, 'musica'), (4, 'privada'), (5, 'protegido'), (6, 'publico'), (7, 'videos');";
 
 $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `w_visitas` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

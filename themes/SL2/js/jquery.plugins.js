@@ -1,7 +1,10 @@
-/*! modernizr 3.6.0 (Custom Build) | MIT *
- * https://modernizr.com/download/?-applicationcache-backdropfilter-setclasses !*/
-!function(n,e,o){var a=[],s={_version:"3.6.0",_config:{classPrefix:"",enableClasses:!0,enableJSClass:!0,usePrefixes:!0},_q:[],on:function(n,e){var o=this;setTimeout(function(){e(o[n])},0)},addTest:function(n,e,o){a.push({name:n,fn:e,options:o})},addAsyncTest:function(n){a.push({name:null,fn:n})}},Modernizr=function(){};Modernizr.prototype=s,Modernizr=new Modernizr,Modernizr.addTest("applicationcache","applicationCache"in n);var t=e.documentElement;"svg"===t.nodeName.toLowerCase()}(window,document);
-
+const SL2 = {
+   start: () => Pace.start(),
+   stop: () => Pace.stop(),
+   restart: () => Pace.restart(),
+   done: () => Pace.done(),
+   hide: () => Pace.hide()
+}
 /**
  * Plugins globales que utilizará el script.
  * Los plugins: (fueron obtenidos desde https://locutus.io/php/)
@@ -9,6 +12,7 @@
  *  # Htmlspecialchars_decode 
  *  # Number_format 
  *  # Base64_encode
+ *  # Rawurlencode
 */
 empty = n => {let e,r,t;const f=[undefined,null,!1,0,"","0"];for(r=0,t=f.length;r<t;r++)if(n===f[r])return!0;if("object"==typeof n){for(e in n)if(n.hasOwnProperty(e))return!1;return!0}return!1}
 htmlspecialchars_decode = (e,E) => {let T=0,_=0,t=!1;void 0===E&&(E=2),e=e.toString().replace(/&lt;/g,"<").replace(/&gt;/g,">");const c={ENT_NOQUOTES:0,ENT_HTML_QUOTE_SINGLE:1,ENT_HTML_QUOTE_DOUBLE:2,ENT_COMPAT:2,ENT_QUOTES:3,ENT_IGNORE:4};if(0===E&&(t=!0),"number"!=typeof E){for(E=[].concat(E),_=0;_<E.length;_++)0===c[E[_]]?t=!0:c[E[_]]&&(T|=c[E[_]]);E=T}return E&c.ENT_HTML_QUOTE_SINGLE&&(e=e.replace(/&#0*39;/g,"'")),t||(e=e.replace(/&quot;/g,'"')),e=e.replace(/&amp;/g,"&")}
@@ -16,16 +20,14 @@ number_format = (e,t,n,i) => {e=(e+"").replace(/[^0-9+\-Ee.]/g,"");const r=isFin
 base64_encode = a => {const b=function(a){return encodeURIComponent(a).replace(/%([0-9A-F]{2})/g,function(a,b){return String.fromCharCode("0x"+b)})};if(!("undefined"!=typeof window))return new Buffer(a).toString("base64");else if("undefined"!=typeof window.btoa)return window.btoa(b(a));const c="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";let d,e,f,g,h,j,k,l,m=0,n=0,o="";const p=[];if(!a)return a;a=b(a);do d=a.charCodeAt(m++),e=a.charCodeAt(m++),f=a.charCodeAt(m++),l=d<<16|e<<8|f,g=63&l>>18,h=63&l>>12,j=63&l>>6,k=63&l,p[n++]=c.charAt(g)+c.charAt(h)+c.charAt(j)+c.charAt(k);while(m<a.length);o=p.join("");const q=a.length%3;return(q?o.slice(0,q-3):o)+"===".slice(q||3)}
 rawurlencode = str => encodeURIComponent(str).replace(/!/g,'%21').replace(/'/g,'%27').replace(/\(/g,'%28').replace(/\)/g,'%29').replace(/\*/g,'%2A')
 
-/* Tipsy */
-!function(t,e,i){function s(t,e){return"function"==typeof t?t.call(e):t}function o(t){for(;t=t.parentNode;)if(t==document)return!0;return!1}function n(t){return"object"==typeof HTMLElement?t instanceof HTMLElement:t&&"object"==typeof t&&1===t.nodeType&&"string"==typeof t.nodeName}function l(){return"tipsyuid"+h++}function a(e,i){this.$element=t(e),this.options=i,this.enabled=!0,this.fixTitle()}var h=0;a.prototype={show:function(){if(o(this.$element[0])&&(!n(this.$element)||this.$element.is(":visible"))){var e;if(this.enabled&&(e=this.getTitle())){var i=this.tip();i.find(".tipsy-inner"+this.options.theme)[this.options.html?"html":"text"](e),i[0].className="tipsy"+this.options.theme,this.options.className&&i.addClass(s(this.options.className,this.$element[0])),i.remove().css({top:0,left:0,visibility:"hidden",display:"block"}).prependTo(document.body);var a=t.extend({},this.$element.offset());a=this.$element.parents("svg").length>0?t.extend(a,this.$element[0].getBBox()):t.extend(a,{width:this.$element[0].offsetWidth||0,height:this.$element[0].offsetHeight||0});var h,f=i[0].offsetWidth,r=i[0].offsetHeight,p=s(this.options.gravity,this.$element[0]);switch(p.charAt(0)){case"n":h={top:a.top+a.height+this.options.offset,left:a.left+a.width/2-f/2};break;case"s":h={top:a.top-r-this.options.offset,left:a.left+a.width/2-f/2};break;case"e":h={top:a.top+a.height/2-r/2,left:a.left-f-this.options.offset};break;case"w":h={top:a.top+a.height/2-r/2,left:a.left+a.width+this.options.offset}}if(2==p.length&&("w"==p.charAt(1)?h.left=a.left+a.width/2-15:h.left=a.left+a.width/2-f+15),i.css(h).addClass("tipsy-"+p+this.options.theme),i.find(".tipsy-arrow"+this.options.theme)[0].className="tipsy-arrow"+this.options.theme+" tipsy-arrow-"+p.charAt(0)+this.options.theme,this.options.fade?(this.options.shadow&&t(".tipsy-inner").css({"box-shadow":"0px 0px "+this.options.shadowBlur+"px "+this.options.shadowSpread+"px rgba(0, 0, 0, "+this.options.shadowOpacity+")","-webkit-box-shadow":"0px 0px "+this.options.shadowBlur+"px "+this.options.shadowSpread+"px rgba(0, 0, 0, "+this.options.shadowOpacity+")"}),i.stop().css({opacity:0,display:"block",visibility:"visible"}).animate({opacity:this.options.opacity},this.options.fadeInTime)):i.css({visibility:"visible",opacity:this.options.opacity}),this.options.aria){var d=l();i.attr("id",d),this.$element.attr("aria-describedby",d)}}}},hide:function(){this.options.fade?this.tip().stop().fadeOut(this.options.fadeOutTime,function(){t(this).remove()}):this.tip().remove(),this.options.aria&&this.$element.removeAttr("aria-describedby")},fixTitle:function(){var t=this.$element,e=s(this.options.id,this.$element[0]);(t.prop("title")||"string"!=typeof t.prop("original-title"))&&(t.prop("original-title",t.prop("title")||"").removeAttr("title"),t.attr("aria-describedby",e),t.attr("tabindex")===i&&t.attr("tabindex",0))},getTitle:function(){var t,e=this.$element,i=this.options;return this.fixTitle(),"string"==typeof i.title?t=e.prop("title"==i.title?"original-title":i.title):"function"==typeof i.title&&(t=i.title.call(e[0])),t=(""+t).replace(/(^\s*|\s*$)/,""),t||i.fallback},tip:function(){var e=s(this.options.id,this.$element[0]);return this.$tip||(this.$tip=t('<div class="tipsy'+this.options.theme+'" id="'+e+'" role="tooltip"></div>').html('<div class="tipsy-arrow'+this.options.theme+'"></div><div class="tipsy-inner'+this.options.theme+'"></div>').attr("role","tooltip"),this.$tip.data("tipsy-pointee",this.$element[0])),this.$tip},validate:function(){this.$element[0].parentNode||(this.hide(),this.$element=null,this.options=null)},enable:function(){this.enabled=!0},disable:function(){this.enabled=!1},toggleEnabled:function(){this.enabled=!this.enabled}},t.fn.tipsy=function(e){function i(i){var s=t.data(i,"tipsy");return s||(s=new a(i,t.fn.tipsy.elementOptions(i,e)),t.data(i,"tipsy",s)),s}function s(){if(t.fn.tipsy.enabled===!0){var s=i(this);s.hoverState="in",0===e.delayIn?s.show():(s.fixTitle(),setTimeout(function(){"in"==s.hoverState&&o(s.$element)&&s.show()},e.delayIn))}}function n(){var t=i(this);t.hoverState="out",0===e.delayOut?t.hide():setTimeout(function(){"out"!=t.hoverState&&t.$element&&t.$element.is(":visible")||t.hide()},e.delayOut)}if(t.fn.tipsy.enable(),e===!0)return this.data("tipsy");if("string"==typeof e){var l=this.data("tipsy");return l&&l[e](),this}if(e=t.extend({},t.fn.tipsy.defaults,e),e.theme=e.theme&&""!==e.theme?"-"+e.theme:"",e.on||this.each(function(){i(this)}),"manual"!=e.trigger)if(e.on&&e.on!==!0)"focus"!=e.trigger&&(t(this).on("mouseenter",e.on,s),t(this).on("mouseleave",e.on,n)),"blur"!=e.trigger&&(t(this).on("focus",e.on,s),t(this).on("blur",e.on,n));else{if(e.on&&!t.on)throw"Since jQuery 1.9, pass selector as live argument. eg. $(document).tipsy({live: 'a.live'});";var h=e.on?"live":"bind";"focus"!=e.trigger&&this[h]("mouseenter",s)[h]("mouseleave",n),"blur"!=e.trigger&&this[h]("focus",s)[h]("blur",n)}return this},t.fn.tipsy.defaults={aria:!1,className:null,id:"tipsy",delayIn:0,delayOut:0,fade:!1,fadeInTime:400,fadeOutTime:400,shadow:!1,shadowBlur:8,shadowOpacity:1,shadowSpread:0,fallback:"",gravity:"n",html:!1,live:!1,offset:0,opacity:.8,title:"title",trigger:"interactive",theme:""},t.fn.tipsy.revalidate=function(){t(".tipsy").each(function(){var e=t.data(this,"tipsy-pointee");e&&o(e)||t(this).remove()})},t.fn.tipsy.enable=function(){t.fn.tipsy.enabled=!0},t.fn.tipsy.disable=function(){t.fn.tipsy.enabled=!1},t.fn.tipsy.elementOptions=function(e,i){return t.metadata?t.extend({},i,t(e).metadata()):i},t.fn.tipsy.autoNS=function(){return t(this).offset().top>t(document).scrollTop()+t(e).height()/2?"s":"n"},t.fn.tipsy.autoWE=function(){return t(this).offset().left>t(document).scrollLeft()+t(e).width()/2?"e":"w"},t.fn.tipsy.autoNWNE=function(){return t(this).offset().left>t(document).scrollLeft()+t(e).width()/2?"ne":"nw"},t.fn.tipsy.autoSWSE=function(){return t(this).offset().left>t(document).scrollLeft()+t(e).width()/2?"se":"sw"},t.fn.tipsy.autoBounds=function(i,s,o){return function(){var n={ns:o[0],ew:o.length>1?o[1]:!1},l=t(document).scrollTop()+i,a=t(document).scrollLeft()+s,h=t(this);return h.offset().top<l&&(n.ns="n"),h.offset().left<a&&(n.ew="w"),t(e).width()+t(document).scrollLeft()-h.offset().left<s&&(n.ew="e"),t(e).height()+t(document).scrollTop()-h.offset().top<i&&(n.ns="s"),n.ns+(n.ew?n.ew:"")}},t.fn.tipsy.autoBounds2=function(i,s){return function(){var o={},n=t(document).scrollTop()+i,l=t(document).scrollLeft()+i,a=t(this);return s.length>1?(o.ns=s[0],o.ew=s[1]):"e"==s[0]||"w"==s[0]?o.ew=s[0]:o.ns=s[0],a.offset().top<n&&(o.ns="n"),a.offset().left<l&&(o.ew="w"),t(e).width()+t(document).scrollLeft()-(a.offset().left+a.width())<i&&(o.ew="e"),t(e).height()+t(document).scrollTop()-(a.offset().top+a.height())<i&&(o.ns="s"),o.ns?o.ns+(o.ew?o.ew:""):o.ew}}}(jQuery,window);
-
 isYoutube = linkVideo =>{ 
 	var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/; 
 	var match = linkVideo.match(regExp); 
 	return (match && match[7].length === 11) ? match[7] : false;
 }
 /**
- * A lightweight youtube embed. Still should feel the same to the user, just MUCH faster to initialize and paint.
+ * A lightweight youtube embed. 
+ * Still should feel the same to the user, just MUCH faster to initialize and paint.
  *
  * Thx to these as the inspiration
  *   https://storage.googleapis.com/amp-vs-non-amp/youtube-lazy.html
@@ -39,24 +41,19 @@ isYoutube = linkVideo =>{
 class LiteYTEmbed extends HTMLElement {
    connectedCallback() {
       this.videoId = this.getAttribute('videoid');
-      let playBtnEl = this.querySelector('.lty-playbtn');
+      
       // A label for the button takes priority over a [playlabel] attribute on the custom-element
-      this.playLabel = (playBtnEl && playBtnEl.textContent.trim()) || this.getAttribute('playlabel') || 'Play';
       if (!this.style.backgroundImage) {
         this.style.backgroundImage = `url("https://i.ytimg.com/vi/${this.videoId}/maxresdefault.jpg")`;
       }
-      if (!playBtnEl) {
-         playBtnEl = document.createElement('button');
-         playBtnEl.type = 'button';
-         playBtnEl.classList.add('lty-playbtn');
-         this.append(playBtnEl);
-      }
-      if (!playBtnEl.textContent) {
-         const playBtnLabelEl = document.createElement('span');
-         playBtnLabelEl.className = 'lyt-visually-hidden';
-         playBtnLabelEl.textContent = this.playLabel;
-         playBtnEl.append(playBtnLabelEl);
-      }
+      // Añadimos el logo del sitio
+      let logosite = this.querySelector('.logo-site');
+      logosite = document.createElement('img');
+      logosite.src = global_data.url + '/files/SyntaxisLite-ico-32.png';
+      logosite.alt = global_data.s_title;
+      logosite.classList.add('lty-logosite');
+      this.append(logosite);
+
       this.addEventListener('pointerover', LiteYTEmbed.warmConnections, {once: true});
       this.addEventListener('click', this.addIframe);
   	}
@@ -101,3 +98,177 @@ class LiteYTEmbed extends HTMLElement {
 }
 // Register custom element
 customElements.define('lite-youtube', LiteYTEmbed);
+
+// Redireccionar
+function obtenerParametroDeURL(nombreParametro) {
+   var url = window.location.href;
+   nombreParametro = nombreParametro.replace(/[\[\]]/g, "\\$&");
+   var regex = new RegExp("[?&]" + nombreParametro + "(=([^&#]*)|&|#|$)"),
+       resultados = regex.exec(url);
+   if (!resultados) return null;
+   if (!resultados[2]) return '';
+   return resultados[2];
+}
+
+/**
+ * MyDialog v2
+ * @autor Miguel92
+*/
+var mydialog = {
+   is_show: false,
+   class_aux: '',
+   size: 'normal', // small | normal | big
+   mask_close: true,
+   close_button: false,
+   template: `<div id="dialog">
+      <div id="header_dialog">
+         <div id="title"></div>
+         <div id="close"></div>
+      </div>
+      <div id="cuerpo">
+         <div id="procesando">
+            <div id="mensaje"></div>
+         </div>
+         <div id="modalBody"></div>
+      </div>
+      <div id="buttons"></div>
+   </div>`,
+   show: function(activeClass){
+      if(this.is_show) return;
+      else this.is_show = true;
+      if($('#mydialog').html() == '') $('#mydialog').show().html(this.template);
+      $('footer').after('<div id="mask"></div>')
+      // Para los tamaños del modal
+      $('#mydialog').addClass(this.size);
+      // Añadimos clase auxiliar si existe
+      if(activeClass) $('#mydialog').addClass(this.class_aux);
+      else if(this.class_aux != ''){
+         $('#mydialog').removeClass(this.class_aux);
+         this.class_aux = '';
+      }
+      // Cerramos modal con la mascará
+      if(this.mask_close) $('#mask').on('click', () => mydialog.close());
+      // Añadimos el botón para cerrar el modal
+      if(this.close_button)
+         $('#mydialog #dialog #close').html('<span onclick="mydialog.close()" class="close_dialog">&times;</span>');
+
+      $('#mydialog #dialog').css('position', 'absolute');
+      $('#mydialog #dialog').fadeIn('fast');
+      $(window).on('resize', mydialog.center);
+   },
+   close: function(){
+      //Vuelve todos los parametros por default
+      this.class_aux = '';
+      this.mask_close = true;
+      this.close_button = false;
+      this.size = 'normal';
+
+      this.is_show = false;
+      $('#mask').remove();
+      $('#mydialog #dialog').fadeOut('fast', () => $(this).remove());
+      this.procesando_fin();
+   },
+   center: function() {
+      let diaghei = ($('#mydialog #dialog').height() > $(window).height()-60);
+      let ubicacion = $(window).height() / 2 - $('#mydialog #dialog').height() / 2;
+      $('#mydialog #dialog').css({
+         'position': (diaghei ? 'absolute' : 'fixed'), 
+         'top': (diaghei ? 20 : ubicacion),
+         'left': $(window).width()/2-$('#mydialog #dialog').width()/2
+      });
+   },
+   title: title => $('#mydialog #title').html(title),
+   body: body => $('#mydialog #cuerpo #modalBody').html(body),
+   buttons: (...args) => {
+      if(args.length === 1) {
+         $('#mydialog #buttons').hide();
+         return;
+      }
+      const obj = {
+         ok:{action:args[3], text:args[2], active:args[1], focus:args[5]},
+         fail:{action:args[8], text:args[7], active:args[6], focus:args[10]} 
+      };
+      if(args.length <= 7) delete obj.fail;
+      mydialog.buttons_action(args[0], obj);
+   },
+   buttons_action: (remBtn, dataObject) => { 
+      var is_html = ''; 
+      if(!dataObject.ok && !dataObject.fail && remBtn) $('#mydialog #buttons').hide()
+      // Si existe "OK"
+      if(dataObject.ok) {
+         // Si tiene accion definido
+         if(dataObject.ok.action === 'close' || !dataObject.ok.action) dataObject.ok.action = 'mydialog.close()';
+         let classdisabled = dataObject.ok.active ? '' : ' disabled';
+         is_html += `<input type="button" class="btn btn-success mBtn btnOk${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.ok.text}"${classdisabled} />`;
+      }
+      // Si existe "fail"
+      if(dataObject.fail) {
+         // Si tiene accion definido
+         if(dataObject.fail.action === 'close' || !dataObject.fail.action) dataObject.ok.action = 'mydialog.close()';
+         let classdisabled = dataObject.fail.active ? '' : ' disabled';
+         is_html += `<input type="button" class="btn btn-danger mBtn btnCancel${classdisabled}" style="display:inline-block!important;" onclick="${dataObject.ok.action}" value="${dataObject.fail.text}"${classdisabled} />`;
+      }
+      // Por que si se ejecuta 2 veces y el 1ro tiene mydialog.buttons(false)
+      // El 2do ya no se visualizará ya que no existe en el DOM #buttons
+      $('#mydialog #buttons').show().html(is_html)
+      
+      if(!dataObject.ok && !dataObject.fail) {
+         if(dataObject.ok.focus) $('#mydialog #buttons .mBtn.btnOk').focus();
+         else if(dataObject.fail.focus) $('#mydialog #buttons .mBtn.btnCancel').focus();
+      }
+   },
+   alert: function(title, body, reload){
+      this.show();
+      this.title(title);
+      this.body(body);
+      this.buttons(true, true, 'Aceptar', 'mydialog.close();' + (reload ? 'location.reload();' : 'close'), true, true, false);
+      this.center();
+   },
+   error_500: function(fun_reintentar){
+      setTimeout(function(){
+         mydialog.procesando_fin();
+         mydialog.show();
+         mydialog.title('Error');
+         mydialog.body('Error al intentar procesar lo solicitado');
+         mydialog.buttons(true, true, 'Reintentar', 'mydialog.close();'+fun_reintentar, true, true, true, 'Cancelar', 'close', true, false);
+         mydialog.center();
+      }, 200);
+   },
+   procesando_inicio: function(value, title){
+      if(!this.is_show){
+         this.show();
+         this.title(title);
+         this.body('');
+         this.buttons(false, false);
+         this.center();
+      }
+      $('#mydialog #procesando #mensaje').html('<img src="'+global_data.img+'/loading_bar.gif" />');
+      $('#mydialog #procesando').fadeIn('fast');
+   },
+   procesando_fin: function(){
+      $('#mydialog #procesando').fadeOut('fast');
+   },
+   faster: obj => {
+      if(!empty(obj.class_aux)) mydialog.class_aux = obj.addClass;
+      if(obj.close_button) mydialog.close_button = obj.close_button;
+      if(obj.mask_button) mydialog.mask_button = obj.mask_button;
+      if(obj.size) mydialog.size = obj.size; // small | normal | big
+      mydialog.show(true);
+      mydialog.title(obj.title);
+      mydialog.body(obj.body);
+      if(typeof obj.buttons === 'boolean') {
+         mydialog.buttons(false)
+      } else if(obj.buttons.fail !== undefined) {
+         mydialog.buttons(true, true, obj.buttons.ok.text, obj.buttons.ok.action, true, true, true, obj.buttons.fail.text, obj.buttons.fail.action, true, false);
+      } else {
+         mydialog.buttons(true, true, obj.buttons.ok.text, obj.buttons.ok.action, true, true, false);
+      }
+      mydialog.center();
+   }
+
+};
+document.onkeydown = function(e) {
+   key = (e == null) ? event.keyCode : e.which;
+   if (key == 27) //escape, close mydialog
+      mydialog.close();
+};

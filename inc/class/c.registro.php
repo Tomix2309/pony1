@@ -118,33 +118,20 @@ class tsRegistro extends reCaptcha {
          db_exec([__FILE__, __LINE__], 'query', "INSERT INTO `u_portal` (`user_id`) VALUES ('{$tsData['user_id']}')");
 
 			# AVATAR ALEATORIO Y CONVIRTIENDO A WEBP
-         $numero = rand(1,10);
-			$genero = ($tsData['user_sexo'] == 1) ? 'm' : 'f';
-			$imagen = $numero.'.jpg';
-
-        	$Carpeta_Avatar =  ($tsData['user_sexo'] == 1) ? 'm' : 'f';
-        	# Copiamos el avatar 120x120 a la carpeta correspondiente
-        	$dirimg = TS_AVATARES . $genero . SEPARATOR . $imagen;
-			$newName = TS_AVATAR . $tsData['user_id'] . '.webp';
-			if (file_exists($dirimg)) {
-		    	$img = imagecreatefromjpeg($dirimg);
-		    	if ($img === false) {
-		        	echo "Error al cargar la imagen JPEG.";
-		   	} else {
-		       	imagepalettetotruecolor($img);
-		        	imagealphablending($img, true);
-		        	imagesavealpha($img, true);
-		        	if (imagewebp($img, $newName, 100)) {
-		            // Conversión exitosa, continuar con otras operaciones
-		            copy($dirimg, $newName);
-		            imagedestroy($img);
-		        	} else {
-		            echo "Error al convertir la imagen a WebP.";
-		        	}
-		    	}
-			} else {
-		    	echo "La imagen de origen no existe.";
+			$genero = ((int)$_POST['sexo'] == 1) ? 'm' : 'f';
+			$carpeta_origen = TS_AVATARES . $genero . SEPARATOR;
+			$archivos = scandir($carpeta_origen);
+			$total_imagenes = 0;
+			foreach ($archivos as $archivo) {
+			    // Incrementar el contador de imágenes
+			   if (pathinfo($archivo, PATHINFO_EXTENSION) === 'webp') $total_imagenes++;
 			}
+         $numero = rand(1, $total_imagenes);
+			$imagen = $numero.'.webp';
+        	$Carpeta_Avatar =  ((int)$_POST['sexo'] == 1) ? 'm' : 'f';
+        	# Copiamos el avatar 120x120 a la carpeta correspondiente
+			$newName = TS_AVATAR . $tsData['user_id'] . '.webp';
+			copy($carpeta_origen . $imagen, $newName);
         	# Realizamos la actualización en la base de datos
 			db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_perfil SET p_avatar = 1 WHERE user_id = \''.$tsData['user_id'].'\'');
 
@@ -197,7 +184,7 @@ class tsRegistro extends reCaptcha {
 		} else {
 			$tsUser->userActivate($tsData['user_id'],md5($tsData['user_registro']));
 			$tsUser->loginUser($tsData['user_nick'], $tsData['user_password'], true);
-			return '2: <div class="box_body"><h1>🎉 Felicidades 🎉</h1><p>Ya eres parte de <strong>'.$tsCore->settings['titulo'].'</strong>! Ahora puedes disfrutar y compartir todo el contenido que existe en nuestra comunidad sin ninguna restricción, y tu cuenta ha sido activada.<br>¡Muchas gracias!</p><a data-change href="'.$tsCore->settings['url'].'/cuenta/" class="btn btn-gradient-six mt-4 d-inline-block">Comenzar Ahora!</a></div>';
+			return '2: <div class="box_body"><h1>🎉 Felicidades 🎉</h1><p>Ya eres parte de <strong>'.$tsCore->settings['titulo'].'</strong>! Ahora puedes disfrutar y compartir todo el contenido que existe en nuestra comunidad sin ninguna restricción, y tu cuenta ha sido activada.<br>¡Muchas gracias!</p><a data-change href="'.$tsCore->settings['url'].'/cuenta/" class="btn btn-primary mt-4 d-inline-block">Comenzar Ahora!</a></div>';
 		}
 	} else return '0: Ocurrio un error, intentalo ma&aacute;s tarde.';
 	}

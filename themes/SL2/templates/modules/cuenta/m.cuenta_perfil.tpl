@@ -17,10 +17,13 @@
       <label class="form-label" for="ft">Redes sociales</label>
       <div class="red-group">
          {foreach $tsRedes key=name item=red}
-            <div class="red-item">
-               <div class="icon"><i data-feather="{$red.icono}"></i></div>
-               <input type="text" class="form-input" value="{$tsPerfil.p_socials.$name}" placeholder="{$red.nombre}" name="red[{$name}]">
-            </div>
+	         <div class="input-group flex-nowrap">
+				  	<span class="input-group-text" id="iconred"><iconify-icon icon="{$red.iconify}"></iconify-icon></span>
+				  	<input type="text" class="form-control" placeholder="{$red.nombre}" aria-label="{$red.nombre}" name="red[{$name}]" aria-describedby="iconred" value="{$tsPerfil.p_socials.$name}">
+	            {if $name == 'discord'}
+	            	<small onclick="explicacion();return false;" style="top: 6px;right: 5px;" class="position-absolute icono" title="Ajustes de usuario > Copiar ID"><iconify-icon icon="flat-color-icons:info"></iconify-icon></small>
+	            {/if}
+				</div>
          {/foreach}
        </div>
    </div>

@@ -60,6 +60,7 @@
       break;
 		case 'settings':
 			if($tsUser->is_admod !== 1) header("Location: {$tsCore->settings['url']}");
+			$smarty->assign('tsTab', (isset($_GET['tab']) ? $_GET['tab'] : 'seo'));
 		break;
       default:
       	$tsCore->redirectTo($tsCore->settings['url']);

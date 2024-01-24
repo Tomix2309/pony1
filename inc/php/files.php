@@ -11,7 +11,7 @@
 
 	$tsPage = "files";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
 
-	$tsLevel = 2;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
+	$tsLevel = 0;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
 
 	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
 	
@@ -24,7 +24,8 @@
 	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
 
 /*++++++++ = ++++++++*/
-   $action = htmlspecialchars($_GET['action']);	
+   $action = htmlspecialchars($_GET['action']);
+
 	// SI NO ES PRIVADO, LO PUEDEN VER Y DESCARGAR TODOS
 	if($action == 'ver' || $action == 'bajar') $tsLevel = 0;
 	
@@ -46,7 +47,7 @@
 
 \*********************************/
 
-	include("../class/c.files.php");
+	require_once TS_CLASS . 'c.files.php';
 	$tsFiles = new tsFiles();	
 
 /**********************************\
@@ -54,59 +55,61 @@
 *	(INSTRUCCIONES DE CODIGO)		*
 
 \*********************************/
-
 	switch($action){
-		case 'user':
-			if(!empty($_GET['userid'])) {
-				$userid = $tsUser->getUserID($_GET['userid']);
-				$folderid = $_GET['folderid'];
-			} else $userid = $tsUser->uid;
-			//
-			$result = $tsFiles->filesUser($userid);
-			if(is_array($result)) {
-				$smarty->assign("filesUser", $tsFiles->filesUser($userid, $folderid));
-				$smarty->assign("folderUser", $tsFiles->folderUser($folderid, $userid));
-				$smarty->assign("getLastcom", $tsFiles->getLastcom());
-				$smarty->assign("tsLastFiles", $tsFiles->getLastFiles());
-			} else $tsError = $result;
+		case '':
+			$getFilesUploaded = $tsFiles->getFilesUploaded();
+			$smarty->assign('tsArchivos', $getFilesUploaded);
+			$smarty->assign('tsCarpetas', $tsFiles->getFolders());
+			// Filtros
+			$smarty->assign('order', (empty($_GET['o']) ? 'date' : $_GET['o']));
+			$smarty->assign('mode', (empty($_GET['m']) ? 'd' : $_GET['m']));
+			$smarty->assign('page', (empty($_GET['s']) ? '1' : $_GET['s']));
+			$smarty->assign('author', (empty($_GET['a']) ? 'all' : $_GET['a']));
+
+		break;
+		case 'subir':
+			$tsTitle = "Subir nuevo archivo";
+			$smarty->assign('tsCarpetas', $tsFiles->getFolders());
+		break;
+		case 'descargar':
+			$tsFiles->DownloadFile();
+			$smarty->assign('tsFileToDownload', $tsFiles->getData($_GET['file']));
+		break;
+		case 'carpeta':
+		case 'encriptado':
+			$getFolder = $tsFiles->getFolder();
+			$smarty->assign('tsCarpeta', $getFolder);
+			//$tsTitle = "Carpeta";
 		break;
 		case 'ver':
-			$tsFile = $tsFiles->verArchivo();
-			if(is_array($tsFile)) {
-				// NUEVO TITULO
-				$tsTitle = 'Descargar '.$tsFile['data']['f_nombre'].'.'.$tsFile['data']['f_ext'].' - '.$tsCore->settings['titulo'];
-				if($tsFile['data']['f_ext'] == 'mp3') {
-					$inf = $tsFiles->getMp3Info($tsFile['data']['f_url'], true);
+			$getFileUploaded = $tsFiles->getFileUploaded();
+			if(is_array($getFileUploaded)) {
+				include TS_EXTRA . 'datos.php';
+				$smarty->assign('tsArchivo', $getFileUploaded);
+				$smarty->assign('tsAutor', $getFileUploaded['author']);
+				$smarty->assign('tsDatos', $tsExt);
+				//
+				$tsTitle = "Archivo {$getFileUploaded['data']['arc_name']}";
+				$extension = $getFileUploaded['data']['arc_ext'];
+				$smarty->assign('permitidos', in_array($extension, $tsExt['allow']));
+				// Escuchar audios
+				if($extension == 'mp3') {
+					$inf = $tsFiles->getMp3Info($getFileUploaded['data']['url_file'], true);
 					$smarty->assign("tsMp3Info", $inf);
+				// Ver el contenido de txt, bat, json
+				} elseif(in_array($extension, $tsExt['text'])) {
+					$smarty->assign("tsInfoFile", $tsFiles->getTxtPhp($getFileUploaded['data']['url_file']));
+				// Ver videos
+				} elseif(in_array($extension, $tsExt['videos'])) {
+					$smarty->assign('mime', $tsExt['mime-video'][$getFileUploaded['data']['arc_ext']]);
+					$smarty->assign("tsInfoFile", true);
 				}
-				if($tsFile['data']['f_ext'] == 'txt') {
-					// getTxtPhp('archivo', [r, r+, w, w+, a, a+]);
-					$inf = $tsFiles->getTxtPhp($tsFile['data']['f_url'], 'r');
-					$smarty->assign("tsInfoFile", $inf);
-				}
-				$smarty->assign("tsFile", $tsFile);
 				// COMENTARIOS
-				$smarty->assign("tsCom", $tsFiles->getComentarios());
-			} else $tsError = $tsFile;
-		break;
-		case 'bajar':
-			$tsFile = $tsFiles->bajarArchivo();
-			if(is_array($tsFile)) {
-				// FORZAR DESCARGA
-				$file = TS_FILES.'archivos/'.$tsFile['f_url'];
-				header('Content-Type: application/force-download');
-				header("Content-Disposition: attachment; filename=".$tsFile['f_nombre'].".".$tsFile['f_ext']);
-			   header('Content-Transfer-Encoding: binary');
-			   header('Content-Length: '.filesize($file));
-				readfile($file);
-			} else $tsError = $tsFile;
-		break;
-		case 'favoritos':
-			$result = $tsFiles->favFiles();
-			if(is_array($result)) $smarty->assign("favFiles", $tsFiles->favFiles());
-			else $tsError = $result;
+				//$smarty->assign("tsCom", $tsFiles->getComentarios());
+			}
 		break;
 	}
+
 	// HAY ERROR?
 	if(!empty($tsError)) {
 		$tsPage = 'aviso';
@@ -120,7 +123,7 @@
 \*********************************/
 	$up_id = uniqid();
 	//
-	$smarty->assign("tsAction",$action);   
+	$smarty->assign("tsAction", $action);   
 	$smarty->assign("up_id", $up_id); 
 }
 
@@ -129,6 +132,6 @@ if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO M
 	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 
 	/*++++++++ = ++++++++*/
-	include("../../footer.php");
+	include TS_ROOT . "footer.php";
 	/*++++++++ = ++++++++*/
 }

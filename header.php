@@ -49,6 +49,7 @@ define('TS_PHP', TS_INCLUDES . 'php' . SEPARATOR);
 define('TS_PLUGINS', TS_INCLUDES . 'plugins' . SEPARATOR);
 define('TS_SMARTY', TS_INCLUDES . 'smarty' . SEPARATOR);
 // ../files/*
+define('TS_ARCHIVOS', TS_FILES . 'archivos' . SEPARATOR);
 define('TS_AVATAR', TS_FILES . 'avatar' . SEPARATOR);
 define('TS_AVATARES', TS_FILES . 'avatares' . SEPARATOR);
 define('TS_DOWNLOADS', TS_FILES . 'downloads' . SEPARATOR);

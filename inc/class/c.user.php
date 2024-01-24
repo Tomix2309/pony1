@@ -23,7 +23,7 @@ class tsUser {
 	
 	public $session;
 
-	function __construct() {
+	public function __construct() {
 		global $tsCore, $tsMedal;
 		/* CARGAR SESSION */
 		  $this->session = new tsSession();
@@ -52,7 +52,7 @@ class tsUser {
 	/*
 		DarMedalla()
 	*/
-	function DarMedalla(){
+	public function DarMedalla(){
 		//
 		$q1 = db_exec('num_rows', db_exec([__FILE__, __LINE__], 'query', 'SELECT wm.medal_id FROM w_medallas AS wm LEFT JOIN w_medallas_assign AS wma ON wm.medal_id = wma.medal_id WHERE wm.m_type = \'1\' AND wma.medal_for = \''.$this->uid.'\''));        
 		$q2 = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', 'SELECT COUNT(follow_id) AS f FROM u_follows WHERE f_id = \''.$this->uid.'\' && f_type = \'1\''));
@@ -115,6 +115,23 @@ class tsUser {
 			$this->loadUser();
 		}
 	}
+
+	private function getTimeZone(int $uid = 0) {
+		# Buscamos el País y provincia seleccionada por el usuario 
+		$zona = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_pais, user_estado FROM u_perfil WHERE user_id = $uid"));   
+		if(!empty($zona["user_pais"]) || !empty($zona["user_estado"]))   {
+			include TS_EXTRA . "datos.php";
+			include TS_EXTRA . "geodata.php";
+			# Creamos las variables
+			$filter[] = $tsPaises[$zona["user_pais"]];
+			$provincia = $estados[$zona["user_pais"]][$zona["user_estado"] - 1];
+			$filter[]  = empty($provincia) ? '' : str_replace(' ', '_', $provincia);
+			# Zona horaria
+			$timezone = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query',"SELECT zone_timezone FROM w_timezone WHERE zone_timezone LIKE '%$filter[0]%' AND zone_timezone LIKE '%$filter[1]%'"));
+			$timezone = $timezone['zone_timezone'];
+		} else $timezone = 'America/Argentina/Buenos_Aires';
+		return $timezone;
+	}
 	/*
 		CARGAR USUARIO POR SU ID
 		loadUser()
@@ -133,19 +150,8 @@ class tsUser {
 		$datis = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT r_allows FROM u_rangos WHERE rango_id = {$this->info['user_rango']} LIMIT 1"))['r_allows'];
 		$this->permisos = unserialize($datis);
 
-		# Buscamos el País y provincia seleccionada por el usuario 
-		$zona = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT user_pais, user_estado FROM u_perfil WHERE user_id = {$this->info['user_id']}"));   
-		if(!empty($zona["user_pais"]) || !empty($zona["user_estado"]))   {
-			include TS_EXTRA . "datos.php";
-			include TS_EXTRA . "geodata.php";
-			# Creamos las variables
-			$filter[] = $tsPaises[$zona["user_pais"]];
-			$provincia = $estados[$zona["user_pais"]][$zona["user_estado"] - 1];
-			$filter[]  = empty($provincia) ? '' : str_replace(' ', '_', $provincia);
-			# Zona horaria
-			$timezone = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query',"SELECT zone_timezone FROM w_timezone WHERE zone_timezone LIKE '%$filter[0]%' AND zone_timezone LIKE '%$filter[1]%'"));
-			$this->info['timezone'] = $timezone['zone_timezone'];
-		} else $this->info['timezone'] = 'America/Argentina/Buenos_Aires';
+		# Zona horaria
+		$this->timezone = self::getTimeZone($this->info['user_id']);
 
 		/* ES MIEMBRO */
 		$this->is_member = 1;
@@ -162,25 +168,28 @@ class tsUser {
 		$this->correo = $this->info['user_email'];
 		$this->is_banned 	= $this->info['user_baneado'];
 
-		if(!isset($_COOKIE['SetConfigSite'])) setcookie("SetConfigSite", $this->info['user_name'].'_'.$this->info['user_id'].'.db');
-
 		// ULTIMA ACCION
 		db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_lastactive = \''.time().'\' WHERE user_id = \''.$this->uid.'\'');
-		  // Si ha iniciado sesión cargamos estos datos.
-		  if($login) {
-				// Last login
-				db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_lastlogin = \''.$this->session->time_now.'\' WHERE user_id = \''.$this->uid.'\'');
-				 /* REGISTAR IP */
-				db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_last_ip = \''.$this->session->ip_address.'\' WHERE user_id = \''.$this->uid.'\'');
-		  }
-		  // Borrar variable session
-		  unset($this->session);
+		// Si ha iniciado sesión cargamos estos datos.
+		if($login) {
+			// Last login
+			db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_lastlogin = \''.$this->session->time_now.'\' WHERE user_id = \''.$this->uid.'\'');
+			 /* REGISTAR IP */
+			db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_last_ip = \''.$this->session->ip_address.'\' WHERE user_id = \''.$this->uid.'\'');
+		}
+		// Ejemplo de eliminación de cuentas inactivas
+		//$inactive_period = strtotime('-6 months');
+		//$delete_query = "DELETE FROM usuarios WHERE last_activity < '" . date('Y-m-d H:i:s', $inactive_period) . "'";
+		//db_exec([__FILE__, __LINE__], 'query', $delete_query);
+
+		// Borrar variable session
+		unset($this->session);
 	}
 
 	/** 
 	 * @access public 
 	 * @name ConfigPortada
-	 * @use Crear la url y estilos para la portada
+	 * @uses Crear la url y estilos para la portada
 	 * @param int
 	 * @return array
 	*/
@@ -190,8 +199,8 @@ class tsUser {
 		# Configuraciones del usuario
 		$json = $tsJson->getContentJson('user', $id);
 		// Nombre del archivo de la portada actual
-		$nombrePortada = "portada-{$json->portada->type}-$id.jpg";
-		$rutaPortada = TS_UPLOADS . $nombrePortada;
+		$nombrePortada = "{$json->portada->type}{$json->portada->id}-$id.jpg";
+		$rutaPortada = TS_DOWNLOADS . $nombrePortada;
 		# Ahora agregamos los estilos CSS
 		$css = $json->portada;
 		foreach ($css as $k => $y) {
@@ -199,7 +208,7 @@ class tsUser {
 			$style .= "background-{$k}: {$css->$k}!important;";
 		}
 		# Para retornar datos armados
-		$data['url'] = $tsJson->generateImage($nombrePortada, $rutaPortada, $json, 'uploads');
+		$data['url'] = $tsJson->generateImage($nombrePortada, $rutaPortada, $json);
 		$data['css'] = $style;
 		# Retornamos los datos obtenidos
 		return $data;
@@ -244,20 +253,20 @@ class tsUser {
 		CERRAR SESSION
 		logoutUser($redirectTo)
 	*/
-	function logoutUser($user_id, $redirectTo = '/'){
+	public function logoutUser(int $user_id = 0, $redirectTo = '/'){
 		global $tsCore;
 		/* BORRAR SESSION */
-		  $this->session = new tsSession();
-		  $this->session->read();
-		  $this->session->destroy();
+		$this->session = new tsSession();
+		$this->session->read();
+		$this->session->destroy();
 		/* LIMPIAR VARIABLES */
 		$this->info = '';
 		$this->is_member = 0;
-		  # UPDATE
-		  $last_active = (time() - (($tsCore->settings['c_last_active'] * 60) * 3));
-		db_exec([__FILE__, __LINE__], 'query', 'UPDATE u_miembros SET user_lastactive = \''.$last_active.'\' WHERE user_id = \''.(int)$user_id.'\'');
+		# UPDATE
+		$last_active = (int)(time() - (($tsCore->settings['c_last_active'] * 60) * 3));
+		db_exec([__FILE__, __LINE__], 'query', "UPDATE u_miembros SET user_lastactive = $last_active WHERE user_id = " . (int)$user_id);
 		/* REDERIGIR */
-		if($redirectTo != NULL) $tsCore->redirectTo($redirectTo);	// REDIRIGIR
+		if($redirectTo != NULL) $tsCore->redirectTo($redirectTo);
 		else return true;
 	}
 	/*

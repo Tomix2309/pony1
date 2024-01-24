@@ -26,6 +26,8 @@ define('SETTINGS', FILES . 'settings' . SEPARATOR);
 
 define('UPLOADS', FILES . 'uploads' . SEPARATOR);
 
+define('ARCHIVOS', FILES . 'archivos' . SEPARATOR);
+
 # Nombre de la aplicación
 $ConfigInstall['nombre'] = 'Syntaxis Lite';
 $ConfigInstall['slogan'] = 'Pensar más allá de lo conocido';
@@ -273,7 +275,7 @@ class DataBase {
 
 $Install = new Install;
 $database = new DataBase;
-$Install->chequearPermisos([CACHE, FILES, UPLOADS, AVATAR, DOWNLOADS, CONFIG, SETTINGS]);
+$Install->chequearPermisos([CACHE, FILES, UPLOADS, AVATAR, DOWNLOADS, ARCHIVOS, CONFIG, SETTINGS]);
 
 $thumbUp = 'material-symbols:thumb-up';
 $thumbDown = 'material-symbols:thumb-down';

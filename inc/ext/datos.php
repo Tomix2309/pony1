@@ -273,8 +273,8 @@ $tsPerfilData = [
 		'En algo...'
 	]
 ];
- // PRIVACIDAD
- $tsPrivacidad = [
+// PRIVACIDAD
+$tsPrivacidad = [
 	'Nadie',
 	'Usuarios que sigo y me siguen',
 	'Usuarios que sigo o me siguen',
@@ -282,7 +282,7 @@ $tsPerfilData = [
 	'Usuarios que sigo',
 	'Usuarios registrados',
 	'Todos'
- ];
+];
 /* DENUNCIAS */
 $tsDenuncias = [
 	'users' => [
@@ -330,5 +330,124 @@ $tsDenuncias = [
 		'Contiene pedofilia',
 		'Es gore o asquerosa',
 		'Otra raz&oacute;n (especificar]'
+	]
+];
+/* TIPOS DE ARCHIVOS */
+$tsExt = [
+	// Con esto quiere decir que podemos mostrar el archivo
+	'allow' => [
+		'3gp', 
+		'avi', 
+		'bat',
+		'bmp', 
+		'css', 
+		'flv', 
+		'gif', 
+		'html', 
+		'jpeg', 
+		'jpg', 
+		'js', 
+		'json', 
+		'less',
+		'mkv', 
+		'mp3', 
+		'mp4', 
+		'mpeg', 
+		'mpg', 
+		'ogg', 
+		'ogg', 
+		'pdf', 
+		'png', 
+		'sass',
+		'svg',
+		'swf', 
+		'txt', 
+		'wav', 
+		'webm', 
+		'webp', 
+		'wmv'
+	],
+	// Podemos ver las imagenes
+	'images' => [
+		'bmp',
+		'gif',
+		'jpg',
+		'png',
+		'svg',
+		'webp'
+	],
+	// Podemos verlo en un textarea
+	'text' => [
+		'bat',
+		'css',
+		'html',
+		'js',
+		'json',
+		'less',
+		'sass',
+		'txt'
+	],
+	// Podemos ver los videos
+	'videos' => [
+		'3gp',
+		'avi', 
+		'flv', 
+		'mkv', 
+		'mpg', 
+		'wmv'
+	],
+	'mime-video' => [
+		'3gp' => '3gpp',
+		'avi' => 'x-msvideo',
+		'flv' => 'x-flv', 
+		'mkv' => 'x-matroska', 
+		'mp4' => 'mp4', 
+		'mpg' => 'mpeg', 
+		'wmv' => 'x-ms-wmv'
+	]
+];
+/**
+  * Si van a agregar más debe ser así 'nombre_minuscula => 'nombre_inicial_mayuscula',
+*/
+$redes = [
+	'facebook' => [
+		'iconify' => 'la:facebook-f',
+		'nombre' => 'Facebook', 
+		'url' => 'https://facebook.com'
+	],
+	'twitter' => [
+		'iconify' => 'pajamas:twitter',
+		'nombre' => 'Twitter', 
+		'url' => 'https://twitter.com'
+	],
+	'instagram' => [
+		'iconify' => 'la:instagram',
+		'nombre' => 'Instagram',
+		'url' => 'https://twitter.com'
+	],
+	'youtube' => [
+		'iconify' => 'la:youtube',
+		'nombre' => 'Youtube',
+		'url' => 'https://youtube.com'
+	],
+	'twitch' => [
+		'iconify' => 'la:twitch',
+		'nombre' => 'Twitch',
+		'url' => 'https://twitch.tv'
+	],
+	'tiktok' => [
+		'iconify' => 'logos:tiktok-icon',
+		'nombre' => 'Tiktok',
+		'url' => 'https://www.tiktok.com/@'
+	],
+	'discord' => [
+		'iconify' => 'la:discord',
+		'nombre' => 'Discord',
+		'url' => 'https://discord.com/users'
+	],
+	'reddit' => [
+		'iconify' => 'la:reddit-alien',
+		'nombre' => 'Reddit',
+		'url' => 'https://www.reddit.com/user'
 	]
 ];

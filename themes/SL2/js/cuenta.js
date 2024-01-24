@@ -19,11 +19,11 @@ function desactivate(des) {
 			mydialog.center();
 		} else {
 			var pass = $('#passi');
-	      $('#loading').fadeIn(250); 
+	      SL2.start(); 
 			$.post(global_data.url + '/cuenta.php?action=desactivate', 'validar=ajaxcontinue', function(a){
 			   mydialog.alert((a.charAt(0) == '0' ? 'Opps!' : 'Hecho'), (a.charAt(0) == '0' ? 'No se pudo desactivar' : 'Cuenta desactivada'), true);
 			   mydialog.center();
-	         $('#loading').fadeOut(250); 
+	         SL2.stop(); 
 			});
 	   }
 }
@@ -43,10 +43,10 @@ const cuenta = {
 		else {
 			//Obtengo las estados
 			$(estado).html('');
-         $('#loading').fadeIn(250); 
+         SL2.start(); 
          $.get(global_data.url + '/registro-geo.php', { pais_code }, h => {
          	if(h.charAt(0) === '1') estado.append(h.substring(3)).removeAttr('disabled').val('').focus();
-         	$('#loading').fadeOut(250); 
+         	SL2.stop(); 
          })
       }
 	},
@@ -86,12 +86,15 @@ const avatar = {
 		avamodal: function(user, paso) {
 			if(paso == 0) {
 				$.post(global_data.url + '/upload-cambiar.php', { user }, response => {
+					mydialog.size = 'big';
 					mydialog.show(true);
 					mydialog.title('Cambiar avatar');
 					mydialog.body('<div class="avatares">'+response+'</div>');
 		      	mydialog.buttons(true, true, 'Aceptar cambio', 'avatar.accion.avamodal('+user+', 1)', true, false);
+		      	mydialog.center();
 				})
 			} else {
+				mydialog.size = 'big';
 				mydialog.show(true);
 				mydialog.title('Éxito');
 				mydialog.body('Se ha cambiado correctamente!');
@@ -114,7 +117,7 @@ const avatar = {
 			});
 		},
 		tipo: seleccion => {
-			$('.grid-avatares').hide();
+			$('.grid-avatares, .grid-avatares-ajax').hide();
 			var html = '';
 			if(seleccion == 'pc') {
 				html += `<div id="avatar-local">
@@ -123,21 +126,21 @@ const avatar = {
 						<input type="file" class="custom-file-input browse" name="desktop" onchange="$(this).next().after().text($(this).val().split('/\/\').slice(-1)[0].replace('C:\/fakepath\',''))" id="file-avatar">
 						<label class="custom-file-label" for="file-avatar" data-browse="Elegir">Seleccionar archivo</label>
 					</div>
-					<button type="button" onclick="avatar.subir('desktop')" class="avatar-next local btn btn-success mt-3">Subir</button>
-					<button onclick="avatar.accion.volver();" class="btn btn-success mt-3">Volver</button>
+					<a href="javascript:avatar.subir('desktop')" class="avatar-next local btn btn-success">Subir</a>
+					<a href="javascript:avatar.accion.volver();" class="btn btn-success">Volver</a>
 				</div>`;
 			} else {
 				html += `<div class="form-group">
 					<p>Subir una imagen de perfil desde URL.</p>
-					<input type="text" class="form-input" placeholder="Link de tu avatar" name="url" id="url-avatar" size="45"/>
-					<button type="button" onclick="avatar.subir('url');" class="avatar-next button button-success mt-3 url">Subir</button>
-					<button onclick="avatar.accion.volver();" class="btn btn-success mt-3">Volver</button>
+					<input type="text" class="form-control mb-3" placeholder="Link de tu avatar" name="url" id="url-avatar"/>
+					<a href="javascript:avatar.subir('url');" class="avatar-next btn btn-success url">Subir</a>
+					<a href="javascript:avatar.accion.volver();" class="btn btn-success">Volver</a>
 				</div>`;
 			}
 			$('#type-selection').html(html);
 		},
 		volver: () => {
-			$('.grid-avatares').show();
+			$('.grid-avatares, .grid-avatares-ajax').show();
 			$('#type-selection').html('');
 		}
 	},
@@ -189,6 +192,7 @@ const avatar = {
             onCropMove: avatar.vistaPrevia
          });
       }).attr("src", newImageUpload);
+		mydialog.center();
 	},
 	vistaPrevia: function (coords) {
 		avatar.coords = coords

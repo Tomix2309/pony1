@@ -1,12 +1,14 @@
 <?php 
 
 /**
- * Smarty function
- *
- *
- * @param array $params 
- * @param Smarty_Internal_Template $smarty Instancia del objeto Smarty.
- * @return string Código HTML generado por la función.
+ * Autor: Miguel92
+ * Ejemplo: {jsdelivr type='styles|scripts' sources=['librerias'] combine=true} 
+ * Enlace: https://www.jsdelivr.com/ 
+ * Fecha: Ene 17, 2024 
+ * Nombre: jsdelivr
+ * Proposito: Añadir cdn desde la pagina https://www.jsdelivr.com/ 
+ * Tipo: function 
+ * Version: 1.0 
 */
 
 class jsdelivr {
@@ -42,6 +44,21 @@ class jsdelivr {
 			'page' => 'all',
 			'version' => '17.8.4',
 			'style' => 'dist/vanilla-lazyload.min.css'
+		],
+		'waitme' => [
+			'page' => 'login|registro',
+			'version' => '1.19.0',
+			'style' => 'waitMe.min.css'
+		],
+		'sweetalert2' => [
+			'page' => 'login|registro',
+			'version' => '11.10.3',
+			'style' => 'dist/sweetalert2.min.css'
+		],
+		'pace-js' => [
+			'page' => 'all',
+			'version' => '1.2.4',
+			'style' => 'pace-theme-default.min.css'
 		]
 	];
 
@@ -79,7 +96,13 @@ function smarty_function_jsdelivr($params, &$smarty) {
 	if(in_array($params['type'], ['style', 'styles', 'css'])) {
 		foreach($params['sources'] as $sid => $source) {
 			$data = $jsdelivr->livr['plugins'][$source];
-			if(!in_array($data['page'], ['perfil', 'cuenta', 'admin'])) {
+			// En caso que esten en 2 o más páginas
+			$en = explode('|', $data['page']);
+			$en = (count($en) > 1) ? $en : [];
+			// Normal
+			$ens = ['perfil', 'cuenta', 'admin', ...$en];
+			//
+			if(!in_array($data['page'], $ens)) {
 				$array[$sid] = "npm/$source@{$data['version']}/{$data['style']}";
 			} elseif($data['page'] == $pagina) {
 				$array[$sid] = "npm/$source@{$data['version']}/{$data['style']}";
@@ -95,8 +118,20 @@ function smarty_function_jsdelivr($params, &$smarty) {
 		foreach($params['sources'] as $sid => $source) {
 			$data = $jsdelivr->livr['plugins'][$source];
 			$e = isset($data['src']) ? $data['src'] : '';
-			if(!in_array($data['page'], ['perfil', 'cuenta', 'admin'])) {
-				$array[$sid] = "npm/" . str_replace('.js', $e, $source);
+			// En caso que esten en 2 o más páginas
+			$en = explode('|', $data['page']);
+			$en = (count($en) > 1) ? $en : [];
+			// Normal
+			$ens = ['perfil', 'cuenta', 'admin', ...$en];
+			//
+			//var_dump(in_array($data['page'], $ens));
+			if(!in_array($data['page'], $ens)) {
+				if($source == 'bootstrap') {
+					$src = "npm/$source@{$data['version']}/dist/js/bootstrap.bundle.min.js";
+				} elseif($source == 'waitme') {
+					$src = "npm/$source@{$data['version']}/waitMe.min.js";
+				} else $src = "npm/" . str_replace('.js', $e, $source);
+				$array[$sid] = $src;
 			} elseif($data['page'] == $pagina) {
 				$array[$sid] = "npm/" . str_replace('.js', $e, $source);
 			}

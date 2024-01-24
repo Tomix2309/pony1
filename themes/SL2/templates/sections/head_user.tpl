@@ -27,7 +27,7 @@
 	<!-- Acá se mostrarán las opciones del usuario -->
 	<div class="position-relative">
 		<a href="{$tsConfig.url}/perfil/{$tsUser->nick}" onclick="menu.last(); return false" name="Menu" class="text-capitalize d-flex justify-content-end align-items-center fw-bolder">{$tsUser->nick} 
-			<img src="{$tsUser->avatar}" alt="{$tsUser->nick}" class="avatar-head shadow avatar ms-2 avatar-circle">
+			<img src="{$tsUser->avatar}" alt="{$tsUser->nick}" class="avatar-head shadow avatar avatar-md ms-2 avatar-circle">
 		</a>
 		<div class="notis-panel" id="menu_list" style="display:none;">
 			<div class="usuario">
@@ -35,12 +35,13 @@
 					<a class="d-flex justify-content-center align-items-center" title="Gestionar mi cuenta" href="{$tsConfig.url}/cuenta/"><i data-feather="settings"></i></a>
 					<span onclick="menu.last(); return false" name="Menu" class="dato-username d-flex justify-content-end align-items-center" >
 						<span>{$tsUser->nick}</span>
-						<img class="image shadow avatar avatar-head avatar-circle" src="{$tsConfig.images}/loadImage.gif" data-src="{$tsUser->avatar}" alt="{$tsUser->nick}">
+						<img class="image shadow avatar avatar-md avatar-head avatar-circle" src="{$tsConfig.images}/loadImage.gif" data-src="{$tsUser->avatar}" alt="{$tsUser->nick}">
 					</span>
 				</div>
 				<div class="usuario-lista p-2">
 					<a title="Ir a mi perfil" rel="internal" href="{$tsConfig.url}/perfil/{$tsUser->info.user_name}"><i data-feather="user"></i> Ir a mi perfil</a>
 					{if $tsUser->is_admod == 1}
+						<a title="Panel de Administrador" rel="internal" href="{$tsConfig.url}/admin/"><i data-feather="layers"></i> Administraci&oacute;n</a>
 						<a title="Gestionar configuracion web" rel="internal" href="{$tsConfig.url}/pages/settings"><i data-feather="sliders"></i> Gestionar configuracion web</a>
 					{/if}
 					<a title="Mis Favoritos" rel="internal" href="{$tsConfig.url}/favoritos.php"><i data-feather="star"></i> Mis Favoritos</a>

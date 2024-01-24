@@ -36,13 +36,12 @@
 		'i' => $tsUser->uid
 	];
 	$key = base64_encode(serialize($code));
-	//$conexion = "https://phpost.es/feed/";
-	$conexion = 'http://localhost/feed/';
+	$conexion = "https://phpost.es/feed/";
 	// CODIGO
 	switch($action){
 		case 'feed-support':
 			//<--- CONSULTAR ACTUALIZACIONES OFICIALES Y VERIFICAR VERSIÓN ACTUAL DE ESTE SCRIPT
-				$json = $tsCore->getUrlContent($conexion . 'index.php?type=support&key=' . $key);
+				$json = $tsCore->getUrlContent($conexion . 'index.php?from=SyntaxisLite&type=support&key=' . $key);
 				echo $json;
 			//--->
 		break;
@@ -62,10 +61,10 @@
 				db_exec([__FILE__, __LINE__], 'query', "UPDATE `w_stats` SET stats_time_upgrade = $time WHERE stats_no = 1 LIMIT 1");
 			}
 			//<---
-			$json = $tsCore->getUrlContent($conexion . 'index.php?type=version&key=' . $key);
+			$json = $tsCore->getUrlContent($conexion . 'index.php?from=SyntaxisLite&type=version&key=' . $key);
 			echo $json;
 		break;
-        default:
-            die('0: Este archivo no existe.');
-        break;
+      default:
+          die('0: Este archivo no existe.');
+      break;
 	}

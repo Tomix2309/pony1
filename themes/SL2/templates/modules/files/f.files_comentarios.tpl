@@ -1,25 +1,25 @@
 <div class="file_box">
-    <h2 class="fb_title">Comentarios<span class="fb_right" id="com_total">{$tsCom.total}</span></h2>
+    <h2 class="fb_title">Comentarios <span class="fb_right" id="com_total">{$tsCom.total}</span></h2>
     <div class="fb_cuerpo" style="padding: 0">
     {if $tsCom.total > 0}
-    {foreach from=$tsCom.com item=c}
-    <div class="list_comfile" id="comfile_{$c.com_id}">
-        <div class="FA_mini floatL">
-            <a href="{$tsConfig.url}/perfil/{$c.user_name}" title="Ver perfil de {$c.user_name}">
-                <img src="{$tsConfig.url}/files/avatar/{$c.com_user}_50.jpg" />
-            </a>
+        {foreach from=$tsCom.com item=c}
+        <div class="list_comfile" id="comfile_{$c.com_id}">
+            <div class="FA_mini floatL">
+                <a href="{$tsConfig.url}/perfil/{$c.user_name}" title="Ver perfil de {$c.user_name}">
+                    <img src="{$tsConfig.url}/files/avatar/{$c.com_user}_50.jpg" />
+                </a>
+            </div>
+            <div class="FA_udatos">
+                <strong><a href="{$tsConfig.url}/perfil/{$c.user_name}" title="Ver perfil de {$c.user_name}">{$c.user_name}</a></strong><span>{$c.com_fecha|hace}</span>{if $tsUser->is_admod} IP: {$c.com_ip}{/if}
+            </div>
+            <div class="FA_body">{$c.com_body|nl2br}</div>
+            {if $c.com_user == $tsUser->uid || $tsUser->is_admod}
+            <a class="del_comfile" onclick="borrar_comfile({$c.com_id}, {$tsFile.data.file_id}, false)">x</a>
+            {/if}      
         </div>
-        <div class="FA_udatos">
-            <strong><a href="{$tsConfig.url}/perfil/{$c.user_name}" title="Ver perfil de {$c.user_name}">{$c.user_name}</a></strong><span>{$c.com_fecha|hace}</span>{if $tsUser->is_admod} IP: {$c.com_ip}{/if}
-        </div>
-        <div class="FA_body">{$c.com_body|nl2br}</div>
-        {if $c.com_user == $tsUser->uid || $tsUser->is_admod}
-        <a class="del_comfile" onclick="borrar_comfile({$c.com_id}, {$tsFile.data.file_id}, false)">x</a>
-        {/if}      
-    </div>
-    {/foreach}
+        {/foreach}
     {else}
-    <div id="sincom_file" class="emptyData" style="border: none;">No hay comentarios de este archivo.</div>
+        <div id="sincom_file" class="my-2 alert text-warning text-center">No hay comentarios de este archivo.</div>
     {/if}
     <div id="add_new_com"></div>
     </div>

@@ -249,7 +249,7 @@ class tsUpload {
       imagecopyresampled($avatar, $img, 0, 0, $x, $y, $_w, $_h, $w, $h);
       // GUARDAMOS...
       # CONVERTIREMOS LOS AVATARES JPG A WEBP
-      $imgWEBP = TS_AVATAR . $key . '.default.webp';
+      $imgWEBP = TS_AVATAR . $key . '.webp';
 
       if (file_exists($source)) {
          $img = imagecreatefromjpeg($source);

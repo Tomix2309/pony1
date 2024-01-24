@@ -81,7 +81,8 @@ $ContentSmarty += [
 	'tsMobile'      => $detect->isMobile(), # Para detectar que tipo de dispositivo esta usando
 	"tsAdmInfo"     => $tsJson->getAdminInfo(),# Extraemos la información del json para modificar
 	"tsAdmSeo"      => $tsJson->getSeo(),# Extraemos la información del json para modificar
-	"tsStyleAdmin"  => $tsJson->getAddInfo()# Añadimos la imagen y css al header
+	"tsStyleAdmin"  => $tsJson->getAddInfo(),# Añadimos la imagen y css al header
+	"tsMode"			 => $tsJson->getMode()
 ];
 
 $smarty->assign($ContentSmarty);

@@ -5,8 +5,8 @@ var perfil = {
    cache: {},
    load_tab: function(type, obj) {
       // CSS
-      $('#tabs_menu > li').removeClass('selected');
-      $(obj).parent().addClass('selected');
+      $('#tabs_menu > li a').removeClass('active');
+      $(obj).parent().addClass('active');
       //
       $('#perfil_content > div').fadeOut();
       $('#perfil_load').fadeIn();
@@ -122,23 +122,24 @@ var muro = {
       load: function(aid, obj) {
          // ACTUAL
          muro.stream.type = aid;
+         const txtwall = $("textarea#wall");
          //
-         var atxt = (muro.stream.type == 'foto') ? 'a' : 'e';
-         atxt = 'Haz un comentario sobre est' + atxt + ' ' + muro.stream.type + '...';
-         //
-         if (aid != 'status') {
-            $('.btnStatus').hide();
-            $('.attaDesc > .wrap').show();
-            //
-            $('#attaDesc').attr('title', atxt).val(atxt);
+         let atxt = 'Haz un comentario sobre est' + (aid == 'foto' ? 'a' : 'e') + ' ' + aid + '...';
+         if(aid == 'status') {
+            atxt = (txtwall.data('info-uid') == txtwall.data('uid')) ? '¿Qué estás pensando?' : 'Escribe algo....';
+            $('#adjuntar').removeClass('mb-2').html('')
          } else {
-            $('.btnStatus').show();
-            $('.attaDesc > .wrap').hide();
+            const adjuntar = $('#adjuntar').addClass('mb-2');
+            const tipos = {
+               foto: global_data.url + '/images/ejemplo.jpg',
+               enlace: global_data.url + '/blog/ejemplo.html',
+               video: 'https://www.youtube.com/watch?v=f_30BAGNqqA'
+            }
+            const html = `<input type="text" class="form-control" name="i${aid}" placeholder="${tipos[aid]}" aria-label="Adjuntar archivo" aria-describedby="button-addon2"/>
+            <button type="button" class="btn btn-outline-secondary adj" onclick="muro.stream.adjuntar(); return false;">Adjuntar</button>`;
+            adjuntar.html(html)
          }
-         // 
-         $('#attaContent > div').hide();
-         $('#' + aid + 'Frame').show().css('display', 'flex');
-         // 
+         txtwall.attr({ placeholder: atxt })
          return false;
       },
       // ADJUNTAR ARCHIVO EXTERNO : FOTO, ENLACE, VIDEO DE YOUTBE
@@ -151,6 +152,9 @@ var muro = {
          // FUNCION
          var inpt = $('input[name=i' + muro.stream.type + ']');
          inpt.attr('disabled', 'true');
+         const loading = `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">Adjuntando...</span>`
+         $('.btn.adj').html(loading)
          var valid = muro.stream.validar(inpt);
          if (valid == true) {
             // ADJUNTAMOS...
@@ -165,31 +169,28 @@ var muro = {
       },
       // VERIFICAR ARCHIVO
       ajaxCheck: function(url, inpt) {
-         $('#loading').fadeIn(250);
-         $.ajax({
-            type: 'POST',
-            url: global_data.url + '/muro-stream.php?do=check&type=' + muro.stream.type,
-            data: 'url=' + encodeURIComponent(url),
-            success: function(h) {
-               switch (h.charAt(0)) {
-                  case '0': //Error
-                     mydialog.alert('Error al publicar', h.substring(3));
-                     inpt.attr('disabled', '');
-                     break;
-                  case '1': //OK
-                     muro.stream.adjunto = inpt.val();
-                     $('#' + muro.stream.type + 'Frame').html(h.substring(3));
-                     break;
-               }
-               $('#loading').fadeOut(350);
-            },
-            complete: function() {
-               // LOADER/ STATUS
-               muro.stream.loader(false);
-               muro.stream.status = 0;
-               $('#loading').fadeOut(350);
+         SL2.start();
+         url = encodeURIComponent(url);
+         $.post(`${global_data.url}/muro-stream.php?do=check&type=${muro.stream.type}`, { url }, h => {
+            console.log(h)
+            switch (h.charAt(0)) {
+               case '0': //Error
+                  mydialog.alert('Error al publicar', h.substring(3));
+                  inpt.attr('disabled', '');
+               break;
+               case '1': //OK
+                  muro.stream.adjunto = inpt.val();
+                  $('#preview').html(h.substring(3));
+                  $('#adjuntar').html('')
+               break;
             }
-         });
+            SL2.stop();
+         }).done(() => {
+            // LOADER/ STATUS
+            muro.stream.loader(false);
+            muro.stream.status = 0;
+            SL2.stop();
+         })
       },
       // VALIDAR LAS URL DE LOS ARCHIVOS ADJUNTOS
       validar: function(inpt) {
@@ -205,8 +206,7 @@ var muro = {
                   if (ext != 'gif' && ext != 'png' && ext != 'jpg') return 'S&oacute;lo se permiten im&aacute;genes .gif, .png y .jpg';
                   break;
                case 'video':
-                  var video_id = val.split('watch?v=');
-                  if (!video_id[1]) return 'Al parecer la url del video no es v&aacute;lida. Recuerda que solo puedes compartir videos de YouTube.';
+                  if(isYoutube(val) === false) return 'Al parecer la url del video no es v&aacute;lida. Recuerda que solo puedes compartir videos de YouTube.';
                   break;
             }
             //
@@ -225,7 +225,7 @@ var muro = {
          // ARCHIVOS ADJUNTOS
          if (muro.stream.type != 'status') {
             if (muro.stream.adjunto != '') {
-               var val = $('#attaDesc').val();
+               var val = $('#wall').val();
                // VALIDAR
                if (val.length > 420) {
                   mydialog.alert('Error al publicar', error_length + val.length + ' caracteres.');
@@ -235,7 +235,7 @@ var muro = {
                }
                // ENVIAMOS PUBLICACION
                else {
-                  val = (val == $('#attaDesc').attr('title')) ? '' : val;
+                  val = (val == $('#wall').attr('title')) ? '' : val;
                   muro.stream.ajaxPost(val);
                }
             } else {
@@ -289,6 +289,7 @@ var muro = {
                      //
                      $('#wall-content').prepend($(h.substring(3)).fadeIn('slow'));
                      $('#wall').val('').focus();
+                     $('#preview').html('');
                      muro.stream.load('status', $('#stMain'));
                      $('#loaderStatus').addClass('d-flex').removeClass('d-none');
                   break;
@@ -299,7 +300,7 @@ var muro = {
                // LOADER/ STATUS
                muro.stream.loader(false);
                muro.stream.status = 0;
-               $('#loading').fadeOut(350);
+               SL2.stop();
                $('#loaderStatus').removeClass('d-flex').addClass('d-none');;
             }
          });
@@ -312,7 +313,7 @@ var muro = {
          $('.more-pubs a').hide();
          $('.more-pubs span').css('display', 'block');
          // CARGAMOS
-         $('#loading').fadeIn(250);
+         SL2.start();
          $.ajax({
             type: 'POST',
             url: global_data.url + '/muro-stream.php?do=more&type=' + type,
@@ -336,13 +337,13 @@ var muro = {
                      $('#total_pubs').remove();
                      break;
                }
-               $('#loading').fadeOut(250);
+               SL2.stop();
             },
             complete: function() {
                $('.more-pubs a').show();
                $('.more-pubs span').hide();
                muro.stream.status = 0;
-               $('#loading').fadeOut(450);
+               SL2.stop();
             }
          });
       },
@@ -390,7 +391,7 @@ var muro = {
    show_likes: function(id, type) {
       muro.stream.status = 1;
       // MANDAMOS
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'POST',
          url: global_data.url + '/muro-likes.php?do=show',
@@ -418,7 +419,7 @@ var muro = {
                   mydialog.center();
                   break;
             }
-            $('#loading').fadeOut(350);
+            SL2.stop();
          },
          complete: function() {
             // STATUS
@@ -440,7 +441,7 @@ var muro = {
          return false;
       }
       //
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'POST',
          url: global_data.url + '/muro-stream.php?do=repost',
@@ -455,12 +456,12 @@ var muro = {
                   $('#cf_' + id).val('');
                   break;
             }
-            $('#loading').fadeOut(250);
+            SL2.stop();
          },
          complete: function() {
             // STATUS
             muro.stream.status = 0;
-            $('#loading').fadeOut(350);
+            SL2.stop();
          }
       });
    },
@@ -470,7 +471,7 @@ var muro = {
       muro.stream.status = 1;
       $(obj).parent().find('img').show();
       //
-      $('#loading').fadeIn(250);
+      SL2.start();
       $.ajax({
          type: 'POST',
          url: global_data.url + '/muro-stream.php?do=more_comments',
@@ -484,12 +485,12 @@ var muro = {
                   $('#cl_' + id).html(h.substring(3));
                   break;
             }
-            $('#loading').fadeOut(350);
+            SL2.stop();
          },
          complete: function() {
             // STATUS
             muro.stream.status = 0;
-            $('#loading').fadeOut(550);
+            SL2.stop();
          }
       });
    },
@@ -617,4 +618,4 @@ const portada = {
    }
 }
 // CARGAMOS EL ARCHIVO DE CUENTA PARA SUBIR AVATAR
-$.getScript(global_data.img + "/js/cuenta.js");
+$(document).ready(() => $.getScript(global_data.img + "/js/cuenta.js"))
