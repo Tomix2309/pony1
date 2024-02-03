@@ -53,9 +53,9 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
     // CLASES
-    include("../class/c.medals.php");
+    include TS_CLASS . 'c.medals.php';
     $tsMedal = new tsMedal();
-	include("../class/c.admin.php");
+	include TS_CLASS . 'c.admin.php';
     $tsAdmin = new tsAdmin();
     //
 	// CODIGO

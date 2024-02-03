@@ -213,7 +213,7 @@ class tsUser {
 		# Retornamos los datos obtenidos
 		return $data;
 	}
-	 /**
+	/**
 	 * Se repiten en 3 funciones diferentes
 	*/
 	public function sessionUpdate(int $id = 0, bool $rem = true) {

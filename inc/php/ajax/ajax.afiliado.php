@@ -42,7 +42,7 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
     // CLASS
-    include("../class/c.afiliado.php");
+    include TS_CLASS . 'c.afiliado.php';
     $tsAfiliado = new tsAfiliado();
     //
 	// CODIGO

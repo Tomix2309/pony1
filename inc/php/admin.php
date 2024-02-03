@@ -51,7 +51,7 @@
 	// ACTION 2
 	$act = htmlspecialchars($_GET['act']);
 	// CLASE POSTS
-	include("../class/c.admin.php");
+	include TS_CLASS . 'c.admin.php';
 	$tsAdmin = new tsAdmin();
 
 /**********************************\
@@ -207,7 +207,7 @@
     /** MEDALLAS **/
     } elseif($action == 'medals'){
     	// CLASE MEDAL
-    	include("../class/c.medals.php");
+    	include TS_CLASS . 'c.medals.php';
     	$tsMedal = new tsMedal();
         if(empty($act)){
             $smarty->assign("tsMedals",$tsMedal->adGetMedals());
@@ -238,7 +238,7 @@
         }
 	} elseif($action == 'afs'){
         // CLASS
-        include("../class/c.afiliado.php");
+        include TS_CLASS . 'c.afiliado.php';
         $tsAfiliado = new tsAfiliado;
         // QUE HACER
 	   if($act == ''){
@@ -418,6 +418,6 @@ if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO M
 	$smarty->assign("tsSave",$_GET['save']);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 	
 	/*++++++++ = ++++++++*/
-	include("../../footer.php");
+	include TS_ROOT . 'footer.php';
 	/*++++++++ = ++++++++*/
 }

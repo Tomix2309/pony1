@@ -49,7 +49,7 @@
    $c = (int)$_GET['cat'];
    $a = htmlspecialchars($_GET['autor']);
 	# Buscador
-	include("../class/c.buscador.php");
+	include TS_CLASS . 'c.buscador.php';
 	$tsBuscador = new tsBuscador();
 
 /**********************************\
@@ -76,6 +76,6 @@ if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO M
 	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 
 	/*++++++++ = ++++++++*/
-	include("../../footer.php");
+	include TS_ROOT . 'footer.php';
 	/*++++++++ = ++++++++*/
 }

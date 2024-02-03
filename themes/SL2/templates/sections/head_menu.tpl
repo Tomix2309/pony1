@@ -35,7 +35,7 @@
 				            <li><a class="dropdown-item" href="{$tsConfig.url}/fotos/{$tsFUser.1}">&Aacute;lbum de {$tsFUser.1}</a><li>
 				         {/if}
 				         {if $tsUser->is_admod || $tsUser->permisos.gopf}
-				            <li><a class="dropdown-item">Agregar Foto</a><li>
+				            <li><a class="dropdown-item" href="{$tsConfig.url}/fotos/agregar.php">Agregar Foto</a><li>
 				         {/if}
 				         <li><a class="dropdown-item" href="{$tsConfig.url}/fotos/{$tsUser->nick}">Mis Fotos</a><li>
 				 		</ul>
@@ -73,8 +73,10 @@
 			</ul>
 			<form class="d-flex" action="{$tsConfig.url}/buscador/" role="search" name="top_search_box">
 				<a title="Buscar" role="button" class="button-search" href="javascript:buscar_en_web(3)"><i data-feather="search"></i></a>
+		  		<input class="rounded-pill search_menu" type="search" name="q" placeholder="Presiona / para buscar" aria-label="Buscar...">
 				<input type="hidden" name="e" value="web" />
-		  		<input class="rounded-pill" type="search" placeholder="Buscar..." aria-label="Buscar...">
+				<input type="hidden" name="cat" value="-1" />
+				<input type="hidden" name="autor" value="" />
 			</form>
 	 	</div>
   	</div>

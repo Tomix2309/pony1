@@ -47,7 +47,7 @@
 
 	$action = $_GET['action'];
 	//
-	include("../class/c.cuenta.php");
+	include TS_CLASS . 'c.cuenta.php';
 	$tsCuenta = new tsCuenta();
 
 /**********************************\
@@ -109,6 +109,6 @@ if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO M
 	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 
 	/*++++++++ = ++++++++*/
-	include("../../footer.php");
+	include TS_ROOT . 'footer.php';
 	/*++++++++ = ++++++++*/
 }

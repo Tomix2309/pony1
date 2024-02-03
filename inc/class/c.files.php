@@ -322,26 +322,28 @@ class tsFiles {
 		$tipo = $tsCore->setSecure($_GET['action']);
 		$carpeta = $tsCore->setSecure($_GET['file']);
 		// Preguntamos si es su carpeta
-		$miCarpeta = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT car_name, car_status, car_type, car_pass FROM files_carpeta WHERE car_seo = '$carpeta'"));
+		$miCarpeta = db_exec('fetch_assoc', db_exec([__FILE__, __LINE__], 'query', "SELECT car_user, car_name, car_status, car_type, car_private, car_pass FROM files_carpeta WHERE car_seo = '$carpeta'"));
 		// Carpeta privada
-		if((int)$miCarpeta['car_status'] == 1) return [
-			'titulo' => 'Opps!', 
-			'mensaje' => 'Esta carpeta es privada, no tienes acceso.'
-		];
+		if((int)$tsUser->uid != (int)$miCarpeta['car_user'] AND (int)$miCarpeta['car_private'] == 1) return [
+				'titulo' => 'Opps!', 
+				'mensaje' => 'Esta carpeta es privada, no tienes acceso.'
+			];
 		// Carpeta protegida
-		if(!empty($miCarpeta['car_pass'])) return [
-			'titulo' => 'Opps!', 
-			'mensaje' => 'Esta carpeta esta protegido con contraseña y no tienes acceso.'
-		];
-		if($miCarpeta['car_type'] !== 6) return [
-			'titulo' => 'Lo siento', 
-			'mensaje' => 'Solo se pueden ver las carpetas públicas.'
-		];
+		elseif(!empty($miCarpeta['car_pass'])) 
+			return [
+				'titulo' => 'Opps!', 
+				'mensaje' => 'Esta carpeta esta protegido con contraseña y no tienes acceso.'
+			];
+		elseif($miCarpeta['car_type'] < 6 OR $miCarpeta['car_type'] > 6) 
+			return [
+				'titulo' => 'Lo siento', 
+				'mensaje' => 'Solo se pueden ver las carpetas públicas.'
+			];
 		$admin = self::getAdmin();
 		// Limitamos
-	    $max = 12; // MAXIMO A MOSTRAR
-	    $limit = $tsCore->setPageLimit($max, true);
-		$data['nombre'] = $miCarpeta;
+	   $max = 12; // MAXIMO A MOSTRAR
+	   $limit = $tsCore->setPageLimit($max, true);
+		$data['nombre'] = $miCarpeta['car_name'];
 		$data['archivos'] = result_array(db_exec([__FILE__, __LINE__], 'query', "SELECT car_name, car_seo, car_pass, car_date, car_type, car_private, car_status, arc_id, arc_name, arc_code, arc_ext, arc_weight, arc_comments, arc_downloads, arc_private, arc_status, arc_date, arc_ip, user_name, user_activo, user_baneado FROM files_carpeta LEFT JOIN files_archivos ON arc_folder = car_id LEFT JOIN u_miembros ON arc_user = user_id WHERE car_seo = '$carpeta' $admin LIMIT $limit"));
 		// PAGINAS
 	    list($total) = db_exec('fetch_row', db_exec([__FILE__, __LINE__], 'query', "SELECT COUNT(arc_id) FROM files_archivos LEFT JOIN files_carpeta ON car_id = arc_folder WHERE car_seo = '$carpeta' AND arc_status = 1"));

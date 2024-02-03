@@ -7,10 +7,11 @@ settings/settings.json
 !settings/config-example-user.json
 
 # Los avatares
-files/avatar/*.webp
 !files/avatar/avatar.webp
-files/uploads/*.*
+files/archivos/*.*
+files/avatar/*.webp
 files/downloads/*.*
+files/uploads/*.*
 
 # Archivos
 config.inc.php
@@ -21,4 +22,4 @@ config.inc.php
 # Solo el theme SyntaxisLite2
 themes/*
 !themes/SL2
-themes/SL2/js/files_.js
+themes/SL2/js/*_.js

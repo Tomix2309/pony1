@@ -1,6 +1,6 @@
 {if ($tsAction == 'agregar' && ($tsUser->permisos.gopf || $tsUser->is_admod)) || ($tsAction == 'editar' && ($tsUser->permisos.moedfo || $tsUser->is_admod))} 
 <h2>{if $tsAction == 'agregar'}Agregar nueva{else}Editar{/if} foto</h2>
-<form name="add_foto" method="post" action="" enctype="multipart/form-data" id="foto_form" class="form-add-post" autocomplete="off">
+<form name="add_foto" method="post" enctype="multipart/form-data" id="foto_form" class="form-add-post" autocomplete="off">
    <div class="loader text-center" style="display:none;">
       <div class="bg-light py-4">
          <div class="loading loading-lg success"></div>
@@ -12,34 +12,34 @@
          <li class="position-relative form-group">
             <label class="form-label" for="ftitle">T&iacute;tulo</label>
             <span style="display: none;" class="errormsg"></span>
-            <input type="text" tabindex="1" name="titulo" id="ftitle" maxlength="40" class="form-input required" value="{$tsFoto.f_title}"/>
+            <input type="text" tabindex="1" name="f_title" id="ftitle" maxlength="40" class="form-control required" value="{$tsFoto.f_title}"/>
          </li>
          {if $tsAction != 'editar'}
             {if $tsConfig.c_allow_upload == 1}
                <li class="position-relative form-group">
                   <label class="form-label" for="ffile">Archivo</label>
-                  <input type="file" name="file" id="ffile" />
+                  <input type="file" class="form-control" name="f_url" id="ffile" />
                </li>
             {else}
                <li class="position-relative form-group">
                   <label class="form-label" for="furl">URL</label>
                   <span style="display: none;" class="errormsg"></span>
-                  <input type="text" tabindex="2" name="url" id="furl" maxlength="200" class="form-input required" value="{$tsFoto.f_url}"/>
+                  <input type="text" tabindex="2" name="f_url" id="furl" class="form-control required" value="{$tsFoto.f_url}"/>
                </li>                            
             {/if}
          {/if}
          <li class="position-relative form-group">
-            <label class="form-label" for="fdesc">Descripci&oacute;n (<small>Max 500 car.</small>)</label>
+            <label class="form-label" for="fdesc">Descripci&oacute;n <small>(Max 500 car.)</small></label>
             <span style="display: none;" class="errormsg"></span>
-            <textarea name="desc" class="form-input" id="fdesc" cols="60" rows="5" onkeydown="return ControlLargo(this);" onkeyup="return ControlLargo(this);">{$tsFoto.f_description}</textarea>
+            <textarea name="desc" class="form-control" id="f_description" cols="60" rows="5">{$tsFoto.f_description}</textarea>
          </li>
          <li class="position-relative form-group">
             <label class="form-label">Opciones</label>
             <div class="option clearbeta">  
-               <input type="checkbox" id="sin_comentarios" name="closed"{if $tsFoto.f_closed == 1} checked="true"{/if}/> <label for="sin_comentarios">Cerrar Comentarios</label>
+               <input type="checkbox" id="sin_comentarios" name="f_closed"{if $tsFoto.f_closed == 1} checked{/if}/> <label for="sin_comentarios">Cerrar Comentarios</label>
             </div>
 				<div class="option clearbeta">  
-               <input type="checkbox" class="floatL" id="visitas" name="visitas"  {if $tsFoto.f_visitas == 1} checked="true"{/if}/> <label for="visitas">&Uacute;ltimos visitantes</label>
+               <input type="checkbox" class="floatL" id="visitas" name="f_visitas"{if $tsFoto.f_visitas == 1} checked{/if}/> <label for="visitas">&Uacute;ltimos visitantes</label>
             </div>
          </li>
          {if $tsUser->is_admod > 0 && $tsAction == 'editar' && $tsFoto.f_user  != $tsUser->uid}

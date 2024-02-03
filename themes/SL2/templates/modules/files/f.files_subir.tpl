@@ -1,7 +1,7 @@
-<div id="form_upload" class="text-center w-75 bg-white p-4 mx-auto">
+<div id="form_upload" class="text-center w-75 bg-body-tertiary p-4 mx-auto">
    <form id="New_upload" action="{$tsConfig.url}/files-subir.php" method="post" enctype="multipart/form-data">
       <div id="Select_file">
-         <a href="javascript: void(0);" class="Fbtn text-uppercase list_text">Seleccionar archivo
+         <a href="javascript: void(0);" class="Fbtn text-uppercase list_text text-body-emphasis">Seleccionar archivo
             <input type="file" name="archivo" id="New_file" />
          </a>
          <div class="row">

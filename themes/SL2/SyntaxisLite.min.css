@@ -60,7 +60,10 @@ pre {
 }
 pre code{font-size:inherit;color:inherit;word-break:normal;}
 .pre-scrollable {max-height:340px;overflow-y:scroll;}
-
+input::placeholder, textarea::placeholder {
+	font-style: italic;
+	opacity: .6
+}
 /* FONDOS */
 .form-group {
 	padding: 0.3rem;
@@ -790,11 +793,9 @@ div[menu="open"] > .content-box .subitem.open {
 	background-color: rgba(var(--bs-secondary-rgb), .13);
 	font-weight: 600;
 }
-.box-lateral .box-header svg,
-.box-lateral .box-header a svg {
-	width: 20px;
-	height: 20px;
-	stroke: var(--bs-secondary-text-emphasis);
+.box-lateral .box-header iconify-icon,
+.box-lateral .box-header a iconify-icon {
+	font-size: 22px;
 	float: right;
 	margin-top: 2px;
 	margin-right: 6px;

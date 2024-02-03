@@ -27,17 +27,15 @@ var global_data = {
 	
 	<div class="backLogin background__level--3">
 		<div class="login_box bg-light-subtle shadow rounded overflow-hidden position-relative">
-			{if !$tsMobile}
 		   <div class="lader position-relative d-flex justify-content-center align-items-center saludo-{$tsLader}">
 		      <h3>{$tsMessage}</h3>
 		      <div class="position-absolute mx-auto bottom-5 right-3 left-0 w-25" style="display:none;" id="loading">
 		         <div class="loading loading-lg success"></div>
 		      </div>
 		   </div>
-		   {/if}
 		   <div class="offset-content">
 		      <div class="login_cuerpo">
-		         <div id="login_error" style="display: none;"></div>
+		         <div id="login_error" style="display:none;"></div>
 		         <form id="loginForm" action="javascript:login.iniciarSesion()" method="post">
 		            <div class="form-group">
 		               <label class="form-label" for="nickname">Usuario</label>

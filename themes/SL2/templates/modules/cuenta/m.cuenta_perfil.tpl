@@ -3,15 +3,15 @@
 	   <div class="alert-cuenta cuenta-2"></div>
 	   <div class="form-group">
 	      <label class="form-label" for="nombre">Nombre completo</label>
-	      <input type="text" value="{$tsPerfil.p_nombre}" maxlength="60" name="nombre" id="nombre" class="form-input cuenta-save-2">
+	      <input type="text" value="{$tsPerfil.p_nombre}" maxlength="60" name="nombre" id="nombre" class="form-control">
 	   </div>
 	   <div class="form-group">
 	      <label class="form-label" for="sitio">Mensaje Personal</label>
-	      <textarea value="" maxlength="60" name="mensaje" id="mensaje" class="form-input cuenta-save-2">{$tsPerfil.p_mensaje}</textarea>
+	      <textarea value="" maxlength="60" name="mensaje" id="mensaje" class="form-control">{$tsPerfil.p_mensaje}</textarea>
 	   </div>
 	   <div class="form-group">
 	      <label class="form-label" for="sitio">Sitio Web</label>
-	      <input type="text" value="{$tsPerfil.p_sitio}" maxlength="60" name="sitio" id="sitio" class="form-input cuenta-save-2">
+	      <input type="text" value="{$tsPerfil.p_sitio}" maxlength="60" name="sitio" id="sitio" class="form-control">
 	   </div>
    <div class="form-group">
       <label class="form-label" for="ft">Redes sociales</label>

@@ -1,8 +1,9 @@
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 <div class="nofio">
 	{if $tsLastFotos.data}
-	<div class="row">
+	<div class="row" data-masonry='{"itemSelector": ".card-item" }'>
 	{foreach from=$tsLastFotos.data item=f}
-		<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+		<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 card-item">
 			<div class="card-img">
 				<img src="{$tsConfig.images}/loadImage.gif" data-src="{$f.f_url}" class="rounded w-100" alt="{$f.f_title}">
 				<div class="data-information rounded background__level--31">

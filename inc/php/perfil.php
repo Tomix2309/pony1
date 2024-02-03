@@ -56,7 +56,7 @@
 
 	} else {
 	//
-	include("../class/c.cuenta.php");
+	include TS_CLASS . 'c.cuenta.php';
 	$tsCuenta = new tsCuenta();
 
 /**********************************\
@@ -98,7 +98,7 @@
 	$smarty->assign("tsRedes", $redes);
 	$smarty->assign("tsGeneral",$tsGeneral);
     // MURO
-    include("../class/c.muro.php");
+    include TS_CLASS . 'c.muro.php';
     $tsMuro = new tsMuro();
     // PERMISOS
     $priv = $tsMuro->getPrivacity($usuario['user_id'], $username, $tsInfo['follow'], $tsInfo['yfollow'] );
@@ -144,6 +144,6 @@ if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO M
 	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 
 	/*++++++++ = ++++++++*/
-	include("../../footer.php");
+	include TS_ROOT . 'footer.php';
 	/*++++++++ = ++++++++*/
 }

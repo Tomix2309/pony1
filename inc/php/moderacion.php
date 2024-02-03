@@ -50,7 +50,7 @@
 	// ACTION 2
 	$act = htmlspecialchars($_GET['act']);
 	// CLASE POSTS
-	include("../class/c.moderacion.php");
+	include TS_CLASS . 'c.moderacion.php';
 	$tsMod = new tsMod();
 
 /**********************************\
@@ -131,6 +131,6 @@ if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO M
 	$smarty->assign("tsSave",$_GET['save']);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 	
 	/*++++++++ = ++++++++*/
-	include("../../footer.php");
+	include TS_ROOT . 'footer.php';
 	/*++++++++ = ++++++++*/
 }

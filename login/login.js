@@ -52,14 +52,14 @@ const login = (() => {
 				break;
 				case '1':
 					wait('start', 'Redireccionando...');
+					$('#login_error').remove();
 					let redirectParam = obtenerParametroDeURL('redirect');
 					if (redirectParam) {
-               location.href = decodeURIComponent(redirectParam);
+               	location.href = decodeURIComponent(redirectParam);
 	            } else {
 						const redirect = global_data.url;
 						location.href = redirect
 					}
-					$('#login_error').hide().removeClass('alert alert-danger position-absolute').html('');
 				break;
 			}
 		})

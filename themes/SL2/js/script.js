@@ -71,6 +71,10 @@ function modechange() {
 
 $(document).on('keydown', event => {
    if (event.key === 'M' && event.shiftKey) modechange();
+   if (event.key === '/' && event.code === 'NumpadDivide') {
+      event.preventDefault();
+      $('input[type=search].search_menu').focus();
+   }
 });
 
 const ProfileComplete = localStorage.getItem('TourPefil');

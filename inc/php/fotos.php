@@ -11,46 +11,38 @@
 
 \*********************************/
 
-	$tsPage = "fotos";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
+$tsPage = "fotos";	// tsPage.tpl -> PLANTILLA PARA MOSTRAR CON ESTE ARCHIVO.
 
-	$tsLevel = 2;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
+$tsLevel = 2;		// NIVEL DE ACCESO A ESTA PAGINA. => VER FAQs
 
-	$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+$tsAjax = empty($_GET['ajax']) ? 0 : 1; // LA RESPUESTA SERA AJAX?
+
+$tsContinue = true;	// CONTINUAR EL SCRIPT
 	
-	$tsContinue = true;	// CONTINUAR EL SCRIPT
-	
-/*++++++++ = ++++++++*/
+include "../../header.php"; // INCLUIR EL HEADER
 
-	include "../../header.php"; // INCLUIR EL HEADER
+$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
 
-	$tsTitle = $tsCore->settings['titulo'].' - '.$tsCore->settings['slogan']; 	// TITULO DE LA PAGINA ACTUAL
-
-/*++++++++ = ++++++++*/
-	// PARA LAS FOTOS...
-    $action = htmlspecialchars($_GET['action']);		
-	if($tsCore->settings['c_fotos_private'] == '0') {	
-    if($action == '' || $action == 'ver') $tsLevel = 0;		
-	}else{		
+// PARA LAS FOTOS...
+$action = htmlspecialchars($_GET['action']);		
+if((int)$tsCore->settings['c_fotos_private'] == 0) {	
+  	if($action == '' || $action == 'ver') $tsLevel = 0;		
+} else {		
 	$tsLevel = 2;		
-	}
-	// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
-	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
-	if($tsLevelMsg != 1){	
-		$tsPage = 'aviso';
-		$tsAjax = 0;
-		$smarty->assign("tsAviso",$tsLevelMsg);
-		//
-		$tsContinue = false;
-	}
+}
+// VERIFICAMOS EL NIVEL DE ACCSESO ANTES CONFIGURADO
+$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
+if($tsLevelMsg != 1){	
+	$tsPage = 'aviso';
+	$tsAjax = 0;
+	$smarty->assign("tsAviso",$tsLevelMsg);
 	//
-	if($tsContinue){
-/**********************************\
-
-* (VARIABLES LOCALES ESTE ARCHIVO)	*
-
-\*********************************/
-	//
-	include("../class/c.fotos.php");
+	$tsContinue = false;
+}
+//
+if($tsContinue){
+	
+	include TS_CLASS . 'c.fotos.php';
 	$tsFotos = new tsFotos();
 
 /**********************************\
@@ -166,6 +158,6 @@ if(empty($tsAjax)) {	// SI LA PETICION SE HIZO POR AJAX DETENER EL SCRIPT Y NO M
 	$smarty->assign("tsTitle",$tsTitle);	// AGREGAR EL TITULO DE LA PAGINA ACTUAL
 
 	/*++++++++ = ++++++++*/
-	include("../../footer.php");
+	include TS_ROOT . 'footer.php';
 	/*++++++++ = ++++++++*/
 }

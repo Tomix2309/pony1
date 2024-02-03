@@ -3,7 +3,7 @@
 	{foreach from=$tsLastFotos.data item=f}
 		<div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
 			<div class="card-img">
-				{image type="foto" alt="{$f.f_title}" src="{$f.f_url}" class="rounded w-100"}
+				<img src="{$tsConfig.images}/loadImage.gif" data-src="{$f.f_url}" class="image rounded w-100" loading="lazy" alt="{$f.f_title}">
 				<div class="data-information rounded backdrop_filter--6">
 					<h3>{$f.f_title}</h3>
 					<small class="d-block text-white"><i data-feather="clock"></i> {$f.f_date|hace}</small>
@@ -41,5 +41,12 @@
 	</div>
 {/if}
 <script>
-$(document).ready(() => Miguel92.LazyLoad());
+$(document).ready(() => {
+   var myLazyLoad = new LazyLoad({
+      elements_selector: '.image',
+      use_native: true,
+      class_loading: 'lazy-loading'
+   })
+   myLazyLoad.update();
+})
 </script>

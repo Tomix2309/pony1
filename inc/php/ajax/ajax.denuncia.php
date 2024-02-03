@@ -40,7 +40,7 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg; die();}
     // SWAT
-	include("../class/c.swat.php");
+	include TS_CLASS . 'c.swat.php';
 	$tsSwat = new tsSwat();
     // VARS
     $obj_id = $tsCore->setSecure($_POST['obj_id']);

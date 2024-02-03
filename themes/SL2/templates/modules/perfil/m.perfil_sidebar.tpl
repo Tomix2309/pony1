@@ -1,20 +1,29 @@
-<div class="user-level box-perfil shadow-3 rounded">
-   <ul class="list-unstyled">
-      <li>
-         <strong>{$tsInfo.stats.user_puntos}</strong>
-         <span>Puntos</span>
+<div class="box-lateral">
+   <div class="box-header">Estadísticas <iconify-icon icon="bx:stats"></iconify-icon></div>
+   <ul class="list-unstyled row row-cols-2">
+      <li class="cols">
+         <div class="p-2">
+            <strong>{$tsInfo.stats.user_puntos}</strong>
+            <span>Puntos</span>
+         </div>
       </li>
-      <li>
-      	<strong>{$tsInfo.stats.user_posts}</strong>
-      	<span>Posts</span>
+      <li class="cols">
+         <div class="p-2">
+         	<strong>{$tsInfo.stats.user_posts}</strong>
+         <span>Posts</span>
+      </div>
       </li>
-      <li>
-      	<strong>{$tsInfo.stats.user_comentarios}</strong>
-      	<span>Comentarios</span>
+      <li class="cols">
+         <div class="p-2">
+         	<strong>{$tsInfo.stats.user_comentarios}</strong>
+         <span>Comentarios</span>
+      </div>
       </li>
-      <li>
-      	<strong>{$tsInfo.stats.user_fotos}</strong>
-      	<span>Fotos</span>
+      <li class="cols">
+         <div class="p-2">
+         	<strong>{$tsInfo.stats.user_fotos}</strong>
+         <span>Fotos</span>
+      </div>
       </li>
    </ul>
 </div>		

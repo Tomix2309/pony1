@@ -37,7 +37,7 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
     //CLASE
-	include("../class/c.fotos.php");
+	include TS_CLASS . "c.fotos.php";
     $tsFotos = new tsFotos();	
 	// CODIGO
 	switch($action){

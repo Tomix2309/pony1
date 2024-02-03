@@ -15,6 +15,8 @@
       {include "$tsModulos/m.fotos_add_form.tpl"}
    </div>
    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+      <syntaxis-lazyload ></syntaxis-lazyload>
+      <!-- src="{$tsConfig.files}/SyntaxisLite-ico-64.png" -->
       {include "$tsModulos/m.fotos_add_sidebar.tpl"}
    </div>
    

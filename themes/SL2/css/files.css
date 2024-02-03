@@ -22,6 +22,7 @@
    margin: 0;
    margin-bottom: 5px;
    display: block;
+   position: relative;
 }
 #form_upload form #Select_file .result_text {
    display: none;

@@ -41,7 +41,7 @@
 		die();
 	}
    // CLASE
-	include("../class/c.buscador.php");
+	include TS_CLASS . 'c.buscador.php';
 	$tsBuscador = new tsBuscador();
 	// CODIGO
 	switch($action){

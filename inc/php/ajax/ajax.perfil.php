@@ -46,7 +46,7 @@
 	$tsLevelMsg = $tsCore->setLevel($tsLevel, true);
 	if($tsLevelMsg != 1) { echo '0: '.$tsLevelMsg['mensaje']; die();}
     // CLASS
-    include("../class/c.cuenta.php");
+    include TS_CLASS . 'c.cuenta.php';
     $tsCuenta = new tsCuenta();
     // USER ID
     $user_id = (int) $tsCore->setSecure($_POST['pid']);
@@ -56,7 +56,7 @@
 	// CODIGO
 	switch($action){
         case 'perfil-wall':
-            include("../class/c.muro.php");
+            include TS_CLASS . 'c.muro.php';
             $tsMuro = new tsMuro();
             // GENERAL
         	$tsGeneral = $tsCuenta->loadGeneral($user_id);
