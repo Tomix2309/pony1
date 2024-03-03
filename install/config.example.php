@@ -3,10 +3,10 @@
 /**
  * Index :: Instrucciones para el instalador
  *
- * @package Syntaxis Lite Install
+ * @package SLV3 Install
  * @author Miguel92 
  * @copyright Syntaxis Lite 2024
- * @version v2.0 01-01-2024
+ * @version v3.0 01-03-2024
  * @link https://phpost.es
 */
 

@@ -10,14 +10,14 @@
          </ul>
       </div> 
       <div id="portal_content"> 
-         {include "$tsModulos/m.portal_noticias.tpl"}
-         {include "$tsModulos/m.portal_activity.tpl"}
-         {include "$tsModulos/m.portal_posts.tpl"}
-         {include "$tsModulos/m.portal_posts_favoritos.tpl"}
+         {include "m.portal_noticias.tpl"}
+         {include "m.portal_activity.tpl"}
+         {include "m.portal_posts.tpl"}
+         {include "m.portal_posts_favoritos.tpl"}
       </div>
    </div>
    <div id="right_box" class="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12">
-      {include "$tsModulos/m.portal_posts_visitados.tpl"}
+      {include "m.portal_posts_visitados.tpl"}
    </div>
 </div>
 {include file='sections/main_footer.tpl'}

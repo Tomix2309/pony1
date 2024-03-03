@@ -2,10 +2,10 @@
 	<div class="row">
 	{if $tsAction == ''}
 		<div class="col-xl-9 col-lg-9 col-md-8 col-sm-12 col-12">
-	      {include "$tsModulos/m.monitor_content.tpl"}
+	      {include "m.monitor_content.tpl"}
 	   </div>
 		<div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12">
-	      {include "$tsModulos/m.monitor_sidebar.tpl"}
+	      {include "m.monitor_sidebar.tpl"}
 	   </div>
    {else}
 		<div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12">
@@ -16,7 +16,7 @@
          </ul>
 		</div>
 		<div class="col-xl-9 col-lg-9 col-md-8 col-sm-12 col-12">
-	      {include "$tsModulos/m.monitor_listado.tpl"}
+	      {include "m.monitor_listado.tpl"}
 	   </div>
    {/if}
    </div>

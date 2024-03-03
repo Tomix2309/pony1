@@ -3,14 +3,10 @@
  * Resuelve para la home
  *
  * @name    index.php
- * @author  PHPost Team
+ * 
+ * @copyright SyntaxisLite v3 - 2024
+ * @author Miguel92
  */
-
-/*
- * -------------------------------------------------------------------
- *  Validamos que mostrar home/mi
- * -------------------------------------------------------------------
-*/
 
 // Incluimos header
 require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . 'header.php';

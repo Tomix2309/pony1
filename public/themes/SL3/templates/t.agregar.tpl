@@ -7,7 +7,7 @@
        	<input type="hidden" value="{$tsDraft.bid}" name="borrador_id"/>
 			<div class="col-xl-9 col-lg-9 col-md-9 col-sm col-12">
 				<div style="display:none" id="preview"></div>
-				<div id="contentPosts">{include "$tsModulos/m.agregar_form.tpl"}</div>
+				<div id="contentPosts">{include "m.agregar_form.tpl"}</div>
 				<div id="generator"></div>
 			</div>
 			<div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">

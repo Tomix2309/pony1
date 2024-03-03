@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `p_categorias` (
   `c_img` varchar(32) NOT NULL DEFAULT 'comments.png',
   `c_iconify` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`cid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=34 ;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $syntaxis_lite[] = "
 INSERT INTO `p_categorias` (`cid`, `c_orden`, `c_nombre`, `c_seo`, `c_img`) VALUES
@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `p_posts` (
   PRIMARY KEY (`post_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
-$syntaxis_lite[] = "INSERT INTO `p_posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_date`, `post_tags`) VALUES (1, 1, 30, 'Bienvenido a Syntaxis Lite v2', '[align=center][size=18]Este es el primer post de los miles que tendrá tu web  ;) \r\n\r\nGracias por elegir a [url=https://www.phpost.es/]PHPost[/url] como tu Link Sharing System.[/size][/align]\r\n\r\nCon la versión de [b]Syntaxis Lite v2[/b] actualizada: [ol][li]Smarty 4.3.x[/li][li]jQuery 3.7.x[/li][li]Plugins para jQuery actualizado y mejorado[/li][li]Modal modificado y con una nueva función[/li][li]Actualización al crear/editar post[/li][/ol]', 0, 'Syntaxis, Lite, actualizado, smarty, php');";
+$syntaxis_lite[] = "INSERT INTO `p_posts` (`post_id`, `post_user`, `post_category`, `post_title`, `post_body`, `post_tags`) VALUES (1, 1, 30, 'Bienvenido a Syntaxis Lite v3', '[align=center][size=18]Este es el primer post de los miles que tendrá tu web  ;) \r\n\r\nGracias por elegir a [url=https://www.phpost.es/]PHPost[/url] como tu Link Sharing System.[/size][/align]\r\n\r\n - Pasa a ser v3 porque el cambio ya no es compatible con v2.\r\n - Mucho más estructurado.\r\n - Mucho más limpio.\r\n - Se eliminó la configuración JSON, ya se almacenará en la base de datos.\r\n - Nuevo plugins para añadir fuentes de google\r\n - Actualización completa del plugins function.hook.php\r\n - Actualización completa del plugins function.jsdelivr.php\r\n - Actualización completa del plugins function.metadatos.php antes era function.meta.php\r\n\r\nCon la versión de [b]Syntaxis Lite v3[/b] actualizada: [ol][li]Smarty 4.3.x[/li][li]jQuery 3.7.x[/li][li]Plugins para jQuery actualizado y mejorado[/li][li]Modal modificado y con una nueva función[/li][li]Actualización al crear/editar post[/li][/ol]', 'Syntaxis, Lite, actualizado, smarty, php');";
 
 $syntaxis_lite[] = "
 CREATE TABLE IF NOT EXISTS `p_votos` (
@@ -531,7 +531,7 @@ $syntaxis_lite[] = "INSERT INTO w_settings (wid, setting_attachment, setting_pos
 
 $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `w_seo` (
   `wid` int(11) NOT NULL DEFAULT 0,
-  `seo_titulo` varchar(30) NOT NULL DEFAULT '',
+  `seo_titulo` varchar(60) NOT NULL DEFAULT '',
   `seo_descripcion` text, 
   `seo_portada` tinytext NOT NULL,
   `seo_favicon` tinytext NOT NULL,
@@ -546,7 +546,7 @@ $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `w_seo` (
   PRIMARY KEY (`wid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
-$syntaxis_lite[] = "INSERT INTO w_settings (wid, seo_titulo, seo_descripcion, seo_portada, seo_favicon, seo_imagenes, seo_robots, seo_robots_name, seo_robots_content, seo_color, seo_app_fb, seo_tw_page, seo_keywords) VALUES (1, 'Syntaxis Lite', 'Syntaxis Lite, es un sitio donde tu puedes encontrar todo, y puedes crear una cuenta gratis, nunca se te va a pedir un pago por ello!!!', '/public/assets/images/portada.png', '/public/assets/images/portada.png', 'a:3:{i:16;s:59:\"http://localhost/SyntaxisLite/files/SyntaxisLite-ico-16.png\";i:32;s:59:\"http://localhost/SyntaxisLite/files/SyntaxisLite-ico-32.png\";i:64;s:59:\"http://localhost/SyntaxisLite/files/SyntaxisLite-ico-64.png\";}', 1, 0, 0, '#212121', 234123465456783, '@SyntaxisLite2', 'web, juegos, blog, posts, videos, peliculas, series, offtopic, diferentes, titulos, aventura, accion, drama, comedia, estrategia');";
+$syntaxis_lite[] = "INSERT INTO w_seo (wid, seo_titulo, seo_descripcion, seo_portada, seo_favicon, seo_imagenes, seo_robots, seo_robots_name, seo_robots_content, seo_color, seo_app_fb, seo_tw_page, seo_keywords) VALUES (1, 'Syntaxis Lite', 'Syntaxis Lite, es un sitio donde tu puedes encontrar todo, y puedes crear una cuenta gratis, nunca se te va a pedir un pago por ello!!!', '/public/assets/images/portada.png', '/public/assets/images/portada.png', 'a:3:{i:16;s:59:\"http://localhost/SyntaxisLite/files/SyntaxisLite-ico-16.png\";i:32;s:59:\"http://localhost/SyntaxisLite/files/SyntaxisLite-ico-32.png\";i:64;s:59:\"http://localhost/SyntaxisLite/files/SyntaxisLite-ico-64.png\";}', 1, 0, 0, '#212121', 234123465456783, '@SyntaxisLite2', 'web, juegos, blog, posts, videos, peliculas, series, offtopic, diferentes, titulos, aventura, accion, drama, comedia, estrategia');";
 
 $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `w_ads` (
   `asd_id` int(11) NOT NULL DEFAULT 0,

@@ -1,27 +1,20 @@
 <?php if ( ! defined('SYNTAXISLITEV3')) exit('No se permite el acceso directo al script');
+
 /**
  * El footer permite mostrar la plantilla
  * Actualizacion Realizada: Smarty 3
  *
- * @name    footer.php
- * @author  PHPost Team
- */
+ * @copyright SyntaxisLite v3 - 2024
+ * @author Miguel92
+*/
 
-/*
- * -------------------------------------------------------------------
- *  Realizamos tareas para mostrar la plantilla
- * -------------------------------------------------------------------
- */
-    
-// Página solicitada
+// PÃ¡gina solicitada
 $smarty->assign("tsPage", $tsPage);
 
-// Añadimos modules/{_pagina_}/
+// AÃ±adimos una nueva ruta modules/{_pagina_}/
 $smarty->addTemplateDir([
-	'module' => ROUTEMODULES . $tsPage . SEPARATOR
+	'modules' => ROUTEMODULES . $tsPage . SEPARATOR
 ]);
-
-$smarty->assign("tsModulos", 'modules/'.$tsPage);
 
 $mytemplate = "t.$tsPage.tpl";
 $myerr = "t.error.tpl";
@@ -33,7 +26,7 @@ $template = $smarty->templateExists( $mytemplate ) ? $mytemplate : $myerr;
 $smarty->setCacheLifetime( (int)$tsCore->extras['smarty_lifetime'] * 3600 );
 
 /**
- * Borra la versión compilada del recurso de plantilla especificado
+ * Borra la versiÃ³n compilada del recurso de plantilla especificado
  * @link https://www.smarty.net/docs/en/api.clear.compiled.tpl.tpl
 */
 $smarty->clearCompiledTemplate( $template );

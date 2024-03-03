@@ -689,7 +689,7 @@ div[menu="open"] > .content-box .subitem.open {
 #mydialog.big #cuerpo {
 	position: relative;
 	overflow-y: auto;
-   min-height: 75vh;
+   *min-height: 75vh;
    max-height: 40vh;
 }
 #header_dialog {

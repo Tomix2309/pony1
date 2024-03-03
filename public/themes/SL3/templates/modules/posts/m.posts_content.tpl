@@ -20,16 +20,16 @@
 			</div>
 		</div>
 	{/if}
-	{include "$tsModulos/m.posts_comparte.tpl"}
+	{include "m.posts_comparte.tpl"}
 	<br>
 	{if !$tsUser->is_member}{include "modules/m.global_ads_728.tpl"}<br>{/if}
 	<span class="d-block">{$tsPost.post_body}</span>
 	<br>
 	{include "modules/m.global_ads_728.tpl"}
 	<br>
-	{include "$tsModulos/m.posts_comparte.tpl"}
+	{include "m.posts_comparte.tpl"}
 	{if $tsPost.user_firma && $tsConfig.c_allow_firma}
 		<span class="p-2 bg-light d-block my-2 text-dark text-center">{$tsPost.user_firma}</span>
 	{/if}
-	{include "$tsModulos/m.posts_metadata.tpl"}
+	{include "m.posts_metadata.tpl"}
 </div>

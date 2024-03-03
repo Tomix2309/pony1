@@ -4,14 +4,14 @@
    </script>
    <div id="perfil-form" class="widget">
       {if $tsPrivacidad.mf.v == true}
-         {include "$tsModulos/m.perfil_muro_form.tpl"}
+         {include "m.perfil_muro_form.tpl"}
       {else}
          <div class="alert alert-light">{$tsPrivacidad.mf.m}</div>
       {/if}
    </div>
 	<div class="widget bg-none" id="perfil-wall">
       <div id="wall-content">
-         {include "$tsModulos/m.perfil_muro_story.tpl"}
+         {include "m.perfil_muro_story.tpl"}
       </div>
       <!-- more -->
       {if $tsMuro.total >= 10}

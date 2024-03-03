@@ -55,9 +55,6 @@ include ROUTECLASS.'c.actividad.php';
 // Mensajes de usuario
 include ROUTECLASS.'c.mensajes.php';
 
-# Extraemos, Guardamos en JSON
-include ROUTECLASS . "c.jsondb.php";
-
 // Crean requests
 include ROUTEEXTRAS.'QueryString.php';
 /*
@@ -83,9 +80,6 @@ $tsActividad = new tsActividad();
 
 // Mensajes
 $tsMP = new tsMensajes();
-
-# Json
-$tsJson = new tsJson();
 
 # NUEVO ARCHIVO DE CONFIGURACION by Miguel92
 require_once ROUTEPRIVATE . 'configuration.smarty.php';

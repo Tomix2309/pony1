@@ -4,6 +4,6 @@
    de tal forma que deben crear el archivo de esta
    manera: pages.[Nombre_pagina].tpl
  -->
-   {include "$tsModulos/pages.$tsAction.tpl"}
+   {include "pages.$tsAction.tpl"}
  
 {include file='sections/main_footer.tpl'}

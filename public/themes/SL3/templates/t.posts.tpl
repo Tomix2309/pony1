@@ -8,18 +8,18 @@
 {/if}
 <div class="row">
    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-      {include "$tsModulos/m.post_info.tpl"}
-      {include "$tsModulos/m.posts_related.tpl"}
+      {include "m.post_info.tpl"}
+      {include "m.posts_related.tpl"}
    </div>
    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12">
-      {include "$tsModulos/m.posts_content.tpl"}
-      {include "$tsModulos/m.posts_pagina.tpl"}
+      {include "m.posts_content.tpl"}
+      {include "m.posts_pagina.tpl"}
       <a name="comentarios"></a>
-      {include "$tsModulos/m.posts_comments.tpl"}
+      {include "m.posts_comments.tpl"}
       <a name="comentarios-abajo"></a>
    </div>
    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-12">
-      {include "$tsModulos/m.posts_autor.tpl"}
+      {include "m.posts_autor.tpl"}
       <div class="post-info">
          {if $tsRelated}
          <ul class="list-unstyled">

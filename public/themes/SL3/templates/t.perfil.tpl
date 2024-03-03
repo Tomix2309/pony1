@@ -1,5 +1,5 @@
 {include file='sections/main_header.tpl'}
-{include "$tsModulos/m.perfil_headinfo.tpl"}
+{include "m.perfil_headinfo.tpl"}
 <div class="container my-2">
    <div class="row">
       <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12">
@@ -14,11 +14,11 @@
                      </script>
                   </div>
                {elseif $tsType == 'story'}
-                  {include "$tsModulos/m.perfil_story.tpl"}
+                  {include "m.perfil_story.tpl"}
                {elseif $tsType == 'news'}
-                  {include "$tsModulos/m.perfil_noticias.tpl"}
+                  {include "m.perfil_noticias.tpl"}
                {else}
-                  {include "$tsModulos/m.perfil_muro.tpl"}
+                  {include "m.perfil_muro.tpl"}
                {/if}
             </div>
             <div id="perfil_load" style="display:none;"><div class="loading loading-lg success"></div></div>
@@ -26,7 +26,7 @@
       </div>
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
          <div class="perfil-sidebar">
-            {include "$tsModulos/m.perfil_sidebar.tpl"}
+            {include "m.perfil_sidebar.tpl"}
          </div>
       </div>
    </div>
