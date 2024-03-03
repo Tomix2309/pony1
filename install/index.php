@@ -107,7 +107,7 @@ switch ($step) {
          // Verificamos que todos los campos esten llenos
          if (in_array('', $web)) $message = 'Todos los campos son requeridos';
          else {
-            define('TS_HEADER', true);
+            define('SYNTAXISLITEV3', true);
             // DATOS DE CONEXION
             require_once CONFIG;
             // CONECTAMOS
@@ -181,7 +181,7 @@ switch ($step) {
             $key = $Install->passwordSL2($user['name'], $user['passc']);
             $time = time();
             // DATOS DE CONEXION
-            define('TS_HEADER', true);
+            define('SYNTAXISLITEV3', true);
             require_once CONFIG;
             // CONECTAMOS
             $database->db = $db;
@@ -217,7 +217,7 @@ switch ($step) {
       // No saltar la licencia
       if (!$_SESSION['license']) header("Location: index.php");
       // DATOS DE CONEXION
-      define('TS_HEADER', true);
+      define('SYNTAXISLITEV3', true);
       require_once CONFIG;
       // CONECTAMOS
       $database->db = $db;
@@ -392,11 +392,11 @@ switch ($step) {
                   <p>Obtén tu clave desde <a href="https://www.google.com/recaptcha/admin" target="_blank"><strong>www.google.com/recaptcha/admin</strong></a></p>
                   <dl>
                      <dt><label for="f5">Clave pública del sitio:</label></dt>
-                     <dd><input type="text" id="f5" name="web[pkey]" value="<?=(empty($web['pkey']) ? '' : $web['pkey'])?>" required /></dd>
+                     <dd><input type="text" id="f5" name="web[pkey]" value="<?=(empty($web['pkey']) ? '' : $web['pkey'])?>" placeholder="6LfFFiMdAAAAAAQjDafWXZ0FeyesKYjVm4DSUoao" required /></dd>
                   </dl>
                   <dl>
                      <dt><label for="f6">Clave secreta:</label></dt>
-                     <dd><input type="text" id="f6" name="web[skey]" value="<?=(empty($web['skey']) ? '' : $web['skey'])?>" required/></dd>
+                     <dd><input type="text" id="f6" name="web[skey]" value="<?=(empty($web['skey']) ? '' : $web['skey'])?>" placeholder="6LfFFiMdAAAAAFIP4oNFLQx5Fo1FyorTzNps8ChE" required/></dd>
                   </dl>
                   <p><input type="submit" name="save" class="button" value="Continuar &raquo;"/></p>
                <?php elseif($step == 6): ?>

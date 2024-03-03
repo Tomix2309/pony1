@@ -1,12 +1,12 @@
 {
     "mode": "dark",
     "portada": {
-        "height": 300,
-        "id": "418831",
-        "position": "center center",
-        "repeat": "no-repeat",
+        "position": "",
+        "repeat": "",
         "type": "pexels",
-        "width": 1200
+        "id": "2786709",
+        "width": "1200",
+        "height": "300"
     },
     "params": {
         "auto": "compress",

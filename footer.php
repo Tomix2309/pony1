@@ -1,4 +1,4 @@
-<?php if ( ! defined('TS_HEADER')) exit('No se permite el acceso directo al script');
+<?php if ( ! defined('SYNTAXISLITEV3')) exit('No se permite el acceso directo al script');
 /**
  * El footer permite mostrar la plantilla
  * Actualizacion Realizada: Smarty 3
@@ -18,7 +18,7 @@ $smarty->assign("tsPage", $tsPage);
 
 // Añadimos modules/{_pagina_}/
 $smarty->addTemplateDir([
-	'module' => TS_MODULES . $tsPage . SEPARATOR
+	'module' => ROUTEMODULES . $tsPage . SEPARATOR
 ]);
 
 $smarty->assign("tsModulos", 'modules/'.$tsPage);

@@ -1,4 +1,4 @@
-<?php if ( ! defined('TS_HEADER')) exit('No direct script access allowed');
+<?php if ( ! defined('SYNTAXISLITEV3')) exit('No direct script access allowed');
 
 /**
  * Index :: Instrucciones para el instalador

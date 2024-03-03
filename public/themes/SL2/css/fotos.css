@@ -1,0 +1,28 @@
+.galeria-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem; 
+}
+.galeria-item figure,
+.galeria-item figure img {
+	width: 100%;
+	height: 350px;
+	object-fit: cover;
+}
+.galeria-item .galeria-data {
+	background: linear-gradient(to bottom, transparent, rgba(var(--bs-body-bg-rgb), .4), rgba(var(--bs-body-bg-rgb), .5), rgba(var(--bs-body-bg-rgb), 1));
+	bottom: 0;
+	left: 0;
+}
+.galeria-user {
+	background: rgba(var(--bs-body-bg-rgb), .78);
+	padding-right: 0.8rem;
+	border-radius: 10em;
+	overflow: hidden;
+	top: 0.6rem;
+	left: 0.6rem;
+}
+.galeria-user img {
+	width: 1.6rem;
+	height: 1.6rem;
+}

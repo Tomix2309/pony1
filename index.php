@@ -17,10 +17,10 @@ require_once realpath(__DIR__) . DIRECTORY_SEPARATOR . 'header.php';
 
 // Checamos...
 if($tsCore->settings['c_allow_portal'] == 1 && $tsUser->is_member && $_GET['do'] == 'portal'):
-	require_once TS_PHP . 'portal.php';
+	require_once ROUTEPHP . 'portal.php';
 
 else:
 	# Home
-	require_once TS_PHP . 'posts.php';
+	require_once ROUTEPHP . 'posts.php';
 
 endif;

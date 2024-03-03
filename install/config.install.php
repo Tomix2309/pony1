@@ -1,6 +1,6 @@
 <?php
 
-if(!defined('TS_HEADER')) define('TS_HEADER', true);
+if(!defined('SYNTAXISLITEV3')) define('SYNTAXISLITEV3', true);
 
 define('SEPARATOR', DIRECTORY_SEPARATOR);
 

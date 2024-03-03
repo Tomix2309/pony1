@@ -267,6 +267,22 @@ CREATE TABLE IF NOT EXISTS `u_miembros` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
 
 $syntaxis_lite[] = "
+CREATE TABLE IF NOT EXISTS `u_settings` (
+  `uid` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT 0,
+  `setting_mode` enum('light', 'dark') NOT NULL DEFAULT 'light',
+  `setting_attachment` int(1) NOT NULL DEFAULT 0, # Desactivado
+  `setting_position` int(1) NOT NULL DEFAULT 7,
+  `setting_repeat` int(1) NOT NULL DEFAULT 3,
+  `setting_size` varchar(18) NOT NULL DEFAULT '',
+  `setting_type` enum('pexels', 'unsplash') NOT NULL DEFAULT 'unsplash', 
+  `setting_id` varchar(22) NOT NULL DEFAULT 'Wstln0400pE',
+  `setting_width` int(4) NOT NULL DEFAULT 850,
+  `setting_height` int(4) NOT NULL DEFAULT 315,
+  PRIMARY KEY (`uid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+
+$syntaxis_lite[] = "
 CREATE TABLE IF NOT EXISTS `u_nicks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL DEFAULT 0,
@@ -495,11 +511,44 @@ CREATE TABLE IF NOT EXISTS `w_configuracion` (
   PRIMARY KEY (`tscript_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 
-$syntaxis_lite[] = "
-INSERT INTO `w_configuracion` (`tscript_id`, `tema_id`) VALUES (1, 1);";
+$syntaxis_lite[] = "INSERT INTO `w_configuracion` (`tscript_id`, `tema_id`) VALUES (1, 1);";
 
-$syntaxis_lite[] = "
-CREATE TABLE IF NOT EXISTS `w_ads` (
+$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `w_settings` (
+  `wid` int(11) NOT NULL DEFAULT 0,
+  `setting_mode` enum('light', 'dark') NOT NULL DEFAULT 'light',
+  `setting_attachment` int(1) NOT NULL DEFAULT 0, # Desactivado
+  `setting_position` int(1) NOT NULL DEFAULT 0,
+  `setting_repeat` int(1) NOT NULL DEFAULT 0,
+  `setting_size` varchar(18) NOT NULL DEFAULT '',
+  `setting_type` enum('pexels', 'unsplash') NOT NULL DEFAULT 'pexels', 
+  `setting_id` varchar(22) NOT NULL DEFAULT '',
+  `setting_width` int(4) NOT NULL DEFAULT 0,
+  `setting_height` int(4) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`wid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+
+$syntaxis_lite[] = "INSERT INTO w_settings (wid, setting_attachment, setting_position, setting_repeat, setting_size, setting_type, setting_id, setting_width, setting_height) VALUES (1, 0, 7, 3, 'cover', 'unsplash', 'jXd2FSvcRr8', 1200, 300);";
+
+$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `w_seo` (
+  `wid` int(11) NOT NULL DEFAULT 0,
+  `seo_titulo` varchar(30) NOT NULL DEFAULT '',
+  `seo_descripcion` text, 
+  `seo_portada` tinytext NOT NULL,
+  `seo_favicon` tinytext NOT NULL,
+  `seo_imagenes` varchar(1000) NOT NULL DEFAULT '',
+  `seo_robots` int(1) NOT NULL DEFAULT 0, 
+  `seo_robots_name` int(1) NOT NULL DEFAULT 0,
+  `seo_robots_content` int(1) NOT NULL DEFAULT 0,
+  `seo_color` varchar(9) NOT NULL DEFAULT '',
+  `seo_app_fb` varchar(20) NOT NULL DEFAULT '',
+  `seo_tw_page` varchar(34) NOT NULL DEFAULT '',
+  `seo_keywords` varchar(120) NOT NULL DEFAULT '',
+  PRIMARY KEY (`wid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+
+$syntaxis_lite[] = "INSERT INTO w_settings (wid, seo_titulo, seo_descripcion, seo_portada, seo_favicon, seo_imagenes, seo_robots, seo_robots_name, seo_robots_content, seo_color, seo_app_fb, seo_tw_page, seo_keywords) VALUES (1, 'Syntaxis Lite', 'Syntaxis Lite, es un sitio donde tu puedes encontrar todo, y puedes crear una cuenta gratis, nunca se te va a pedir un pago por ello!!!', '/public/assets/images/portada.png', '/public/assets/images/portada.png', 'a:3:{i:16;s:59:\"http://localhost/SyntaxisLite/files/SyntaxisLite-ico-16.png\";i:32;s:59:\"http://localhost/SyntaxisLite/files/SyntaxisLite-ico-32.png\";i:64;s:59:\"http://localhost/SyntaxisLite/files/SyntaxisLite-ico-64.png\";}', 1, 0, 0, '#212121', 234123465456783, '@SyntaxisLite2', 'web, juegos, blog, posts, videos, peliculas, series, offtopic, diferentes, titulos, aventura, accion, drama, comedia, estrategia');";
+
+$syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `w_ads` (
   `asd_id` int(11) NOT NULL DEFAULT 0,
   `banner` varchar(100) NOT NULL DEFAULT '',
   `ads_300` text NOT NULL,
@@ -663,7 +712,7 @@ CREATE TABLE IF NOT EXISTS `w_temas` (
   `t_path` tinytext NOT NULL,
   `t_copy` tinytext NOT NULL,
   PRIMARY KEY (`tid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 
 $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `w_timezone` ( 
 `zone_id` int(11) NOT NULL AUTO_INCREMENT, 
@@ -683,7 +732,7 @@ $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_comentarios` (
   `com_status` int(1) NOT NULL DEFAULT 0,
   `com_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`com_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 
 $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_descargas` (
   `des_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -694,7 +743,7 @@ $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_descargas` (
   `des_date` int(10) NOT NULL DEFAULT 0,
   `des_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`des_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 
 $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_favoritos` (
   `fav_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -702,7 +751,7 @@ $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_favoritos` (
   `fav_user` int(11) NOT NULL DEFAULT 0,
   `fav_date` int(10) NOT NULL DEFAULT 0,
   PRIMARY KEY (`fav_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 
 $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_archivos` (
   `arc_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -720,7 +769,7 @@ $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_archivos` (
   `arc_date` int(10) NOT NULL DEFAULT 0,
   `arc_ip` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`arc_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 
 $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_carpeta` (
   `car_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -733,7 +782,7 @@ $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_carpeta` (
   `car_private` int(1) NOT NULL DEFAULT 0,
   `car_status` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`car_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 
 $syntaxis_lite[] = "CREATE TABLE IF NOT EXISTS `files_carpeta_tipos` (
   `ct_id` int(11) NOT NULL AUTO_INCREMENT,

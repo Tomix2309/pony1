@@ -1,6 +1,7 @@
-![GitHub repo size](https://img.shields.io/github/repo-size/PHPostApp/SyntaxisLite)
+# Syntaxis Lite v3
 
-# Syntaxis Lite 2024
+# NOTA 27.02.24
+ * Reordenamiento completo de todo el script, eliminando archivos y códigos completamentes innecesarios
 
 | <!-- -->   | <!-- -->  | <!-- -->  |
 |:----------:|:------------:|:----------:|
@@ -12,8 +13,20 @@
 | Zip	       |  :flashlight:   |  1.7.1     |
 | OpenSSL    |  :flashlight:   |  3.1.3     |
 | MobileDetect    |  :white_check_mark:	    |     2.8.34   |
-| ~MobileDetect~    |  :x:	    |     ~4.8.04~   |
 | JBBCode         |  :loudspeaker:  |     1.4.2    |
+
+## Lista de fuentes que se puede usar con el plugin
+ - Bebas Neue
+ - Comfortaa
+ - Lato
+ - Montserrat
+ - Open Sans
+ - Oswald
+ - Poppins
+ - Proza Libre
+ - Raleway
+ - Roboto
+ - Work Sans
 
 ## Core:
  * Mejor soporte a [http/https](https://github.com/isidromlc/PHPost/issues/10#issue-568723224).
