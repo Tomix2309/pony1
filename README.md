@@ -1,5 +1,16 @@
 # Syntaxis Lite v3
 
+# NOTA 02.03.24
+Syntaxis Lite V3:
+ - Pasa a ser v3 porque el cambio ya no es compatible con v2.
+ - Mucho más estructurado.
+ - Mucho más limpio.
+ - Se eliminó la configuración JSON, ya se almacenará en la base de datos.
+ - Nuevo plugins para añadir fuentes de google
+ - Actualización completa del plugins function.hook.php
+ - Actualización completa del plugins function.jsdelivr.php 
+ - Actualización completa del plugins function.metadatos.php antes era function.meta.php
+ 
 # NOTA 27.02.24
  * Reordenamiento completo de todo el script, eliminando archivos y códigos completamentes innecesarios
 
